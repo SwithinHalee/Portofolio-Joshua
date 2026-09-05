@@ -72,15 +72,15 @@ export function ScrollMilestone() {
           const totalDocH = document.documentElement.scrollHeight;
           const maxScroll = totalDocH - viewportH;
 
-          // 1. If at top edge, snap to start
-          if (scrollY <= 15) {
+          // 1. If at top edge, snap strictly to 0
+          if (scrollY <= 5) {
             setActiveId(MILESTONES[0].id);
             setMilestoneProgress(0);
             ticking = false;
             return;
           }
 
-          // 2. If at bottom edge of document, snap to end
+          // 2. If at bottom edge of document, snap strictly to 1
           if (scrollY + viewportH >= totalDocH - 25) {
             setActiveId(MILESTONES[MILESTONES.length - 1].id);
             setMilestoneProgress(1);
@@ -100,13 +100,28 @@ export function ScrollMilestone() {
             }
           }
 
-          // Dynamic detection threshold (middle/upper portion of screen)
-          const threshold = viewportH * 0.32;
-          const probeY = scrollY + threshold;
+          const numSegments = MILESTONES.length - 1;
+          const aboutSectionTop = sectionTops[1] || viewportH;
 
-          // Find which section is currently active
-          let currentIdx = 0;
-          for (let i = 0; i < sectionTops.length; i++) {
+          // Special smooth handling for Section 00 (Hero to About transition)
+          // Avoids any artificial threshold offset at the top of the page
+          if (scrollY < aboutSectionTop - 80) {
+            setActiveId(MILESTONES[0].id);
+            const heroProgress = Math.min(
+              Math.max(scrollY / Math.max(aboutSectionTop - 80, 1), 0),
+              1
+            );
+            setMilestoneProgress(heroProgress / numSegments);
+            ticking = false;
+            return;
+          }
+
+          // Standard smooth section tracking for Sections 01 to 08
+          const navOffset = 85;
+          const probeY = scrollY + navOffset;
+
+          let currentIdx = 1;
+          for (let i = 1; i < sectionTops.length; i++) {
             if (probeY >= sectionTops[i]) {
               currentIdx = i;
             }
@@ -114,8 +129,6 @@ export function ScrollMilestone() {
 
           setActiveId(MILESTONES[currentIdx].id);
 
-          // Interpolate progress smoothly between current section and next section
-          const numSegments = MILESTONES.length - 1;
           if (currentIdx >= numSegments) {
             setMilestoneProgress(1);
           } else {
@@ -147,9 +160,15 @@ export function ScrollMilestone() {
   const currentIdx = activeIndex === -1 ? 0 : activeIndex;
 
   const scrollTo = (id: string) => {
+    if (id === "hero") {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      return;
+    }
     const el = document.getElementById(id);
     if (el) {
-      el.scrollIntoView({ behavior: "smooth" });
+      const navOffset = 65;
+      const elTop = el.getBoundingClientRect().top + window.scrollY - navOffset;
+      window.scrollTo({ top: Math.max(0, elTop), behavior: "smooth" });
     }
   };
 
