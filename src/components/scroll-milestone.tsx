@@ -81,21 +81,20 @@ export function ScrollMilestone() {
 
   return (
     <>
-      {/* 1. Desktop & Widescreen Milestone Rail (Floating in Left Margin Gutter) */}
+      {/* 1. Desktop & Widescreen Milestone Rail (Borderless & Container-free) */}
       <nav
         aria-label="Document Section Milestones"
-        className="fixed left-3 2xl:left-7 top-1/2 -translate-y-1/2 z-40 hidden xl:flex flex-col items-start select-none"
+        className="fixed left-4 2xl:left-8 top-1/2 -translate-y-1/2 z-40 hidden xl:flex flex-col items-start select-none py-2"
       >
-        <div className="rounded-[8px] border border-[#EAEAEA] bg-[#FFFFFF]/90 backdrop-blur-md p-3.5 shadow-[0_2px_12px_rgba(0,0,0,0.03)] group transition-all duration-200 hover:border-[#CCCCCC]">
+        <div className="flex flex-col items-start group">
           {/* Top Rail Header */}
-          <div className="flex items-center justify-between gap-3 border-b border-[#EAEAEA] pb-2.5 mb-3 font-mono text-[9px] uppercase tracking-wider text-[#787774] w-full">
-            <div className="flex items-center gap-1.5">
-              <span className="relative flex h-1.5 w-1.5">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#346538] opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-[#346538]"></span>
-              </span>
-              <span className="font-semibold text-[#111111]">DOSSIER RAIL</span>
-            </div>
+          <div className="flex items-center gap-2 pb-1.5 mb-2 font-mono text-[9px] uppercase tracking-wider text-[#787774]">
+            <span className="relative flex h-1.5 w-1.5">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#346538] opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-[#346538]"></span>
+            </span>
+            <span className="font-semibold text-[#111111]">DOSSIER RAIL</span>
+            <span className="text-[#CCCCCC]">•</span>
             <span className="tabular-nums text-[9px] font-mono text-[#888888]">
               {MILESTONES[activeIndex]?.num}/08
             </span>
@@ -140,7 +139,7 @@ export function ScrollMilestone() {
                         {isActive ? (
                           <motion.div
                             layoutId="active-milestone-marker"
-                            className="w-3 h-3 rounded-full bg-[#111111] ring-2 ring-[#346538]/30 flex items-center justify-center shadow-sm"
+                            className="w-3 h-3 rounded-full bg-[#111111] ring-2 ring-[#346538]/30 flex items-center justify-center"
                             transition={{ type: "spring", stiffness: 350, damping: 30 }}
                           >
                             <span className="w-1 h-1 rounded-full bg-white block" />
@@ -198,19 +197,17 @@ export function ScrollMilestone() {
           </div>
 
           {/* Bottom Live Digital Meter */}
-          <div className="mt-3 pt-2.5 border-t border-[#EAEAEA] flex items-center justify-between font-mono text-[9px] text-[#787774] w-full">
+          <div className="mt-2.5 pt-1.5 flex items-center gap-2 font-mono text-[9px] text-[#787774]">
             <span className="uppercase text-[#888888]">PROGRESS</span>
-            <div className="flex items-center gap-1">
-              <span className="font-semibold text-[#111111] tabular-nums">{percentage}%</span>
-            </div>
+            <span className="font-semibold text-[#111111] tabular-nums">{percentage}%</span>
           </div>
         </div>
       </nav>
 
-      {/* 2. Mobile & Tablet Minimal Floating Status Pill (Bottom Left) */}
+      {/* 2. Mobile & Tablet Minimal Floating Status (Borderless & Container-free) */}
       <aside
         aria-label="Mobile reading progress"
-        className="fixed bottom-4 left-4 z-40 xl:hidden"
+        className="fixed bottom-4 left-4 z-40 xl:hidden select-none"
       >
         <button
           type="button"
@@ -218,14 +215,14 @@ export function ScrollMilestone() {
             const nextIdx = (activeIndex + 1) % MILESTONES.length;
             scrollTo(MILESTONES[nextIdx].id);
           }}
-          className="flex items-center gap-2 rounded-full border border-[#EAEAEA] bg-[#FFFFFF]/95 backdrop-blur-md px-3 py-1.5 shadow-[0_2px_8px_rgba(0,0,0,0.06)] font-mono text-[11px] text-[#111111] active:scale-95 transition-transform"
+          className="flex items-center gap-2 font-mono text-[10px] text-[#111111] active:scale-95 transition-transform"
         >
           <div className="w-1.5 h-1.5 rounded-full bg-[#346538] animate-pulse" />
-          <span className="font-semibold text-[10px]">
+          <span className="font-semibold">
             {MILESTONES[activeIndex]?.num} {MILESTONES[activeIndex]?.shortLabel}
           </span>
           <span className="text-[#CCCCCC]">•</span>
-          <span className="tabular-nums text-[10px] text-[#787774]">{percentage}%</span>
+          <span className="tabular-nums text-[#787774]">{percentage}%</span>
         </button>
       </aside>
     </>
