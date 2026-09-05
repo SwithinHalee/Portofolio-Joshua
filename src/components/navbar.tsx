@@ -59,6 +59,7 @@ export function Navbar() {
   }, [isHome]);
 
   const navLinks = [
+    { label: "About", href: "/#about", id: "about" },
     { label: "Work", href: "/#projects", id: "projects" },
     { label: "Dossier", href: "/#dossier", id: "dossier" },
     { label: "Archive", href: "/archive", id: "archive" },

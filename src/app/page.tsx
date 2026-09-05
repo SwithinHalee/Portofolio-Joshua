@@ -1,5 +1,6 @@
 import { Navbar } from "@/components/navbar";
 import { Hero } from "@/components/hero";
+import { AboutMe } from "@/components/about-me";
 import { Projects } from "@/components/projects";
 import { StackingCardsSection } from "@/components/stacking-cards";
 import { Dossier } from "@/components/dossier";
@@ -14,6 +15,7 @@ export default function Home() {
       <Navbar />
       <main className="flex-1">
         <Hero />
+        <AboutMe />
         <Projects />
         <StackingCardsSection />
         <Dossier />
