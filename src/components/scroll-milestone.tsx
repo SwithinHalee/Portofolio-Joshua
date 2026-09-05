@@ -10,256 +10,6 @@ interface MilestoneItem {
   fullLabel: string;
 }
 
-interface MilestoneContentProps {
-  mode: "light-bg" | "dark-bg";
-  activeId: string;
-  currentIdx: number;
-  milestoneProgress: number;
-  hoveredId: string | null;
-  setHoveredId?: (id: string | null) => void;
-  scrollTo?: (id: string) => void;
-  percentage: number;
-  listRef?: React.RefObject<HTMLDivElement | null>;
-  dotRefs?: React.MutableRefObject<(HTMLDivElement | null)[]>;
-  trackMetrics: { top: number; height: number };
-  renderTooltips?: boolean;
-}
-
-function MilestoneContent({
-  mode,
-  activeId,
-  currentIdx,
-  milestoneProgress,
-  hoveredId,
-  setHoveredId,
-  scrollTo,
-  percentage,
-  listRef,
-  dotRefs,
-  trackMetrics,
-  renderTooltips = true,
-}: MilestoneContentProps) {
-  const isDark = mode === "dark-bg";
-
-  return (
-    <div className="flex flex-col items-start group">
-      {/* Top Rail Header */}
-      <div className="flex items-center gap-2 pb-2 mb-3 font-mono text-[10px] uppercase tracking-wider">
-        <span className="relative flex h-1.5 w-1.5">
-          <span
-            className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${
-              isDark ? "bg-[#4ADE80]" : "bg-[#346538]"
-            }`}
-          />
-          <span
-            className={`relative inline-flex rounded-full h-1.5 w-1.5 ${
-              isDark ? "bg-[#4ADE80]" : "bg-[#346538]"
-            }`}
-          />
-        </span>
-        <span className={`font-semibold ${isDark ? "text-white" : "text-[#111111]"}`}>
-          DOSSIER RAIL
-        </span>
-        <span className={isDark ? "text-[#444444]" : "text-[#CCCCCC]"}>•</span>
-        <span className={`tabular-nums text-[10px] font-mono ${isDark ? "text-[#AAAAAA]" : "text-[#888888]"}`}>
-          {MILESTONES[currentIdx]?.num}/08
-        </span>
-      </div>
-
-      {/* Milestone Nodes Track & Continuous Fill Line */}
-      <div ref={listRef} className="relative py-1">
-        {/* Background Static Hairline Track */}
-        <div
-          className={`absolute left-2.5 -translate-x-1/2 w-[1.5px] rounded-full z-0 pointer-events-none ${
-            isDark ? "bg-[#282828]" : "bg-[#EAEAEA]"
-          }`}
-          style={{
-            top: `${trackMetrics.top}px`,
-            height: `${trackMetrics.height}px`,
-          }}
-        />
-
-        {/* Dynamic Active Fill Track */}
-        <div
-          className={`absolute left-2.5 -translate-x-1/2 w-[1.5px] rounded-full z-0 pointer-events-none transition-[height] duration-75 ease-out ${
-            isDark ? "bg-white" : "bg-[#111111]"
-          }`}
-          style={{
-            top: `${trackMetrics.top}px`,
-            height: `${milestoneProgress * trackMetrics.height}px`,
-          }}
-        />
-
-        {/* List of Milestones */}
-        <div className="flex flex-col space-y-6 2xl:space-y-7 relative z-10">
-          {MILESTONES.map((item, idx) => {
-            const isActive = item.id === activeId;
-            const dotThreshold = idx / (MILESTONES.length - 1) - 0.005;
-            const isPassed = milestoneProgress >= dotThreshold || idx <= currentIdx;
-            const isHovered = hoveredId === item.id;
-
-            return (
-              <div
-                key={item.id}
-                className="relative flex items-center"
-                onMouseEnter={() => setHoveredId?.(item.id)}
-                onMouseLeave={() => setHoveredId?.(null)}
-              >
-                <button
-                  type="button"
-                  onClick={() => scrollTo?.(item.id)}
-                  tabIndex={isDark ? -1 : 0}
-                  className={`group/btn flex items-center gap-3 text-left focus:outline-none focus-visible:ring-1 ${
-                    isDark ? "focus-visible:ring-white" : "focus-visible:ring-[#111111]"
-                  } rounded py-0.5`}
-                  aria-label={`Scroll to ${item.fullLabel}`}
-                >
-                  {/* Node Bullet / Marker */}
-                  <div
-                    ref={(el) => {
-                      if (dotRefs) dotRefs.current[idx] = el;
-                    }}
-                    className="relative flex items-center justify-center w-5 h-5 flex-shrink-0"
-                  >
-                    <div
-                      className={`rounded-full transition-all duration-150 ease-out z-10 flex items-center justify-center ${
-                        isActive
-                          ? isDark
-                            ? "w-3.5 h-3.5 bg-white ring-2 ring-[#4ADE80]/50 shadow-[0_0_12px_rgba(74,222,128,0.35)] scale-100"
-                            : "w-3.5 h-3.5 bg-[#111111] ring-2 ring-[#346538]/40 shadow-sm scale-100"
-                          : isPassed
-                          ? isDark
-                            ? "w-2.5 h-2.5 bg-white"
-                            : "w-2.5 h-2.5 bg-[#111111]"
-                          : isDark
-                          ? "w-2.5 h-2.5 border border-[#444444] bg-[#161616] group-hover/btn:border-white"
-                          : "w-2.5 h-2.5 border border-[#CCCCCC] bg-[#FFFFFF] group-hover/btn:border-[#111111]"
-                      }`}
-                    >
-                      {isActive && (
-                        <span
-                          className={`w-1 h-1 rounded-full block ${
-                            isDark ? "bg-[#111111]" : "bg-white"
-                          }`}
-                        />
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Number Tag */}
-                  <span
-                    className={`font-mono text-[11px] tabular-nums tracking-wider ${
-                      isActive
-                        ? isDark
-                          ? "font-bold text-white"
-                          : "font-bold text-[#111111]"
-                        : isPassed
-                        ? isDark
-                          ? "text-[#D1D5DB] font-medium"
-                          : "text-[#444444] font-medium"
-                        : isDark
-                        ? "text-[#666666]"
-                        : "text-[#999999]"
-                    }`}
-                  >
-                    {item.num}
-                  </span>
-
-                  {/* Compact Label */}
-                  <span
-                    className={`font-mono text-[11px] tracking-tight ${
-                      isActive
-                        ? isDark
-                          ? "text-white font-semibold"
-                          : "text-[#111111] font-semibold"
-                        : isPassed
-                        ? isDark
-                          ? "text-[#9CA3AF]"
-                          : "text-[#666666]"
-                        : isDark
-                        ? "text-[#555555]"
-                        : "text-[#AAAAAA]"
-                    }`}
-                  >
-                    {item.shortLabel}
-                  </span>
-                </button>
-
-                {/* Floating Tooltip Pill (Only rendered on base layer) */}
-                {renderTooltips && isHovered && (
-                  <motion.div
-                    initial={{ opacity: 0, x: -6 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: -6 }}
-                    transition={{ duration: 0.15 }}
-                    className="absolute left-full ml-3 px-2.5 py-1 rounded-[4px] bg-[#111111] text-white font-mono text-[10px] uppercase tracking-wider whitespace-nowrap z-50 pointer-events-none shadow-md border border-[#333333]"
-                  >
-                    <span>
-                      {item.num} // {item.fullLabel}
-                    </span>
-                  </motion.div>
-                )}
-              </div>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* Bottom Live Digital Meter */}
-      <div className="mt-3 pt-2 flex items-center gap-2 font-mono text-[10px]">
-        <span className={`uppercase ${isDark ? "text-[#777777]" : "text-[#888888]"}`}>
-          PROGRESS
-        </span>
-        <span className={`font-semibold tabular-nums ${isDark ? "text-white" : "text-[#111111]"}`}>
-          {percentage}%
-        </span>
-      </div>
-    </div>
-  );
-}
-
-interface MobileContentProps {
-  mode: "light-bg" | "dark-bg";
-  currentIdx: number;
-  percentage: number;
-  onClick?: () => void;
-}
-
-function MobileContent({
-  mode,
-  currentIdx,
-  percentage,
-  onClick,
-}: MobileContentProps) {
-  const isDark = mode === "dark-bg";
-
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      tabIndex={isDark ? -1 : 0}
-      className={`flex items-center gap-2 font-mono text-[10px] px-3 py-1.5 rounded-full backdrop-blur-md transition-transform active:scale-95 ${
-        isDark
-          ? "bg-[#0E0E0E]/90 border border-[#333333] text-white shadow-lg"
-          : "bg-white/90 border border-[#EAEAEA] text-[#111111] shadow-sm"
-      }`}
-    >
-      <div
-        className={`w-1.5 h-1.5 rounded-full animate-pulse ${
-          isDark ? "bg-[#4ADE80]" : "bg-[#346538]"
-        }`}
-      />
-      <span className="font-semibold">
-        {MILESTONES[currentIdx]?.num} {MILESTONES[currentIdx]?.shortLabel}
-      </span>
-      <span className={isDark ? "text-[#555555]" : "text-[#CCCCCC]"}>•</span>
-      <span className={`tabular-nums ${isDark ? "text-[#AAAAAA]" : "text-[#787774]"}`}>
-        {percentage}%
-      </span>
-    </button>
-  );
-}
-
 const MILESTONES: MilestoneItem[] = [
   { id: "hero", num: "00", shortLabel: "INTRO", fullLabel: "Overview & Status" },
   { id: "about", num: "01", shortLabel: "BIO", fullLabel: "Biographic Dossier" },
@@ -277,19 +27,11 @@ export function ScrollMilestone() {
   const [milestoneProgress, setMilestoneProgress] = useState<number>(0);
   const [hoveredId, setHoveredId] = useState<string | null>(null);
 
-  // Sub-pixel clip path states for real-time boundary splitting
-  const [clipPath, setClipPath] = useState<string>("inset(0 0 100% 0)");
-  const [isClipVisible, setIsClipVisible] = useState<boolean>(false);
-  const [mobileClipPath, setMobileClipPath] = useState<string>("inset(0 0 100% 0)");
-  const [isMobileClipVisible, setIsMobileClipVisible] = useState<boolean>(false);
-
   const [trackMetrics, setTrackMetrics] = useState<{ top: number; height: number }>({
     top: 10,
     height: 320,
   });
 
-  const railRef = useRef<HTMLElement>(null);
-  const mobileRef = useRef<HTMLElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
   const dotRefs = useRef<(HTMLDivElement | null)[]>([]);
 
@@ -318,7 +60,7 @@ export function ScrollMilestone() {
     return () => window.removeEventListener("resize", updateTrackMetrics);
   }, [updateTrackMetrics]);
 
-  // Section-synchronized scroll tracking & real-time split clipping across boundaries
+  // Section-synchronized scroll tracking
   useEffect(() => {
     let ticking = false;
 
@@ -330,70 +72,7 @@ export function ScrollMilestone() {
           const totalDocH = document.documentElement.scrollHeight;
           const maxScroll = totalDocH - viewportH;
 
-          // 1. Calculate Real-Time Sub-Pixel Clip Paths for Dark Section Overlaps
-          const darkSectionIds = ["about", "dossier"];
-
-          // Desktop Rail Sub-Pixel Clip
-          if (railRef.current) {
-            const railRect = railRef.current.getBoundingClientRect();
-            let matched = false;
-
-            for (const darkId of darkSectionIds) {
-              const el = document.getElementById(darkId);
-              if (el) {
-                const secRect = el.getBoundingClientRect();
-                const overlapTop = Math.max(railRect.top, secRect.top);
-                const overlapBottom = Math.min(railRect.bottom, secRect.bottom);
-
-                if (overlapBottom > overlapTop) {
-                  const clipTop = Math.max(0, overlapTop - railRect.top);
-                  const clipBottom = Math.min(railRect.height, overlapBottom - railRect.top);
-                  const bottomInset = Math.max(0, railRect.height - clipBottom);
-
-                  setClipPath(`inset(${clipTop.toFixed(1)}px 0px ${bottomInset.toFixed(1)}px 0px)`);
-                  setIsClipVisible(true);
-                  matched = true;
-                  break;
-                }
-              }
-            }
-
-            if (!matched) {
-              setIsClipVisible(false);
-            }
-          }
-
-          // Mobile Floating Indicator Sub-Pixel Clip
-          if (mobileRef.current) {
-            const mRect = mobileRef.current.getBoundingClientRect();
-            let mMatched = false;
-
-            for (const darkId of darkSectionIds) {
-              const el = document.getElementById(darkId);
-              if (el) {
-                const secRect = el.getBoundingClientRect();
-                const overlapTop = Math.max(mRect.top, secRect.top);
-                const overlapBottom = Math.min(mRect.bottom, secRect.bottom);
-
-                if (overlapBottom > overlapTop) {
-                  const clipTop = Math.max(0, overlapTop - mRect.top);
-                  const clipBottom = Math.min(mRect.height, overlapBottom - mRect.top);
-                  const bottomInset = Math.max(0, mRect.height - clipBottom);
-
-                  setMobileClipPath(`inset(${clipTop.toFixed(1)}px 0px ${bottomInset.toFixed(1)}px 0px)`);
-                  setIsMobileClipVisible(true);
-                  mMatched = true;
-                  break;
-                }
-              }
-            }
-
-            if (!mMatched) {
-              setIsMobileClipVisible(false);
-            }
-          }
-
-          // 2. Section Active ID and Progress Tracking
+          // 1. If at top edge, snap strictly to 0
           if (scrollY <= 5) {
             setActiveId(MILESTONES[0].id);
             setMilestoneProgress(0);
@@ -401,6 +80,7 @@ export function ScrollMilestone() {
             return;
           }
 
+          // 2. If at bottom edge of document, snap strictly to 1
           if (scrollY + viewportH >= totalDocH - 25) {
             setActiveId(MILESTONES[MILESTONES.length - 1].id);
             setMilestoneProgress(1);
@@ -408,6 +88,7 @@ export function ScrollMilestone() {
             return;
           }
 
+          // 3. Compute absolute top position of each section
           const sectionTops: number[] = [];
           for (let i = 0; i < MILESTONES.length; i++) {
             const el = document.getElementById(MILESTONES[i].id);
@@ -422,6 +103,7 @@ export function ScrollMilestone() {
           const numSegments = MILESTONES.length - 1;
           const aboutSectionTop = sectionTops[1] || viewportH;
 
+          // Special smooth handling for Section 00 (Hero to About transition)
           if (scrollY < aboutSectionTop - 80) {
             setActiveId(MILESTONES[0].id);
             const heroProgress = Math.min(
@@ -433,6 +115,7 @@ export function ScrollMilestone() {
             return;
           }
 
+          // Standard smooth section tracking for Sections 01 to 08
           const navOffset = 85;
           const probeY = scrollY + navOffset;
 
@@ -492,80 +175,165 @@ export function ScrollMilestone() {
 
   return (
     <>
-      {/* 1. Desktop & Widescreen Milestone Rail */}
+      {/* 1. Desktop & Widescreen Milestone Rail (Native Real-Time Pixel-Level Difference Blending) */}
       <nav
-        ref={railRef}
         aria-label="Document Section Milestones"
-        className="fixed left-4 2xl:left-8 top-1/2 -translate-y-1/2 z-40 hidden xl:flex flex-col items-start select-none py-2"
+        className="fixed left-4 2xl:left-8 top-1/2 -translate-y-1/2 z-40 hidden xl:flex flex-col items-start select-none py-2 mix-blend-difference pointer-events-auto"
       >
-        {/* Base Layer: Dark typography & markers (Optimized for light canvas) */}
-        <MilestoneContent
-          mode="light-bg"
-          activeId={activeId}
-          currentIdx={currentIdx}
-          milestoneProgress={milestoneProgress}
-          hoveredId={hoveredId}
-          setHoveredId={setHoveredId}
-          scrollTo={scrollTo}
-          percentage={percentage}
-          listRef={listRef}
-          dotRefs={dotRefs}
-          trackMetrics={trackMetrics}
-          renderTooltips={true}
-        />
-
-        {/* Overlay Layer: White typography & markers (Clipped sub-pixel in real time over dark sections) */}
-        {isClipVisible && (
-          <div
-            aria-hidden="true"
-            className="absolute inset-0 pointer-events-none select-none z-10 overflow-hidden"
-            style={{ clipPath }}
-          >
-            <MilestoneContent
-              mode="dark-bg"
-              activeId={activeId}
-              currentIdx={currentIdx}
-              milestoneProgress={milestoneProgress}
-              hoveredId={hoveredId}
-              percentage={percentage}
-              trackMetrics={trackMetrics}
-              renderTooltips={false}
-            />
+        <div className="flex flex-col items-start group">
+          {/* Top Rail Header */}
+          <div className="flex items-center gap-2 pb-2 mb-3 font-mono text-[10px] uppercase tracking-wider text-white">
+            <span className="relative flex h-1.5 w-1.5">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75" />
+              <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-white" />
+            </span>
+            <span className="font-semibold text-white">DOSSIER RAIL</span>
+            <span className="text-white/40">•</span>
+            <span className="tabular-nums text-[10px] font-mono text-white/70">
+              {MILESTONES[currentIdx]?.num}/08
+            </span>
           </div>
-        )}
+
+          {/* Milestone Nodes Track & Continuous Fill Line */}
+          <div ref={listRef} className="relative py-1">
+            {/* Background Static Hairline Track */}
+            <div
+              className="absolute left-2.5 -translate-x-1/2 w-[1.5px] bg-white/30 rounded-full z-0 pointer-events-none"
+              style={{
+                top: `${trackMetrics.top}px`,
+                height: `${trackMetrics.height}px`,
+              }}
+            />
+
+            {/* Dynamic Active Fill Track */}
+            <div
+              className="absolute left-2.5 -translate-x-1/2 w-[1.5px] bg-white rounded-full z-0 pointer-events-none transition-[height] duration-75 ease-out"
+              style={{
+                top: `${trackMetrics.top}px`,
+                height: `${milestoneProgress * trackMetrics.height}px`,
+              }}
+            />
+
+            {/* List of Milestones */}
+            <div className="flex flex-col space-y-6 2xl:space-y-7 relative z-10">
+              {MILESTONES.map((item, idx) => {
+                const isActive = item.id === activeId;
+                const dotThreshold = idx / (MILESTONES.length - 1) - 0.005;
+                const isPassed = milestoneProgress >= dotThreshold || idx <= currentIdx;
+                const isHovered = hoveredId === item.id;
+
+                return (
+                  <div
+                    key={item.id}
+                    className="relative flex items-center"
+                    onMouseEnter={() => setHoveredId(item.id)}
+                    onMouseLeave={() => setHoveredId(null)}
+                  >
+                    <button
+                      type="button"
+                      onClick={() => scrollTo(item.id)}
+                      className="group/btn flex items-center gap-3 text-left focus:outline-none focus-visible:ring-1 focus-visible:ring-white rounded py-0.5"
+                      aria-label={`Scroll to ${item.fullLabel}`}
+                    >
+                      {/* Node Bullet / Marker */}
+                      <div
+                        ref={(el) => {
+                          dotRefs.current[idx] = el;
+                        }}
+                        className="relative flex items-center justify-center w-5 h-5 flex-shrink-0"
+                      >
+                        <div
+                          className={`rounded-full transition-all duration-150 ease-out z-10 flex items-center justify-center ${
+                            isActive
+                              ? "w-3.5 h-3.5 bg-white ring-2 ring-white/50 scale-100 shadow-[0_0_10px_rgba(255,255,255,0.4)]"
+                              : isPassed
+                              ? "w-2.5 h-2.5 bg-white"
+                              : "w-2.5 h-2.5 border border-white/40 bg-transparent group-hover/btn:border-white"
+                          }`}
+                        >
+                          {isActive && (
+                            <span className="w-1.5 h-1.5 rounded-full bg-black block" />
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Number Tag */}
+                      <span
+                        className={`font-mono text-[11px] tabular-nums tracking-wider ${
+                          isActive
+                            ? "font-bold text-white"
+                            : isPassed
+                            ? "text-white/85 font-medium"
+                            : "text-white/50"
+                        }`}
+                      >
+                        {item.num}
+                      </span>
+
+                      {/* Compact Label */}
+                      <span
+                        className={`font-mono text-[11px] tracking-tight ${
+                          isActive
+                            ? "text-white font-semibold"
+                            : isPassed
+                            ? "text-white/80"
+                            : "text-white/45"
+                        }`}
+                      >
+                        {item.shortLabel}
+                      </span>
+                    </button>
+
+                    {/* Floating Tooltip Pill */}
+                    {isHovered && (
+                      <motion.div
+                        initial={{ opacity: 0, x: -6 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={{ opacity: 0, x: -6 }}
+                        transition={{ duration: 0.15 }}
+                        className="absolute left-full ml-3 px-2.5 py-1 rounded-[4px] bg-white text-black font-mono text-[10px] uppercase tracking-wider whitespace-nowrap z-50 pointer-events-none shadow-md border border-white/30"
+                      >
+                        <span>
+                          {item.num} // {item.fullLabel}
+                        </span>
+                      </motion.div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Bottom Live Digital Meter */}
+          <div className="mt-3 pt-2 flex items-center gap-2 font-mono text-[10px] text-white">
+            <span className="uppercase text-white/60">PROGRESS</span>
+            <span className="font-semibold tabular-nums text-white">
+              {percentage}%
+            </span>
+          </div>
+        </div>
       </nav>
 
       {/* 2. Mobile & Tablet Minimal Floating Status */}
       <aside
-        ref={mobileRef}
         aria-label="Mobile reading progress"
-        className="fixed bottom-4 left-4 z-40 xl:hidden select-none"
+        className="fixed bottom-4 left-4 z-40 xl:hidden select-none mix-blend-difference"
       >
-        {/* Base Layer */}
-        <MobileContent
-          mode="light-bg"
-          currentIdx={currentIdx}
-          percentage={percentage}
+        <button
+          type="button"
           onClick={() => {
             const nextIdx = (currentIdx + 1) % MILESTONES.length;
             scrollTo(MILESTONES[nextIdx].id);
           }}
-        />
-
-        {/* Overlay Layer (Real-time sub-pixel clipped over dark sections) */}
-        {isMobileClipVisible && (
-          <div
-            aria-hidden="true"
-            className="absolute inset-0 pointer-events-none select-none z-10 overflow-hidden"
-            style={{ clipPath: mobileClipPath }}
-          >
-            <MobileContent
-              mode="dark-bg"
-              currentIdx={currentIdx}
-              percentage={percentage}
-            />
-          </div>
-        )}
+          className="flex items-center gap-2 font-mono text-[10px] px-3 py-1.5 rounded-full border border-white/40 text-white backdrop-blur-md active:scale-95 transition-transform"
+        >
+          <div className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
+          <span className="font-semibold text-white">
+            {MILESTONES[currentIdx]?.num} {MILESTONES[currentIdx]?.shortLabel}
+          </span>
+          <span className="text-white/40">•</span>
+          <span className="tabular-nums text-white/70">{percentage}%</span>
+        </button>
       </aside>
     </>
   );
