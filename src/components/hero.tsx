@@ -26,7 +26,7 @@ export function Hero() {
   };
 
   return (
-    <section className="min-h-[calc(100dvh-57px)] flex flex-col justify-between border-b border-[#EAEAEA] relative overflow-hidden py-6 sm:py-8 md:py-10">
+    <section id="hero" className="min-h-[calc(100dvh-57px)] flex flex-col justify-between border-b border-[#EAEAEA] relative overflow-hidden py-6 sm:py-8 md:py-10">
       {/* Subtle architectural ambient radial spot (non-AI, ultra subtle) */}
       <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-radial from-[#F7F6F3]/80 to-transparent pointer-events-none -z-10 blur-3xl opacity-50" />
 

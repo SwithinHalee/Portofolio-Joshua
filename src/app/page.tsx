@@ -8,11 +8,13 @@ import { Principles } from "@/components/principles";
 import { Workspace } from "@/components/workspace";
 import { Experience } from "@/components/experience";
 import { Colophon } from "@/components/colophon";
+import { ScrollMilestone } from "@/components/scroll-milestone";
 
 export default function Home() {
   return (
     <div className="flex min-h-screen flex-col bg-[#FFFFFF] text-[#111111]">
       <Navbar />
+      <ScrollMilestone />
       <main className="flex-1">
         <Hero />
         <AboutMe />
