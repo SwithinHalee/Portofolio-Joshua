@@ -189,50 +189,75 @@ function ProjectCard({ project, index }: { project: ProjectItem; index: number }
           {/* Expandable Architecture Blueprint Drawer */}
           <div className="mb-5 border border-[#EAEAEA] rounded-[6px] bg-[#FBFBFA] overflow-hidden">
             <button
+              type="button"
               onClick={() => setBlueprintExpanded(!blueprintExpanded)}
-              className="w-full flex items-center justify-between px-3.5 py-2 text-left text-xs font-mono text-[#666666] hover:text-[#111111] transition-colors"
+              className={`w-full flex items-center justify-between px-3.5 py-2.5 text-left text-xs font-mono transition-colors duration-150 ${
+                blueprintExpanded
+                  ? "bg-[#F3F3F0] text-[#111111]"
+                  : "text-[#666666] hover:text-[#111111] hover:bg-[#F5F5F2]"
+              }`}
             >
               <div className="flex items-center gap-2">
-                <SlidersHorizontal size={13} weight="bold" className="text-[#888888]" />
-                <span className="font-medium text-[#111111]">System Architecture Blueprint</span>
+                <SlidersHorizontal
+                  size={13}
+                  weight={blueprintExpanded ? "fill" : "bold"}
+                  className={blueprintExpanded ? "text-[#111111]" : "text-[#888888]"}
+                />
+                <span className="font-medium">System Architecture Blueprint</span>
               </div>
               <motion.div
                 animate={{ rotate: blueprintExpanded ? 180 : 0 }}
-                transition={{ duration: 0.2 }}
+                transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
               >
                 <CaretDown size={12} weight="bold" />
               </motion.div>
             </button>
 
-            <AnimatePresence>
+            <AnimatePresence initial={false}>
               {blueprintExpanded && (
                 <motion.div
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: "auto" }}
-                  exit={{ opacity: 0, height: 0 }}
-                  transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-                  className="border-t border-[#EAEAEA] bg-white p-4 font-mono text-xs space-y-3"
+                  key="blueprint-content"
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{
+                    height: "auto",
+                    opacity: 1,
+                    transition: {
+                      height: { duration: 0.32, ease: [0.16, 1, 0.3, 1] },
+                      opacity: { duration: 0.25, delay: 0.08, ease: "easeOut" },
+                    },
+                  }}
+                  exit={{
+                    height: 0,
+                    opacity: 0,
+                    transition: {
+                      height: { duration: 0.26, ease: [0.16, 1, 0.3, 1] },
+                      opacity: { duration: 0.16, ease: "easeIn" },
+                    },
+                  }}
+                  className="overflow-hidden"
                 >
-                  <div>
-                    <span className="text-[10px] uppercase text-[#888888] block mb-1">
-                      Problem Context
-                    </span>
-                    <p className="text-[11px] text-[#444444] font-sans leading-relaxed">
-                      {project.caseStudy.challenge}
-                    </p>
-                  </div>
+                  <div className="border-t border-[#EAEAEA] bg-white p-4 font-mono text-xs space-y-3.5">
+                    <div>
+                      <span className="text-[10px] uppercase text-[#888888] block mb-1 font-medium">
+                        Problem Context
+                      </span>
+                      <p className="text-[11px] text-[#444444] font-sans leading-relaxed">
+                        {project.caseStudy.challenge}
+                      </p>
+                    </div>
 
-                  <div>
-                    <span className="text-[10px] uppercase text-[#888888] block mb-1">
-                      Technical Highlights
-                    </span>
-                    <div className="space-y-1">
-                      {project.technicalHighlights.map((th, i) => (
-                        <div key={i} className="flex items-start gap-1.5 text-[11px] text-[#555555]">
-                          <span className="text-[#346538] font-bold">›</span>
-                          <span>{th}</span>
-                        </div>
-                      ))}
+                    <div>
+                      <span className="text-[10px] uppercase text-[#888888] block mb-1 font-medium">
+                        Technical Highlights
+                      </span>
+                      <div className="space-y-1.5">
+                        {project.technicalHighlights.map((th, i) => (
+                          <div key={i} className="flex items-start gap-1.5 text-[11px] text-[#555555]">
+                            <span className="text-[#346538] font-bold">›</span>
+                            <span>{th}</span>
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   </div>
                 </motion.div>
