@@ -26,6 +26,8 @@ export function ScrollMilestone() {
   const [activeId, setActiveId] = useState<string>("hero");
   const [milestoneProgress, setMilestoneProgress] = useState<number>(0);
   const [hoveredId, setHoveredId] = useState<string | null>(null);
+  const [isDark, setIsDark] = useState<boolean>(false);
+  const [isMobileDark, setIsMobileDark] = useState<boolean>(false);
   const [trackMetrics, setTrackMetrics] = useState<{ top: number; height: number }>({
     top: 10,
     height: 320,
@@ -60,7 +62,7 @@ export function ScrollMilestone() {
     return () => window.removeEventListener("resize", updateTrackMetrics);
   }, [updateTrackMetrics]);
 
-  // Section-synchronized scroll tracking
+  // Section-synchronized scroll tracking & dark section detection
   useEffect(() => {
     let ticking = false;
 
@@ -71,6 +73,35 @@ export function ScrollMilestone() {
           const viewportH = window.innerHeight;
           const totalDocH = document.documentElement.scrollHeight;
           const maxScroll = totalDocH - viewportH;
+
+          // Detect whether milestone rail overlaps a dark architectural section (e.g. about, dossier)
+          const railCenterY = viewportH / 2;
+          const darkSectionIds = ["about", "dossier"];
+          let overDark = false;
+          for (const darkId of darkSectionIds) {
+            const el = document.getElementById(darkId);
+            if (el) {
+              const rect = el.getBoundingClientRect();
+              if (rect.top <= railCenterY + 160 && rect.bottom >= railCenterY - 160) {
+                overDark = true;
+                break;
+              }
+            }
+          }
+          const mobileProbeY = viewportH - 40;
+          let mobileOverDark = false;
+          for (const darkId of darkSectionIds) {
+            const el = document.getElementById(darkId);
+            if (el) {
+              const rect = el.getBoundingClientRect();
+              if (rect.top <= mobileProbeY && rect.bottom >= mobileProbeY) {
+                mobileOverDark = true;
+                break;
+              }
+            }
+          }
+          setIsDark(overDark);
+          setIsMobileDark(mobileOverDark);
 
           // 1. If at top edge, snap strictly to 0
           if (scrollY <= 5) {
@@ -183,14 +214,32 @@ export function ScrollMilestone() {
       >
         <div className="flex flex-col items-start group">
           {/* Top Rail Header */}
-          <div className="flex items-center gap-2 pb-2 mb-3 font-mono text-[10px] uppercase tracking-wider text-[#787774]">
+          <div className="flex items-center gap-2 pb-2 mb-3 font-mono text-[10px] uppercase tracking-wider transition-colors duration-200">
             <span className="relative flex h-1.5 w-1.5">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#346538] opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-[#346538]"></span>
+              <span
+                className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${
+                  isDark ? "bg-[#4ADE80]" : "bg-[#346538]"
+                }`}
+              />
+              <span
+                className={`relative inline-flex rounded-full h-1.5 w-1.5 ${
+                  isDark ? "bg-[#4ADE80]" : "bg-[#346538]"
+                }`}
+              />
             </span>
-            <span className="font-semibold text-[#111111]">DOSSIER RAIL</span>
-            <span className="text-[#CCCCCC]">•</span>
-            <span className="tabular-nums text-[10px] font-mono text-[#888888]">
+            <span
+              className={`font-semibold transition-colors duration-200 ${
+                isDark ? "text-white" : "text-[#111111]"
+              }`}
+            >
+              DOSSIER RAIL
+            </span>
+            <span className={isDark ? "text-[#444444]" : "text-[#CCCCCC]"}>•</span>
+            <span
+              className={`tabular-nums text-[10px] font-mono transition-colors duration-200 ${
+                isDark ? "text-[#AAAAAA]" : "text-[#888888]"
+              }`}
+            >
               {MILESTONES[currentIdx]?.num}/08
             </span>
           </div>
@@ -199,7 +248,9 @@ export function ScrollMilestone() {
           <div ref={listRef} className="relative py-1">
             {/* Background Static Hairline Track (Mathematically centered on dot axis) */}
             <div
-              className="absolute left-2.5 -translate-x-1/2 w-[1.5px] bg-[#EAEAEA] rounded-full z-0 pointer-events-none"
+              className={`absolute left-2.5 -translate-x-1/2 w-[1.5px] rounded-full z-0 pointer-events-none transition-colors duration-200 ${
+                isDark ? "bg-[#282828]" : "bg-[#EAEAEA]"
+              }`}
               style={{
                 top: `${trackMetrics.top}px`,
                 height: `${trackMetrics.height}px`,
@@ -208,7 +259,9 @@ export function ScrollMilestone() {
 
             {/* Dynamic Active Fill Track (Strictly synchronized with dot positions) */}
             <div
-              className="absolute left-2.5 -translate-x-1/2 w-[1.5px] bg-[#111111] rounded-full z-0 pointer-events-none transition-[height] duration-100 ease-out"
+              className={`absolute left-2.5 -translate-x-1/2 w-[1.5px] rounded-full z-0 pointer-events-none transition-[height,background-color] duration-100 ease-out ${
+                isDark ? "bg-white" : "bg-[#111111]"
+              }`}
               style={{
                 top: `${trackMetrics.top}px`,
                 height: `${milestoneProgress * trackMetrics.height}px`,
@@ -234,7 +287,9 @@ export function ScrollMilestone() {
                     <button
                       type="button"
                       onClick={() => scrollTo(item.id)}
-                      className="group/btn flex items-center gap-3 text-left focus:outline-none focus-visible:ring-1 focus-visible:ring-[#111111] rounded py-0.5"
+                      className={`group/btn flex items-center gap-3 text-left focus:outline-none focus-visible:ring-1 ${
+                        isDark ? "focus-visible:ring-white" : "focus-visible:ring-[#111111]"
+                      } rounded py-0.5`}
                       aria-label={`Scroll to ${item.fullLabel}`}
                     >
                       {/* Node Bullet / Marker (Permanent stable dot, never disappears) */}
@@ -247,25 +302,41 @@ export function ScrollMilestone() {
                         <div
                           className={`rounded-full transition-all duration-200 ease-out z-10 flex items-center justify-center ${
                             isActive
-                              ? "w-3.5 h-3.5 bg-[#111111] ring-2 ring-[#346538]/40 shadow-sm scale-100"
+                              ? isDark
+                                ? "w-3.5 h-3.5 bg-white ring-2 ring-[#4ADE80]/50 shadow-[0_0_12px_rgba(74,222,128,0.35)] scale-100"
+                                : "w-3.5 h-3.5 bg-[#111111] ring-2 ring-[#346538]/40 shadow-sm scale-100"
                               : isPassed
-                              ? "w-2.5 h-2.5 bg-[#111111]"
+                              ? isDark
+                                ? "w-2.5 h-2.5 bg-white"
+                                : "w-2.5 h-2.5 bg-[#111111]"
+                              : isDark
+                              ? "w-2.5 h-2.5 border border-[#444444] bg-[#161616] group-hover/btn:border-white"
                               : "w-2.5 h-2.5 border border-[#CCCCCC] bg-[#FFFFFF] group-hover/btn:border-[#111111]"
                           }`}
                         >
                           {isActive && (
-                            <span className="w-1 h-1 rounded-full bg-white block" />
+                            <span
+                              className={`w-1 h-1 rounded-full block ${
+                                isDark ? "bg-[#111111]" : "bg-white"
+                              }`}
+                            />
                           )}
                         </div>
                       </div>
 
                       {/* Number Tag */}
                       <span
-                        className={`font-mono text-[11px] tabular-nums tracking-wider transition-colors duration-150 ${
+                        className={`font-mono text-[11px] tabular-nums tracking-wider transition-colors duration-200 ${
                           isActive
-                            ? "font-bold text-[#111111]"
+                            ? isDark
+                              ? "font-bold text-white"
+                              : "font-bold text-[#111111]"
                             : isPassed
-                            ? "text-[#444444] font-medium"
+                            ? isDark
+                              ? "text-[#D1D5DB] font-medium"
+                              : "text-[#444444] font-medium"
+                            : isDark
+                            ? "text-[#666666]"
                             : "text-[#999999]"
                         }`}
                       >
@@ -274,11 +345,17 @@ export function ScrollMilestone() {
 
                       {/* Compact Label */}
                       <span
-                        className={`font-mono text-[11px] tracking-tight transition-colors duration-150 ${
+                        className={`font-mono text-[11px] tracking-tight transition-colors duration-200 ${
                           isActive
-                            ? "text-[#111111] font-semibold"
+                            ? isDark
+                              ? "text-white font-semibold"
+                              : "text-[#111111] font-semibold"
                             : isPassed
-                            ? "text-[#666666]"
+                            ? isDark
+                              ? "text-[#9CA3AF]"
+                              : "text-[#666666]"
+                            : isDark
+                            ? "text-[#555555]"
                             : "text-[#AAAAAA]"
                         }`}
                       >
@@ -293,7 +370,11 @@ export function ScrollMilestone() {
                         animate={{ opacity: 1, x: 0 }}
                         exit={{ opacity: 0, x: -6 }}
                         transition={{ duration: 0.15 }}
-                        className="absolute left-full ml-3 px-2.5 py-1 rounded-[4px] bg-[#111111] text-white font-mono text-[10px] uppercase tracking-wider whitespace-nowrap z-50 pointer-events-none shadow-md border border-[#333333]"
+                        className={`absolute left-full ml-3 px-2.5 py-1 rounded-[4px] font-mono text-[10px] uppercase tracking-wider whitespace-nowrap z-50 pointer-events-none shadow-md border ${
+                          isDark
+                            ? "bg-[#1C1C1C] text-white border-[#383838]"
+                            : "bg-[#111111] text-white border-[#333333]"
+                        }`}
                       >
                         <span>
                           {item.num} // {item.fullLabel}
@@ -307,9 +388,19 @@ export function ScrollMilestone() {
           </div>
 
           {/* Bottom Live Digital Meter */}
-          <div className="mt-3 pt-2 flex items-center gap-2 font-mono text-[10px] text-[#787774]">
-            <span className="uppercase text-[#888888]">PROGRESS</span>
-            <span className="font-semibold text-[#111111] tabular-nums">
+          <div className="mt-3 pt-2 flex items-center gap-2 font-mono text-[10px] transition-colors duration-200">
+            <span
+              className={`uppercase transition-colors duration-200 ${
+                isDark ? "text-[#777777]" : "text-[#888888]"
+              }`}
+            >
+              PROGRESS
+            </span>
+            <span
+              className={`font-semibold tabular-nums transition-colors duration-200 ${
+                isDark ? "text-white" : "text-[#111111]"
+              }`}
+            >
               {percentage}%
             </span>
           </div>
@@ -327,14 +418,28 @@ export function ScrollMilestone() {
             const nextIdx = (currentIdx + 1) % MILESTONES.length;
             scrollTo(MILESTONES[nextIdx].id);
           }}
-          className="flex items-center gap-2 font-mono text-[10px] text-[#111111] active:scale-95 transition-transform"
+          className={`flex items-center gap-2 font-mono text-[10px] px-3 py-1.5 rounded-full backdrop-blur-md transition-all active:scale-95 ${
+            isMobileDark
+              ? "bg-black/80 border border-[#333333] text-white shadow-lg"
+              : "bg-white/80 border border-[#EAEAEA] text-[#111111] shadow-sm"
+          }`}
         >
-          <div className="w-1.5 h-1.5 rounded-full bg-[#346538] animate-pulse" />
+          <div
+            className={`w-1.5 h-1.5 rounded-full animate-pulse ${
+              isMobileDark ? "bg-[#4ADE80]" : "bg-[#346538]"
+            }`}
+          />
           <span className="font-semibold">
             {MILESTONES[currentIdx]?.num} {MILESTONES[currentIdx]?.shortLabel}
           </span>
-          <span className="text-[#CCCCCC]">•</span>
-          <span className="tabular-nums text-[#787774]">{percentage}%</span>
+          <span className={isMobileDark ? "text-[#555555]" : "text-[#CCCCCC]"}>•</span>
+          <span
+            className={`tabular-nums ${
+              isMobileDark ? "text-[#AAAAAA]" : "text-[#787774]"
+            }`}
+          >
+            {percentage}%
+          </span>
         </button>
       </aside>
     </>
