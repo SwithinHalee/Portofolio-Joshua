@@ -16,13 +16,21 @@ type DossierLens = "philosophy" | "trajectory" | "terminal";
 const LENSES_CYCLE: { id: DossierLens; duration: number }[] = [
   { id: "philosophy", duration: 7500 },
   { id: "trajectory", duration: 7500 },
-  { id: "terminal", duration: 11000 },
+  { id: "terminal", duration: 24000 },
+];
+
+const TERMINAL_COMMANDS = [
+  "whoami",
+  "cat carbonethics.md",
+  "cat stack.json",
+  "cat contact.sh",
 ];
 
 export function AboutMe() {
   const [activeLens, setActiveLens] = useState<DossierLens>("philosophy");
   const [isLensAutoPaused, setIsLensAutoPaused] = useState<boolean>(false);
   const [activeTerminalCmd, setActiveTerminalCmd] = useState<string>("whoami");
+  const [isTerminalAutoPaused, setIsTerminalAutoPaused] = useState<boolean>(false);
 
   // Auto-switch lens on timer with smart pause on hover
   useEffect(() => {
@@ -134,6 +142,22 @@ echo "Location: Tangerang / Jakarta / Remote"`,
       clearInterval(cmdInterval);
     };
   }, [activeTerminalCmd, activeLens]);
+
+  // Auto-switch terminal command tabs when on terminal lens
+  useEffect(() => {
+    if (activeLens !== "terminal" || isTerminalAutoPaused || isLensAutoPaused) return;
+    if (isTyping) return;
+
+    const timer = setTimeout(() => {
+      setActiveTerminalCmd((prev) => {
+        const idx = TERMINAL_COMMANDS.indexOf(prev);
+        const nextIdx = (idx + 1) % TERMINAL_COMMANDS.length;
+        return TERMINAL_COMMANDS[nextIdx];
+      });
+    }, 4500);
+
+    return () => clearTimeout(timer);
+  }, [activeLens, activeTerminalCmd, isTyping, isTerminalAutoPaused, isLensAutoPaused]);
 
   return (
     <section id="about" className="py-24 md:py-32 border-b border-[#EAEAEA]">
@@ -507,26 +531,71 @@ echo "Location: Tangerang / Jakarta / Remote"`,
                           <span className="text-[9px] text-[#666666]">CLI TELEMETRY</span>
                         </div>
 
-                        {/* Interactive Command Tabs */}
-                        <div className="border-b border-[#222222] bg-[#161616] px-3 py-1.5 flex flex-wrap gap-1 text-[10px]">
-                          {Object.keys(terminalOutputs).map((cmd) => (
+                        {/* Interactive Command Tabs with Auto-Cycle and Progress Indicator */}
+                        <div
+                          onMouseEnter={() => setIsTerminalAutoPaused(true)}
+                          onMouseLeave={() => setIsTerminalAutoPaused(false)}
+                          className="border-b border-[#222222] bg-[#161616] px-3 py-1.5 flex flex-wrap items-center gap-1.5 text-[10px]"
+                        >
+                          {TERMINAL_COMMANDS.map((cmd) => (
                             <button
                               key={cmd}
                               type="button"
                               onClick={() => setActiveTerminalCmd(cmd)}
-                              className={`px-2 py-0.5 rounded transition-colors ${
+                              className={`px-2 py-0.5 rounded transition-colors relative overflow-hidden ${
                                 activeTerminalCmd === cmd
-                                  ? "bg-[#2E2E2E] text-white font-semibold"
-                                  : "text-[#888888] hover:text-white"
+                                  ? "bg-[#2A2A2A] text-white font-semibold"
+                                  : "text-[#888888] hover:text-white hover:bg-[#202020]"
                               }`}
                             >
-                              $ {cmd}
+                              <span>$ {cmd}</span>
+                              {activeTerminalCmd === cmd && !isTyping && (
+                                <div className="absolute bottom-0 left-0 right-0 h-[1.5px] bg-white/10 overflow-hidden">
+                                  <motion.div
+                                    key={`cmd-timer-${cmd}-${isTerminalAutoPaused || isLensAutoPaused}`}
+                                    initial={{ width: "0%" }}
+                                    animate={{
+                                      width: isTerminalAutoPaused || isLensAutoPaused ? undefined : "100%",
+                                    }}
+                                    transition={{
+                                      duration: isTerminalAutoPaused || isLensAutoPaused ? 0 : 4.5,
+                                      ease: "linear",
+                                    }}
+                                    className="h-full bg-[#27C93F]"
+                                  />
+                                </div>
+                              )}
                             </button>
                           ))}
+
+                          <div className="flex items-center gap-1.5 ml-auto font-mono text-[9px]">
+                            <span
+                              className={`w-1 h-1 rounded-full ${
+                                isTerminalAutoPaused || isLensAutoPaused
+                                  ? "bg-[#666666]"
+                                  : "bg-[#27C93F] animate-pulse"
+                              }`}
+                            />
+                            <span
+                              className={
+                                isTerminalAutoPaused || isLensAutoPaused
+                                  ? "text-[#666666]"
+                                  : "text-[#27C93F]"
+                              }
+                            >
+                              {isTerminalAutoPaused || isLensAutoPaused
+                                ? "PAUSED"
+                                : "AUTO-CYCLE"}
+                            </span>
+                          </div>
                         </div>
 
                         {/* Terminal Screen Body */}
-                        <div className="p-4 font-mono text-[11px] leading-relaxed overflow-x-auto min-h-[240px] bg-[#0E0E0E]">
+                        <div
+                          onMouseEnter={() => setIsTerminalAutoPaused(true)}
+                          onMouseLeave={() => setIsTerminalAutoPaused(false)}
+                          className="p-4 font-mono text-[11px] leading-relaxed overflow-x-auto min-h-[240px] bg-[#0E0E0E]"
+                        >
                           {/* Active Prompt & Typed Command */}
                           <div className="flex items-center gap-1.5 text-[#27C93F] mb-2 text-[10px]">
                             <span>➜</span>
