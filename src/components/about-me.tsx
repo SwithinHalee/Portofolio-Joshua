@@ -13,9 +13,35 @@ import { Reveal } from "@/components/motion-wrapper";
 
 type DossierLens = "philosophy" | "trajectory" | "terminal";
 
+const LENSES_CYCLE: { id: DossierLens; duration: number }[] = [
+  { id: "philosophy", duration: 7500 },
+  { id: "trajectory", duration: 7500 },
+  { id: "terminal", duration: 11000 },
+];
+
 export function AboutMe() {
   const [activeLens, setActiveLens] = useState<DossierLens>("philosophy");
+  const [isLensAutoPaused, setIsLensAutoPaused] = useState<boolean>(false);
   const [activeTerminalCmd, setActiveTerminalCmd] = useState<string>("whoami");
+
+  // Auto-switch lens on timer with smart pause on hover
+  useEffect(() => {
+    if (isLensAutoPaused) return;
+
+    const currentLensObj =
+      LENSES_CYCLE.find((l) => l.id === activeLens) || LENSES_CYCLE[0];
+    const duration = currentLensObj.duration;
+
+    const timer = setTimeout(() => {
+      setActiveLens((prev) => {
+        const idx = LENSES_CYCLE.findIndex((l) => l.id === prev);
+        const nextIdx = (idx + 1) % LENSES_CYCLE.length;
+        return LENSES_CYCLE[nextIdx].id;
+      });
+    }, duration);
+
+    return () => clearTimeout(timer);
+  }, [activeLens, isLensAutoPaused]);
 
   const terminalOutputs: Record<string, string> = {
     whoami: `// Identity & Affiliation Record
@@ -136,16 +162,36 @@ echo "Location: Tangerang / Jakarta / Remote"`,
                 production climate-tech platforms at <strong>CarbonEthics</strong>.
               </p>
 
-              {/* Vertical Perspective Selector */}
-              <div className="border border-[#EAEAEA] rounded-[8px] bg-[#FBFBFA] p-2 space-y-1 font-mono text-xs">
-                <span className="text-[10px] uppercase text-[#888888] px-2.5 py-1 block">
-                  Select Inspection Lens
-                </span>
+              {/* Vertical Perspective Selector with Auto-Cycle Animation */}
+              <div
+                onMouseEnter={() => setIsLensAutoPaused(true)}
+                onMouseLeave={() => setIsLensAutoPaused(false)}
+                className="border border-[#EAEAEA] rounded-[8px] bg-[#FBFBFA] p-2 space-y-1 font-mono text-xs"
+              >
+                <div className="flex items-center justify-between text-[10px] uppercase text-[#888888] px-2.5 py-1">
+                  <span>Select Inspection Lens</span>
+                  <div className="flex items-center gap-1.5 font-mono text-[9px]">
+                    <span
+                      className={`w-1.5 h-1.5 rounded-full ${
+                        isLensAutoPaused
+                          ? "bg-[#888888]"
+                          : "bg-[#346538] animate-pulse"
+                      }`}
+                    />
+                    <span
+                      className={
+                        isLensAutoPaused ? "text-[#888888]" : "text-[#346538] font-medium"
+                      }
+                    >
+                      {isLensAutoPaused ? "PAUSED" : "AUTO-CYCLE"}
+                    </span>
+                  </div>
+                </div>
 
                 <button
                   type="button"
                   onClick={() => setActiveLens("philosophy")}
-                  className={`w-full text-left px-3 py-2 rounded-[4px] transition-colors flex items-center justify-between ${
+                  className={`w-full text-left px-3 py-2 rounded-[4px] transition-colors flex items-center justify-between relative overflow-hidden ${
                     activeLens === "philosophy"
                       ? "bg-[#111111] text-white font-medium"
                       : "text-[#666666] hover:text-[#111111] hover:bg-[#F3F3F0]"
@@ -153,12 +199,26 @@ echo "Location: Tangerang / Jakarta / Remote"`,
                 >
                   <span>[01] Ethos & Philosophy</span>
                   <span className="text-[10px] opacity-70">Standards</span>
+                  {activeLens === "philosophy" && (
+                    <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-white/10 overflow-hidden">
+                      <motion.div
+                        key={`timer-philosophy-${isLensAutoPaused}`}
+                        initial={{ width: "0%" }}
+                        animate={{ width: isLensAutoPaused ? undefined : "100%" }}
+                        transition={{
+                          duration: isLensAutoPaused ? 0 : 7.5,
+                          ease: "linear",
+                        }}
+                        className="h-full bg-white/60"
+                      />
+                    </div>
+                  )}
                 </button>
 
                 <button
                   type="button"
                   onClick={() => setActiveLens("trajectory")}
-                  className={`w-full text-left px-3 py-2 rounded-[4px] transition-colors flex items-center justify-between ${
+                  className={`w-full text-left px-3 py-2 rounded-[4px] transition-colors flex items-center justify-between relative overflow-hidden ${
                     activeLens === "trajectory"
                       ? "bg-[#111111] text-white font-medium"
                       : "text-[#666666] hover:text-[#111111] hover:bg-[#F3F3F0]"
@@ -166,12 +226,26 @@ echo "Location: Tangerang / Jakarta / Remote"`,
                 >
                   <span>[02] Trajectory & Roots</span>
                   <span className="text-[10px] opacity-70">Timeline</span>
+                  {activeLens === "trajectory" && (
+                    <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-white/10 overflow-hidden">
+                      <motion.div
+                        key={`timer-trajectory-${isLensAutoPaused}`}
+                        initial={{ width: "0%" }}
+                        animate={{ width: isLensAutoPaused ? undefined : "100%" }}
+                        transition={{
+                          duration: isLensAutoPaused ? 0 : 7.5,
+                          ease: "linear",
+                        }}
+                        className="h-full bg-white/60"
+                      />
+                    </div>
+                  )}
                 </button>
 
                 <button
                   type="button"
                   onClick={() => setActiveLens("terminal")}
-                  className={`w-full text-left px-3 py-2 rounded-[4px] transition-colors flex items-center justify-between ${
+                  className={`w-full text-left px-3 py-2 rounded-[4px] transition-colors flex items-center justify-between relative overflow-hidden ${
                     activeLens === "terminal"
                       ? "bg-[#111111] text-white font-medium"
                       : "text-[#666666] hover:text-[#111111] hover:bg-[#F3F3F0]"
@@ -182,13 +256,31 @@ echo "Location: Tangerang / Jakarta / Remote"`,
                     <span>[03] Live Terminal</span>
                   </div>
                   <span className="text-[10px] opacity-70">Interactive</span>
+                  {activeLens === "terminal" && (
+                    <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-white/10 overflow-hidden">
+                      <motion.div
+                        key={`timer-terminal-${isLensAutoPaused}`}
+                        initial={{ width: "0%" }}
+                        animate={{ width: isLensAutoPaused ? undefined : "100%" }}
+                        transition={{
+                          duration: isLensAutoPaused ? 0 : 11,
+                          ease: "linear",
+                        }}
+                        className="h-full bg-white/60"
+                      />
+                    </div>
+                  )}
                 </button>
               </div>
             </Reveal>
           </div>
 
           {/* Right Column (7 Cols): Unified Master Specimen Card */}
-          <div className="lg:col-span-7">
+          <div
+            className="lg:col-span-7"
+            onMouseEnter={() => setIsLensAutoPaused(true)}
+            onMouseLeave={() => setIsLensAutoPaused(false)}
+          >
             <Reveal delay={0.08}>
               <div className="rounded-[10px] border border-[#EAEAEA] bg-[#FFFFFF] overflow-hidden shadow-[0_2px_16px_rgba(0,0,0,0.02)]">
                 {/* 1. Master Specimen Barcode & Clearance Top Bar */}
