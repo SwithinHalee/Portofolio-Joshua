@@ -17,7 +17,7 @@ export function Workspace() {
         <Reveal>
           <div className="mb-14 max-w-2xl">
             <div className="flex items-center gap-2 font-mono text-xs text-[#787774] uppercase tracking-wider mb-2">
-              <span>04 / PHYSICAL & DIGITAL ENVIRONMENT</span>
+              <span>06 / PHYSICAL & DIGITAL ENVIRONMENT</span>
               <span className="text-[#EAEAEA]">•</span>
               <span>OPERATIONAL RIGOR</span>
             </div>

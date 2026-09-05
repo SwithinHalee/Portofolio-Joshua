@@ -63,7 +63,7 @@ echo "Location: Tangerang / Jakarta / Remote"`,
           <div className="lg:col-span-5 space-y-6 lg:sticky lg:top-24">
             <Reveal>
               <div className="flex items-center gap-2 font-mono text-xs text-[#787774] uppercase tracking-wider mb-3">
-                <span>02 / BIOGRAPHIC DOSSIER</span>
+                <span>01 / BIOGRAPHIC DOSSIER</span>
                 <span className="text-[#EAEAEA]">•</span>
                 <span>PROFILE</span>
               </div>

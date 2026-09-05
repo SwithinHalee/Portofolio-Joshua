@@ -9,7 +9,7 @@ export function Dossier() {
         <Reveal>
           <div className="mb-14 max-w-2xl">
             <div className="flex items-center gap-2 font-mono text-xs text-[#787774] uppercase tracking-wider mb-2">
-              <span>02 / TECHNICAL DOSSIER</span>
+              <span>04 / TECHNICAL DOSSIER</span>
               <span className="text-[#EAEAEA]">•</span>
               <span>CAPABILITY MATRIX</span>
             </div>

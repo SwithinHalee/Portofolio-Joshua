@@ -9,7 +9,7 @@ export function Experience() {
         <Reveal>
           <div className="mb-14 max-w-2xl">
             <div className="flex items-center gap-2 font-mono text-xs text-[#787774] uppercase tracking-wider mb-2">
-              <span>05 / CHRONOLOGY</span>
+              <span>07 / CHRONOLOGY</span>
               <span className="text-[#EAEAEA]">•</span>
               <span>EXPERIENCE & FORMAL EDUCATION</span>
             </div>

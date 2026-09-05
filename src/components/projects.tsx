@@ -37,7 +37,7 @@ export function Projects() {
           <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
             <div>
               <div className="flex items-center gap-2 font-mono text-xs text-[#787774] uppercase tracking-wider mb-2">
-                <span>01 / DOSSIER INDEX</span>
+                <span>02 / DOSSIER INDEX</span>
                 <span className="text-[#EAEAEA]">•</span>
                 <span>SELECTED ENGINEERING WORKS</span>
               </div>

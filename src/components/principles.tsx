@@ -16,7 +16,7 @@ export function Principles() {
         <Reveal>
           <div className="mb-14 max-w-2xl">
             <div className="flex items-center gap-2 font-mono text-xs text-[#787774] uppercase tracking-wider mb-2">
-              <span>03 / SYSTEM ARCHITECTURE</span>
+              <span>05 / SYSTEM ARCHITECTURE</span>
               <span className="text-[#EAEAEA]">•</span>
               <span>ENGINEERING PRINCIPLES</span>
             </div>
