@@ -218,26 +218,26 @@ export function ScrollMilestone() {
                       className="group/btn flex items-center gap-3 text-left focus:outline-none focus-visible:ring-1 focus-visible:ring-[#111111] rounded py-0.5"
                       aria-label={`Scroll to ${item.fullLabel}`}
                     >
-                      {/* Node Bullet / Marker (Exact 20px w-5 container centered with track) */}
+                      {/* Node Bullet / Marker (Permanent stable dot, never disappears) */}
                       <div
                         ref={(el) => {
                           dotRefs.current[idx] = el;
                         }}
                         className="relative flex items-center justify-center w-5 h-5 flex-shrink-0"
                       >
-                        {isActive ? (
-                          <motion.div
-                            layoutId="active-milestone-marker"
-                            className="w-3.5 h-3.5 rounded-full bg-[#111111] ring-2 ring-[#346538]/30 flex items-center justify-center z-10"
-                            transition={{ type: "spring", stiffness: 350, damping: 30 }}
-                          >
+                        <div
+                          className={`rounded-full transition-all duration-200 ease-out z-10 flex items-center justify-center ${
+                            isActive
+                              ? "w-3.5 h-3.5 bg-[#111111] ring-2 ring-[#346538]/40 shadow-sm scale-100"
+                              : isPassed
+                              ? "w-2.5 h-2.5 bg-[#111111]"
+                              : "w-2.5 h-2.5 border border-[#CCCCCC] bg-[#FFFFFF] group-hover/btn:border-[#111111]"
+                          }`}
+                        >
+                          {isActive && (
                             <span className="w-1 h-1 rounded-full bg-white block" />
-                          </motion.div>
-                        ) : isPassed ? (
-                          <div className="w-2.5 h-2.5 rounded-full bg-[#111111] transition-colors duration-150 z-10" />
-                        ) : (
-                          <div className="w-2.5 h-2.5 rounded-full border border-[#CCCCCC] bg-[#FFFFFF] transition-colors duration-150 group-hover/btn:border-[#111111] z-10" />
-                        )}
+                          )}
+                        </div>
                       </div>
 
                       {/* Number Tag */}
