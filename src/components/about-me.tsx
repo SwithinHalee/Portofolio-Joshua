@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -53,6 +53,61 @@ echo "GitHub:  https://github.com/SwithinHalee"
 echo "LinkedIn: https://www.linkedin.com/in/joshua-abdiel-773965282/"
 echo "Location: Tangerang / Jakarta / Remote"`,
   };
+
+  const [typedCmd, setTypedCmd] = useState<string>("whoami");
+  const [typedOutput, setTypedOutput] = useState<string>(terminalOutputs["whoami"]);
+  const [isTyping, setIsTyping] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (activeLens !== "terminal") return;
+
+    const targetCmd = activeTerminalCmd;
+    const targetOutput = terminalOutputs[targetCmd] || "";
+
+    setIsTyping(true);
+    setTypedCmd("");
+    setTypedOutput("");
+
+    let isCancelled = false;
+    let cmdIndex = 0;
+    let outputIndex = 0;
+
+    // Phase 1: Type the shell command
+    const cmdInterval = setInterval(() => {
+      if (isCancelled) return;
+      cmdIndex++;
+      setTypedCmd(targetCmd.slice(0, cmdIndex));
+
+      if (cmdIndex >= targetCmd.length) {
+        clearInterval(cmdInterval);
+
+        // Phase 2: Short 60ms pause as "Enter" is struck
+        const enterTimeout = setTimeout(() => {
+          if (isCancelled) return;
+
+          // Phase 3: Fast terminal output streaming (5 chars per tick)
+          const outputInterval = setInterval(() => {
+            if (isCancelled) return;
+            outputIndex += 5;
+            setTypedOutput(targetOutput.slice(0, outputIndex));
+
+            if (outputIndex >= targetOutput.length) {
+              setTypedOutput(targetOutput);
+              setIsTyping(false);
+              clearInterval(outputInterval);
+            }
+          }, 14);
+        }, 60);
+
+        return () => clearTimeout(enterTimeout);
+      }
+    }, 18);
+
+    return () => {
+      isCancelled = true;
+      clearInterval(cmdInterval);
+    };
+  }, [activeTerminalCmd, activeLens]);
 
   return (
     <section id="about" className="py-24 md:py-32 border-b border-[#EAEAEA]">
@@ -379,16 +434,37 @@ echo "Location: Tangerang / Jakarta / Remote"`,
                         </div>
 
                         {/* Terminal Screen Body */}
-                        <div className="p-4 font-mono text-[11px] leading-relaxed overflow-x-auto min-h-[220px] bg-[#0E0E0E]">
+                        <div className="p-4 font-mono text-[11px] leading-relaxed overflow-x-auto min-h-[240px] bg-[#0E0E0E]">
+                          {/* Active Prompt & Typed Command */}
                           <div className="flex items-center gap-1.5 text-[#27C93F] mb-2 text-[10px]">
                             <span>➜</span>
                             <span className="text-[#888888]">~</span>
-                            <span className="text-white">{activeTerminalCmd}</span>
+                            <span className="text-white font-semibold">
+                              {typedCmd}
+                              {isTyping && typedOutput.length === 0 && (
+                                <span className="inline-block w-1.5 h-3 bg-[#27C93F] ml-1 animate-pulse align-middle" />
+                              )}
+                            </span>
                           </div>
 
-                          <pre className="text-[#CCCCCC] whitespace-pre-wrap text-[11px]">
-                            {terminalOutputs[activeTerminalCmd]}
-                          </pre>
+                          {/* Streaming Output Body */}
+                          {typedOutput && (
+                            <pre className="text-[#CCCCCC] whitespace-pre-wrap text-[11px] font-mono leading-relaxed">
+                              {typedOutput}
+                              {isTyping && (
+                                <span className="inline-block w-1.5 h-3 bg-[#27C93F] ml-1 animate-pulse align-middle" />
+                              )}
+                            </pre>
+                          )}
+
+                          {/* Blinking Prompt Line When Execution Completes */}
+                          {!isTyping && (
+                            <div className="flex items-center gap-1.5 text-[#27C93F] mt-3 text-[10px]">
+                              <span>➜</span>
+                              <span className="text-[#888888]">~</span>
+                              <span className="inline-block w-1.5 h-3 bg-[#27C93F] animate-pulse" />
+                            </div>
+                          )}
                         </div>
                       </motion.div>
                     )}
