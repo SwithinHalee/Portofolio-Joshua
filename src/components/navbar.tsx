@@ -22,7 +22,6 @@ export function Navbar() {
         timeZone: "Asia/Jakarta",
         hour: "2-digit",
         minute: "2-digit",
-        second: "2-digit",
         hour12: false,
       };
       setTimeString(new Intl.DateTimeFormat("en-GB", options).format(now));
@@ -35,12 +34,12 @@ export function Navbar() {
 
   useEffect(() => {
     function handleScroll() {
-      setScrolled(window.scrollY > 20);
+      setScrolled(window.scrollY > 15);
 
       if (!isHome) return;
 
-      const sections = ["projects", "dossier", "principles", "workspace", "experience"];
       const scrollPosition = window.scrollY + 200;
+      const sections = ["projects", "dossier"];
 
       for (const section of sections) {
         const el = document.getElementById(section);
@@ -60,51 +59,38 @@ export function Navbar() {
   }, [isHome]);
 
   const navLinks = [
-    { label: "Works", href: "/#projects", id: "projects" },
+    { label: "Work", href: "/#projects", id: "projects" },
     { label: "Dossier", href: "/#dossier", id: "dossier" },
-    { label: "Principles", href: "/#principles", id: "principles" },
-    { label: "Studio", href: "/#workspace", id: "workspace" },
-    { label: "Experience", href: "/#experience", id: "experience" },
     { label: "Archive", href: "/archive", id: "archive" },
   ];
 
   return (
     <header
-      className={`sticky top-0 z-50 w-full border-b transition-all duration-300 ${
+      className={`sticky top-0 z-50 w-full transition-all duration-200 border-b ${
         scrolled
-          ? "border-[#EAEAEA] bg-white/95 backdrop-blur-md shadow-[0_1px_4px_rgba(0,0,0,0.02)]"
-          : "border-[#EAEAEA] bg-white/85 backdrop-blur-sm"
+          ? "border-[#EAEAEA] bg-white/95 backdrop-blur-md"
+          : "border-[#EAEAEA]/80 bg-white/80 backdrop-blur-sm"
       }`}
     >
-      <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-3.5 sm:px-8">
-        {/* Brand & Location / Time */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:gap-3">
+      <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-4 sm:px-8">
+        {/* Brand & Clean Muted Location */}
+        <div className="flex items-center gap-3">
           <Link
             href="/"
-            className="font-medium tracking-tight text-[#111111] hover:text-[#444444] transition-colors font-sans text-sm flex items-center gap-2"
+            className="font-medium tracking-tight text-[#111111] hover:text-[#444444] transition-colors text-sm font-sans"
           >
-            <span>{PERSONAL_INFO.name}</span>
-            <span className="inline-block h-1.5 w-1.5 rounded-full bg-[#111111]/30"></span>
-            <span className="font-mono text-xs text-[#787774] font-normal">Portfolio</span>
+            {PERSONAL_INFO.name}
           </Link>
 
-          <div className="flex items-center gap-2 text-xs text-[#787774] font-mono">
-            <span className="hidden sm:inline text-[#EAEAEA]">/</span>
-            <span>Tangerang, ID</span>
-            {timeString ? (
-              <span className="rounded bg-[#F7F6F3] border border-[#EAEAEA] px-1.5 py-0.5 text-[11px] text-[#111111] tabular-nums font-mono">
-                {timeString} WIB
-              </span>
-            ) : (
-              <span className="rounded bg-[#F7F6F3] border border-[#EAEAEA] px-1.5 py-0.5 text-[11px] text-[#111111]">
-                WIB
-              </span>
-            )}
-          </div>
+          <span className="hidden sm:inline-block text-[#D5D5D5]">/</span>
+
+          <span className="hidden sm:inline-block font-mono text-xs text-[#787774]">
+            Tangerang, ID {timeString && `· ${timeString} WIB`}
+          </span>
         </div>
 
-        {/* Desktop Navigation with tactile sliding pill */}
-        <nav className="hidden md:flex items-center gap-1 text-xs font-mono text-[#787774]">
+        {/* Minimalist Desktop Navigation */}
+        <nav className="hidden md:flex items-center gap-7 text-xs font-mono">
           {navLinks.map((link) => {
             const isActive =
               link.id === "archive" ? pathname === "/archive" : isHome && activeSection === link.id;
@@ -113,71 +99,62 @@ export function Navbar() {
               <Link
                 key={link.label}
                 href={link.href}
-                className={`relative px-3 py-1.5 transition-colors rounded-[4px] ${
-                  isActive ? "text-[#111111] font-medium" : "hover:text-[#111111]"
+                className={`transition-colors ${
+                  isActive ? "text-[#111111] font-medium" : "text-[#787774] hover:text-[#111111]"
                 }`}
               >
-                {isActive && (
-                  <motion.span
-                    layoutId="active-nav-pill"
-                    transition={{ type: "spring", stiffness: 380, damping: 30 }}
-                    className="absolute inset-0 bg-[#F7F6F3] border border-[#EAEAEA] rounded-[4px] -z-10"
-                  />
-                )}
-                <span>{link.label}</span>
+                {link.label}
               </Link>
             );
           })}
 
-          <div className="h-4 w-[1px] bg-[#EAEAEA] mx-2"></div>
-
           <a
             href={`mailto:${PERSONAL_INFO.email}`}
-            className="inline-flex items-center gap-1 rounded-[4px] px-2.5 py-1.5 text-[#111111] hover:bg-[#F7F6F3] transition-colors font-medium border border-transparent hover:border-[#EAEAEA]"
+            className="inline-flex items-center gap-1 text-[#111111] hover:text-[#555555] transition-colors font-medium"
           >
             <span>Contact</span>
-            <ArrowUpRight size={12} weight="bold" />
+            <ArrowUpRight size={11} weight="bold" />
           </a>
         </nav>
 
-        {/* Mobile Menu Button */}
+        {/* Mobile Toggle Button */}
         <button
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          className="md:hidden p-1.5 text-[#111111] hover:bg-[#F7F6F3] rounded-[4px] transition-colors"
-          aria-label="Toggle navigation menu"
+          className="md:hidden p-1 text-[#111111] hover:text-[#555555] transition-colors"
+          aria-label="Toggle menu"
         >
-          {mobileMenuOpen ? <X size={20} weight="bold" /> : <List size={20} weight="bold" />}
+          {mobileMenuOpen ? <X size={18} weight="bold" /> : <List size={18} weight="bold" />}
         </button>
       </div>
 
-      {/* Mobile Dropdown with AnimatePresence */}
+      {/* Mobile Dropdown */}
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
             className="md:hidden border-t border-[#EAEAEA] bg-[#FFFFFF] px-6 py-4 overflow-hidden"
           >
-            <div className="flex flex-col gap-2 font-mono text-xs text-[#787774]">
+            <div className="flex flex-col gap-3 font-mono text-xs text-[#787774]">
               {navLinks.map((link) => (
                 <Link
                   key={link.label}
                   href={link.href}
                   onClick={() => setMobileMenuOpen(false)}
-                  className="py-1.5 px-2 rounded hover:bg-[#F7F6F3] hover:text-[#111111] transition-colors"
+                  className="py-1 hover:text-[#111111] transition-colors"
                 >
                   {link.label}
                 </Link>
               ))}
-              <div className="border-t border-[#EAEAEA] my-1 pt-2">
+              <div className="border-t border-[#EAEAEA] pt-2 mt-1">
                 <a
                   href={`mailto:${PERSONAL_INFO.email}`}
                   onClick={() => setMobileMenuOpen(false)}
-                  className="py-1.5 px-2 text-[#111111] font-medium flex items-center justify-between rounded hover:bg-[#F7F6F3]"
+                  className="py-1 text-[#111111] font-medium flex items-center justify-between"
                 >
-                  <span>Direct Email ({PERSONAL_INFO.email})</span>
+                  <span>{PERSONAL_INFO.email}</span>
                   <ArrowUpRight size={12} weight="bold" />
                 </a>
               </div>
