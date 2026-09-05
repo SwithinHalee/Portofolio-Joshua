@@ -27,6 +27,20 @@ body {
   line-height: 1.6;
 }
 
+/* Universal scrollbar concealment while preserving native scroll mechanics */
+html,
+body,
+* {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+*::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+  width: 0;
+  height: 0;
+}
+
 kbd {
   font-family: var(--font-geist-mono), monospace;
   border: 1px solid #EAEAEA;
