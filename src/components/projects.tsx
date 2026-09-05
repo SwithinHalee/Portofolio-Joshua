@@ -139,16 +139,18 @@ function ProjectCard({ project, index }: { project: ProjectItem; index: number }
           {/* Seamless Mockup with Faux-OS Window Chrome */}
           <div className="my-5 rounded-[8px] border border-[#EAEAEA] bg-[#FBFBFA] overflow-hidden">
             {/* Window Bar */}
-            <div className="flex items-center justify-between border-b border-[#EAEAEA] bg-[#FFFFFF] px-3.5 py-2">
-              <div className="flex items-center gap-1.5">
+            <div className="flex items-center justify-between border-b border-[#EAEAEA] bg-[#FFFFFF] px-3.5 py-2 gap-2">
+              <div className="flex items-center gap-1.5 shrink-0">
                 <span className="h-2.5 w-2.5 rounded-full bg-[#E5E5E5] inline-block"></span>
                 <span className="h-2.5 w-2.5 rounded-full bg-[#E5E5E5] inline-block"></span>
                 <span className="h-2.5 w-2.5 rounded-full bg-[#E5E5E5] inline-block"></span>
               </div>
-              <span className="font-mono text-[11px] text-[#787774] truncate max-w-[240px]">
+              <span className="font-mono text-[11px] text-[#787774] truncate min-w-0 text-center px-1">
                 {project.title.toLowerCase().replace(/\s+/g, "-")}.app
               </span>
-              <span className="text-[10px] font-mono text-[#999999]">16:9 PREVIEW</span>
+              <span className="text-[10px] font-mono text-[#999999] whitespace-nowrap shrink-0">
+                16:9 PREVIEW
+              </span>
             </div>
 
             {/* Clickable Image Container */}
