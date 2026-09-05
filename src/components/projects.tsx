@@ -1,7 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { ArrowUpRight, GithubLogo, Globe } from "@phosphor-icons/react";
+import Image from "next/image";
+import Link from "next/link";
+import { ArrowRight, ArrowUpRight, GithubLogo, Globe } from "@phosphor-icons/react";
 import { PROJECTS, ProjectItem } from "@/data/portfolio";
 
 export function Projects() {
@@ -71,11 +73,11 @@ function ProjectCard({ project }: { project: ProjectItem }) {
 
   return (
     <div
-      className={`${project.gridSpan} group relative flex flex-col justify-between rounded-[10px] border border-[#EAEAEA] bg-[#FFFFFF] p-6 sm:p-8 transition-all duration-200 hover:border-[#CCCCCC] hover:shadow-[0_2px_8px_rgba(0,0,0,0.03)]`}
+      className={`${project.gridSpan} group relative flex flex-col justify-between rounded-[10px] border border-[#EAEAEA] bg-[#FFFFFF] p-6 sm:p-8 transition-all duration-300 hover:border-[#BBBBBB] hover:shadow-[0_4px_16px_rgba(0,0,0,0.03)]`}
     >
       <div>
         {/* Card Header & Badge */}
-        <div className="flex flex-wrap items-center justify-between gap-3 mb-5">
+        <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
           <span className="font-mono text-xs uppercase tracking-wider text-[#787774]">
             {project.category}
           </span>
@@ -96,68 +98,57 @@ function ProjectCard({ project }: { project: ProjectItem }) {
         </div>
 
         {/* Title */}
-        <h3
-          className="text-2xl font-serif text-[#111111] tracking-tight mb-3"
-          style={{ fontFamily: "var(--font-newsreader), Georgia, serif" }}
-        >
-          {project.title}
-        </h3>
+        <Link href={`/work/${project.slug}`} className="group-hover:text-[#444444] transition-colors">
+          <h3
+            className="text-2xl sm:text-3xl font-serif text-[#111111] tracking-tight mb-2.5 flex items-center justify-between"
+            style={{ fontFamily: "var(--font-newsreader), Georgia, serif" }}
+          >
+            <span>{project.title}</span>
+            <ArrowRight
+              size={18}
+              weight="bold"
+              className="text-[#888888] group-hover:translate-x-1 group-hover:text-[#111111] transition-all opacity-0 group-hover:opacity-100"
+            />
+          </h3>
+        </Link>
 
         {/* Narrative description */}
         <p className="text-sm text-[#555555] leading-relaxed mb-6 font-sans">
           {project.summary}
         </p>
 
-        {/* Faux-OS Window Chrome for Featured Flagship / Systems */}
-        {isLarge && (
-          <div className="my-6 rounded-[6px] border border-[#EAEAEA] bg-[#FBFBFA] overflow-hidden">
-            {/* Window Bar */}
-            <div className="flex items-center justify-between border-b border-[#EAEAEA] bg-[#FFFFFF] px-3.5 py-2">
-              <div className="flex items-center gap-1.5">
-                <span className="h-2.5 w-2.5 rounded-full bg-[#E5E5E5] inline-block"></span>
-                <span className="h-2.5 w-2.5 rounded-full bg-[#E5E5E5] inline-block"></span>
-                <span className="h-2.5 w-2.5 rounded-full bg-[#E5E5E5] inline-block"></span>
-              </div>
-              <span className="font-mono text-[11px] text-[#787774]">
-                {project.id === "carbonethics-platform"
-                  ? "carbonethics.org — sustainability-dashboard.tsx"
-                  : "gns3-topology-engine — packet-routing.pcap"}
-              </span>
-              <div className="w-8"></div>
+        {/* Seamless Image Mockup with Faux-OS Window Chrome */}
+        <div className="my-5 rounded-[8px] border border-[#EAEAEA] bg-[#FBFBFA] overflow-hidden">
+          {/* Top Faux Window Bar */}
+          <div className="flex items-center justify-between border-b border-[#EAEAEA] bg-[#FFFFFF] px-3.5 py-2">
+            <div className="flex items-center gap-1.5">
+              <span className="h-2.5 w-2.5 rounded-full bg-[#E5E5E5] inline-block"></span>
+              <span className="h-2.5 w-2.5 rounded-full bg-[#E5E5E5] inline-block"></span>
+              <span className="h-2.5 w-2.5 rounded-full bg-[#E5E5E5] inline-block"></span>
             </div>
-
-            {/* Window Content / Simulated UI Dossier */}
-            <div className="p-4 sm:p-6 font-mono text-xs text-[#333333] space-y-4">
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                {project.metrics?.map((m) => (
-                  <div
-                    key={m.label}
-                    className="rounded border border-[#EAEAEA] bg-[#FFFFFF] p-3"
-                  >
-                    <span className="block text-[10px] uppercase text-[#787774]">
-                      {m.label}
-                    </span>
-                    <span className="text-sm font-semibold text-[#111111]">{m.value}</span>
-                  </div>
-                ))}
-              </div>
-
-              {/* Technical highlight specs */}
-              <div className="border-t border-[#EAEAEA] pt-3 text-[11px] text-[#666666] space-y-1.5">
-                {project.technicalHighlights.map((hl, idx) => (
-                  <div key={idx} className="flex items-start gap-2">
-                    <span className="text-[#346538] font-bold">›</span>
-                    <span>{hl}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
+            <span className="font-mono text-[11px] text-[#787774] truncate max-w-[240px]">
+              {project.title.toLowerCase().replace(/\s+/g, "-")}.app
+            </span>
+            <span className="text-[10px] font-mono text-[#999999]">16:9 PREVIEW</span>
           </div>
-        )}
 
-        {/* Non-large technical metrics */}
-        {!isLarge && project.metrics && (
-          <div className="grid grid-cols-2 gap-2 mb-6">
+          {/* Embedded Image */}
+          <Link href={`/work/${project.slug}`} className="block relative aspect-[16/9] w-full bg-[#F5F5F3] overflow-hidden">
+            <Image
+              src={project.image}
+              alt={`${project.title} interface preview mockup`}
+              fill
+              className="object-cover transition-transform duration-500 group-hover:scale-[1.02]"
+              sizes={isLarge ? "(max-width: 1024px) 100vw, 1024px" : "(max-width: 1024px) 100vw, 560px"}
+            />
+            {/* Subtle grain/vignette */}
+            <div className="absolute inset-0 bg-[#000000]/[0.015] pointer-events-none"></div>
+          </Link>
+        </div>
+
+        {/* Metrics Bar */}
+        {project.metrics && (
+          <div className={`grid gap-2 mb-6 ${isLarge ? "grid-cols-1 sm:grid-cols-3" : "grid-cols-2"}`}>
             {project.metrics.map((m) => (
               <div
                 key={m.label}
@@ -175,7 +166,7 @@ function ProjectCard({ project }: { project: ProjectItem }) {
         )}
       </div>
 
-      {/* Footer Tags & Links */}
+      {/* Footer Actions & Links */}
       <div className="pt-4 border-t border-[#EAEAEA] flex flex-wrap items-center justify-between gap-4">
         {/* Tags */}
         <div className="flex flex-wrap items-center gap-1.5 font-mono text-[11px] text-[#787774]">
@@ -189,18 +180,25 @@ function ProjectCard({ project }: { project: ProjectItem }) {
           ))}
         </div>
 
-        {/* Links */}
+        {/* Action Hub */}
         <div className="flex items-center gap-3">
+          <Link
+            href={`/work/${project.slug}`}
+            className="inline-flex items-center gap-1 font-mono text-xs text-[#111111] hover:underline underline-offset-4 font-semibold"
+          >
+            <span>Read Case Study</span>
+            <ArrowRight size={12} weight="bold" />
+          </Link>
+
           {project.githubUrl && (
             <a
               href={project.githubUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 font-mono text-xs text-[#111111] hover:underline underline-offset-4 font-medium"
+              className="inline-flex items-center gap-1 font-mono text-xs text-[#787774] hover:text-[#111111] transition-colors"
             >
-              <GithubLogo size={14} weight="regular" />
+              <GithubLogo size={13} weight="regular" />
               <span>Source</span>
-              <ArrowUpRight size={12} weight="bold" />
             </a>
           )}
 
@@ -209,11 +207,11 @@ function ProjectCard({ project }: { project: ProjectItem }) {
               href={project.liveUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 font-mono text-xs text-[#111111] hover:underline underline-offset-4 font-medium"
+              className="inline-flex items-center gap-1 font-mono text-xs text-[#787774] hover:text-[#111111] transition-colors"
             >
-              <Globe size={14} weight="regular" />
+              <Globe size={13} weight="regular" />
               <span>Live Site</span>
-              <ArrowUpRight size={12} weight="bold" />
+              <ArrowUpRight size={11} weight="bold" />
             </a>
           )}
         </div>

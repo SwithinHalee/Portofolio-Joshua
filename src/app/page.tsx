@@ -3,6 +3,7 @@ import { Hero } from "@/components/hero";
 import { Projects } from "@/components/projects";
 import { Dossier } from "@/components/dossier";
 import { Principles } from "@/components/principles";
+import { Workspace } from "@/components/workspace";
 import { Experience } from "@/components/experience";
 import { Colophon } from "@/components/colophon";
 
@@ -15,6 +16,7 @@ export default function Home() {
         <Projects />
         <Dossier />
         <Principles />
+        <Workspace />
         <Experience />
       </main>
       <Colophon />

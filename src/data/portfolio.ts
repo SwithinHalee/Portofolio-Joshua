@@ -1,9 +1,11 @@
 export interface ProjectItem {
   id: string;
+  slug: string;
   title: string;
   category: string;
   summary: string;
   description: string;
+  image: string;
   technicalHighlights: string[];
   metrics?: { label: string; value: string }[];
   tags: string[];
@@ -14,6 +16,15 @@ export interface ProjectItem {
   badge?: {
     text: string;
     variant: "green" | "blue" | "amber" | "red";
+  };
+  caseStudy: {
+    clientOrContext: string;
+    timeline: string;
+    role: string;
+    challenge: string;
+    architectureSolution: string;
+    deliverables: string[];
+    technicalDecisions: { title: string; rationale: string }[];
   };
 }
 
@@ -46,11 +57,16 @@ export interface PrincipleItem {
   statement: string;
 }
 
+export interface SetupItem {
+  category: string;
+  items: { name: string; spec: string }[];
+}
+
 export const PERSONAL_INFO = {
   name: "Joshua Abdiel",
   callsign: "Josh",
   role: "Frontend Engineer & Information Systems Student",
-  institution: "Universitas Tarumanagara",
+  institution: "Universitas Tarumanagara (UNTAR)",
   currentRole: "Frontend Engineering Intern at CarbonEthics",
   location: "Tangerang, Banten, Indonesia",
   timezone: "WIB (UTC+7)",
@@ -68,12 +84,14 @@ export const PERSONAL_INFO = {
 export const PROJECTS: ProjectItem[] = [
   {
     id: "carbonethics-platform",
+    slug: "carbonethics-platform",
     title: "CarbonEthics Web Platform",
     category: "Flagship / Climate Tech & Carbon Intelligence",
     summary:
       "Enterprise sustainability web interface facilitating corporate and individual carbon offset calculations, mangrove restoration initiatives, and environmental monitoring.",
     description:
       "Engineered responsive, highly performant frontend components for CarbonEthics. Focused on dynamic carbon calculation workflows, accessible UI patterns, and efficient hydration performance across diverse client viewports.",
+    image: "/images/carbonethics.jpg",
     technicalHighlights: [
       "Dynamic offset calculator engine with real-time carbon metric estimation",
       "Modular design-token integration ensuring 100% brand consistency",
@@ -92,15 +110,41 @@ export const PROJECTS: ProjectItem[] = [
       text: "PRODUCTION CLIENT PLATFORM",
       variant: "green",
     },
+    caseStudy: {
+      clientOrContext: "CarbonEthics (Climate Tech Organization)",
+      timeline: "Feb 2026 — Present",
+      role: "Frontend Engineering Intern",
+      challenge:
+        "Carbon footprint calculations require complex input trees (flight distances, vehicle fuel metrics, enterprise consumption) that historically produced heavy client bundle overhead and slow interactive responses.",
+      architectureSolution:
+        "Structured modular client-island calculators powered by Next.js Server Components. Kept calculation engines stateless, pure, and strictly typed with TypeScript interfaces.",
+      deliverables: [
+        "Interactive Carbon Offset Estimator with instant recalculation",
+        "Responsive mangrove tree plantation tracking module",
+        "Accessible, high-contrast UI theme compliant with international web standards",
+      ],
+      technicalDecisions: [
+        {
+          title: "Next.js App Router Hybrid Architecture",
+          rationale: "Pre-render static informational copy while isolating dynamic calculator inputs in optimized client boundaries.",
+        },
+        {
+          title: "Strict Interface Typing for Emission Factors",
+          rationale: "Eliminated runtime estimation bugs by establishing immutable mathematical conversion types.",
+        },
+      ],
+    },
   },
   {
     id: "xpense-ledger",
+    slug: "xpense-ledger",
     title: "Xpense Ledger",
     category: "Financial Engineering / Personal Accounting",
     summary:
       "Minimalist financial tracker and expense allocation engine providing clean tabular ledger views, recurring transaction math, and budgetary insights.",
     description:
       "Engineered to replace bloated financial trackers with a fast, zero-friction accounting interface. Built with strict client-side validation, categorical cash flow aggregation, and local persistence.",
+    image: "/images/xpense.jpg",
     technicalHighlights: [
       "Tabular ledger with instant client-side filtering and sorting",
       "Mathematical aggregation pipeline calculating burn rate and category ratios",
@@ -118,15 +162,41 @@ export const PROJECTS: ProjectItem[] = [
       text: "OPEN SOURCE REPO",
       variant: "blue",
     },
+    caseStudy: {
+      clientOrContext: "Personal Engineering Project",
+      timeline: "2025 — 2026",
+      role: "Sole Software Engineer",
+      challenge:
+        "Most budgeting apps enforce complex setups, advertisements, and slow sync latency. The goal was a clean ledger that loads in sub-250ms with instant keyboard navigation.",
+      architectureSolution:
+        "Implemented lightweight localized state management with transactional immutability. Built custom tabular views with keyboard shortcuts for rapid expense logging.",
+      deliverables: [
+        "Instant transaction insertion ledger",
+        "Burn rate and net financial velocity dashboard",
+        "Categorical expense allocation breakdown",
+      ],
+      technicalDecisions: [
+        {
+          title: "Client-Side Transaction Pipeline",
+          rationale: "Allows instant optimistic UI updates with zero network wait-state.",
+        },
+        {
+          title: "Monospace Numerical Formatting",
+          rationale: "Prevents tabular jitter by ensuring tabular figures align vertically down the penny.",
+        },
+      ],
+    },
   },
   {
     id: "pokemon-explorer",
+    slug: "pokemon-explorer",
     title: "PokeAPI Virtual Explorer",
     category: "Frontend System / Data Visualization",
     summary:
       "High-throughput encyclopedia application consuming the PokeAPI, featuring aggressive client-side caching, virtualized listing, and stat comparison radars.",
     description:
       "Explores scalable pagination and asynchronous cache-first data fetching. Features instant search indexing, dual-type filtering matrices, and detailed numerical baseline comparisons.",
+    image: "/images/pokemon.jpg",
     technicalHighlights: [
       "Cache-first query pipeline preventing redundant network trips",
       "Adaptive search with debounce and multi-type matrix intersection",
@@ -144,15 +214,41 @@ export const PROJECTS: ProjectItem[] = [
       text: "TECHNICAL EXPERIMENT",
       variant: "amber",
     },
+    caseStudy: {
+      clientOrContext: "Experimental Web Architecture",
+      timeline: "2025",
+      role: "Frontend Engineer",
+      challenge:
+        "The public PokeAPI has rate limits and separate endpoints for species, stats, and abilities. Naive implementation results in hundreds of cascade network requests.",
+      architectureSolution:
+        "Engineered an aggressive TanStack Query cache layer with memory persistence, debounced search filters, and pre-fetching of adjacent entries.",
+      deliverables: [
+        "Virtualized multi-generation monster index",
+        "Multi-attribute filter matrix with instant intersection calculation",
+        "Comparative baseline stat visualizer",
+      ],
+      technicalDecisions: [
+        {
+          title: "Stale-While-Revalidate Query Strategy",
+          rationale: "Cached responses render instantaneously, only querying delta changes in background.",
+        },
+        {
+          title: "Component Level Error Boundaries",
+          rationale: "Prevents remote image or missing sprite anomalies from cascading crashes to the explorer.",
+        },
+      ],
+    },
   },
   {
     id: "gns3-data-sharing",
+    slug: "gns3-data-sharing",
     title: "GNS3 Network Topology & Data Sharing Simulation",
     category: "Systems & Network Infrastructure / Packet Routing",
     summary:
       "Emulated enterprise network architecture validating segmented peer-to-peer data distribution, protocol routing, access control lists, and packet analysis.",
     description:
       "Designed and tested in Graphical Network Simulator-3 (GNS3). Emulates router configurations, VLAN segmentation, and multi-node packet exchange security protocols across distributed workstation clusters.",
+    image: "/images/gns3.jpg",
     technicalHighlights: [
       "Multi-subnet IP addressing scheme and dynamic route distribution",
       "Packet verification using Wireshark to validate protocol handshakes",
@@ -170,6 +266,60 @@ export const PROJECTS: ProjectItem[] = [
       text: "SYSTEM ARCHITECTURE",
       variant: "blue",
     },
+    caseStudy: {
+      clientOrContext: "UNTAR Systems & Networking Lab",
+      timeline: "2024 — 2025",
+      role: "Network Systems Architect",
+      challenge:
+        "Simulating enterprise-grade peer-to-peer data sharing while strictly maintaining VLAN boundary security and preventing broadcast packet flooding.",
+      architectureSolution:
+        "Configured virtualized Cisco router instances in GNS3 with sub-interface routing, Access Control Lists (ACLs), and packet flow validation in Wireshark.",
+      deliverables: [
+        "Complete enterprise topology emulation file",
+        "IP address scheme documentation & routing tables",
+        "Packet capture logs verifying 0% packet leakage between segmented VLANs",
+      ],
+      technicalDecisions: [
+        {
+          title: "Segmented VLAN Subnetting",
+          rationale: "Isolated workstation traffic from sensitive server clusters.",
+        },
+        {
+          title: "Wireshark Protocol Analysis",
+          rationale: "Audited TCP handshake efficiency and dropped unauthorized ICMP packets at boundary switches.",
+        },
+      ],
+    },
+  },
+];
+
+export const WORKSPACE_SETUP: SetupItem[] = [
+  {
+    category: "Hardware & Physical Instruments",
+    items: [
+      { name: "Primary Machine", spec: "Custom Workstation / Portable Silicon" },
+      { name: "Display", spec: "High-DPI Calibrated IPS Monitor with 100% sRGB" },
+      { name: "Input", spec: "Custom Mechanical Keyboard (Lubed Linears) & Precision Ergonomic Mouse" },
+      { name: "Audio", spec: "Open-back reference monitors for focused engineering sessions" },
+    ],
+  },
+  {
+    category: "Software Environment & Editor",
+    items: [
+      { name: "Code Editor", spec: "VS Code with Minimal Monokai / Clean Hairline Theme" },
+      { name: "Font", spec: "Geist Mono & JetBrains Mono (Ligatures active)" },
+      { name: "Shell & Terminal", spec: "PowerShell & Unix Terminal with Starship prompt" },
+      { name: "AI Pair Engine", spec: "Google Antigravity CLI & Gemini 3.8 Advanced Suite" },
+    ],
+  },
+  {
+    category: "DevOps & Engineering Suite",
+    items: [
+      { name: "API Client", spec: "Postman & curl for HTTP protocol interrogation" },
+      { name: "Design Handoff", spec: "Figma (Token inspections, grid geometry & SVG exports)" },
+      { name: "Version Control", spec: "Git via CLI & GitHub Enterprise/Personal workflows" },
+      { name: "Network Emulation", spec: "GNS3 & Wireshark for packet routing verification" },
+    ],
   },
 ];
 

@@ -1,0 +1,239 @@
+"use client";
+
+import { useState } from "react";
+import Link from "next/link";
+import { ArrowLeft, GithubLogo, Globe, MagnifyingGlass } from "@phosphor-icons/react";
+import { Navbar } from "@/components/navbar";
+import { Colophon } from "@/components/colophon";
+
+interface ArchiveEntry {
+  year: string;
+  title: string;
+  category: string;
+  context: string;
+  tech: string[];
+  link?: string;
+  github?: string;
+  slug?: string;
+}
+
+const ARCHIVE_ITEMS: ArchiveEntry[] = [
+  {
+    year: "2026",
+    title: "CarbonEthics Web Platform",
+    category: "Climate Tech / Web Platform",
+    context: "CarbonEthics (Internship)",
+    tech: ["Next.js", "TypeScript", "Tailwind CSS", "REST API"],
+    link: "https://www.carbonethics.org",
+    slug: "carbonethics-platform",
+  },
+  {
+    year: "2026",
+    title: "Xpense Ledger",
+    category: "Financial Engineering / Ledger",
+    context: "Open Source Tool",
+    tech: ["React", "TypeScript", "Tailwind CSS", "State Management"],
+    github: "https://github.com/SwithinHalee/Xpense",
+    slug: "xpense-ledger",
+  },
+  {
+    year: "2025",
+    title: "PokeAPI Virtual Explorer",
+    category: "Data Caching & Visualization",
+    context: "Engineering Prototype",
+    tech: ["React", "TanStack Query", "PokeAPI", "Tailwind CSS"],
+    github: "https://github.com/SwithinHalee/pokemon-app",
+    slug: "pokemon-explorer",
+  },
+  {
+    year: "2025",
+    title: "GNS3 Network Topology & Data Sharing",
+    category: "Systems & Network Architecture",
+    context: "UNTAR Systems Lab",
+    tech: ["GNS3", "Computer Networks", "Packet Routing", "Wireshark"],
+    github: "https://github.com/SwithinHalee/Data-Sharing-GNS3",
+    slug: "gns3-data-sharing",
+  },
+  {
+    year: "2024",
+    title: "Enterprise Information Systems Architecture",
+    category: "Academic Systems Analysis",
+    context: "Universitas Tarumanagara",
+    tech: ["UML", "Database Normalization", "System Modeling"],
+  },
+  {
+    year: "2023",
+    title: "Relational Database Schema Design Labs",
+    category: "Database Engineering",
+    context: "UNTAR Academic Track",
+    tech: ["PostgreSQL", "SQL Queries", "Entity-Relationship Diagrams"],
+  },
+];
+
+export default function ArchivePage() {
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const filtered = ARCHIVE_ITEMS.filter((item) => {
+    const q = searchQuery.toLowerCase();
+    return (
+      item.title.toLowerCase().includes(q) ||
+      item.category.toLowerCase().includes(q) ||
+      item.context.toLowerCase().includes(q) ||
+      item.tech.some((t) => t.toLowerCase().includes(q))
+    );
+  });
+
+  return (
+    <div className="flex min-h-screen flex-col bg-[#FFFFFF] text-[#111111]">
+      <Navbar />
+
+      <main className="flex-1 py-16 md:py-24">
+        <div className="mx-auto max-w-5xl px-6 sm:px-8">
+          {/* Back Link */}
+          <div className="mb-10">
+            <Link
+              href="/"
+              className="inline-flex items-center gap-2 font-mono text-xs text-[#787774] hover:text-[#111111] transition-colors"
+            >
+              <ArrowLeft size={13} weight="bold" />
+              <span>Return to Portfolio Home</span>
+            </Link>
+          </div>
+
+          {/* Header */}
+          <div className="border-b border-[#EAEAEA] pb-10 mb-12">
+            <div className="flex items-center gap-2 font-mono text-xs text-[#787774] uppercase tracking-wider mb-3">
+              <span>DOSSIER ARCHIVE</span>
+              <span className="text-[#EAEAEA]">•</span>
+              <span>COMPLETE CHRONOLOGICAL RECORD</span>
+            </div>
+
+            <h1
+              className="text-4xl sm:text-5xl font-serif text-[#111111] tracking-[-0.03em] mb-4"
+              style={{ fontFamily: "var(--font-newsreader), Georgia, serif" }}
+            >
+              Complete Engineering Archive
+            </h1>
+
+            <p className="text-base text-[#555555] max-w-2xl mb-8">
+              An exhaustive catalog of production platforms, open-source repositories, university
+              systems research, and technical explorations spanning 2023 to present.
+            </p>
+
+            {/* Filter Search Input */}
+            <div className="relative max-w-md">
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Filter by keyword, tech, or year..."
+                className="w-full rounded-[6px] border border-[#EAEAEA] bg-[#FBFBFA] py-2.5 pl-9 pr-4 text-xs font-mono text-[#111111] placeholder:text-[#999999] focus:border-[#111111] focus:outline-none"
+              />
+              <MagnifyingGlass
+                size={14}
+                weight="bold"
+                className="absolute left-3 top-3 text-[#787774]"
+              />
+            </div>
+          </div>
+
+          {/* Tabular Archive Table */}
+          <div className="overflow-x-auto">
+            <table className="w-full text-left font-mono text-xs">
+              <thead>
+                <tr className="border-b border-[#EAEAEA] text-[#787774] text-[11px] uppercase tracking-wider">
+                  <th className="py-3 font-normal">Year</th>
+                  <th className="py-3 font-normal">Project / Entry</th>
+                  <th className="py-3 font-normal hidden md:table-cell">Context</th>
+                  <th className="py-3 font-normal hidden sm:table-cell">Stack</th>
+                  <th className="py-3 font-normal text-right">Links</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-[#EAEAEA]">
+                {filtered.map((item, idx) => (
+                  <tr
+                    key={idx}
+                    className="hover:bg-[#FBFBFA] transition-colors group"
+                  >
+                    <td className="py-4 text-[#787774] font-medium align-top">
+                      {item.year}
+                    </td>
+
+                    <td className="py-4 align-top">
+                      <div className="font-sans font-medium text-sm text-[#111111] group-hover:text-[#444444]">
+                        {item.slug ? (
+                          <Link href={`/work/${item.slug}`} className="hover:underline">
+                            {item.title}
+                          </Link>
+                        ) : (
+                          item.title
+                        )}
+                      </div>
+                      <div className="text-[11px] text-[#888888] font-mono mt-0.5">
+                        {item.category}
+                      </div>
+                    </td>
+
+                    <td className="py-4 text-[#666666] align-top hidden md:table-cell">
+                      {item.context}
+                    </td>
+
+                    <td className="py-4 align-top hidden sm:table-cell">
+                      <div className="flex flex-wrap gap-1">
+                        {item.tech.map((t) => (
+                          <span
+                            key={t}
+                            className="rounded bg-[#F7F6F3] border border-[#EAEAEA] px-1.5 py-0.5 text-[10px] text-[#666666]"
+                          >
+                            {t}
+                          </span>
+                        ))}
+                      </div>
+                    </td>
+
+                    <td className="py-4 text-right align-top">
+                      <div className="flex items-center justify-end gap-3">
+                        {item.slug && (
+                          <Link
+                            href={`/work/${item.slug}`}
+                            className="text-[#111111] font-medium hover:underline text-[11px]"
+                          >
+                            Case Study
+                          </Link>
+                        )}
+                        {item.github && (
+                          <a
+                            href={item.github}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-[#787774] hover:text-[#111111]"
+                            title="GitHub Repo"
+                          >
+                            <GithubLogo size={14} weight="regular" />
+                          </a>
+                        )}
+                        {item.link && (
+                          <a
+                            href={item.link}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-[#787774] hover:text-[#111111]"
+                            title="Live Site"
+                          >
+                            <Globe size={14} weight="regular" />
+                          </a>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </main>
+
+      <Colophon />
+    </div>
+  );
+}
