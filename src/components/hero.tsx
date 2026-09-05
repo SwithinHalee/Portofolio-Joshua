@@ -26,14 +26,16 @@ export function Hero() {
   };
 
   return (
-    <section className="pt-20 pb-24 md:pt-28 md:pb-32 border-b border-[#EAEAEA] relative overflow-hidden">
+    <section className="min-h-[calc(100dvh-57px)] flex flex-col justify-between border-b border-[#EAEAEA] relative overflow-hidden py-6 sm:py-8 md:py-10">
       {/* Subtle architectural ambient radial spot (non-AI, ultra subtle) */}
       <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-radial from-[#F7F6F3]/80 to-transparent pointer-events-none -z-10 blur-3xl opacity-50" />
 
-      <div className="mx-auto max-w-5xl px-6 sm:px-8">
-        {/* Availability Dossier Tag */}
-        <Reveal delay={0.05}>
-          <div className="flex flex-wrap items-center gap-3 mb-8">
+      <div className="mx-auto max-w-5xl px-6 sm:px-8 w-full flex-1 flex flex-col justify-between">
+        {/* Main Content Cluster (Centered Vertically in Viewport) */}
+        <div className="my-auto py-2 sm:py-4">
+          {/* Availability Dossier Tag */}
+          <Reveal delay={0.05}>
+            <div className="flex flex-wrap items-center gap-3 mb-6 sm:mb-8">
             <div className="inline-flex items-center gap-2 rounded-full border border-[#D5E8D4] bg-[#EDF3EC] px-3 py-1 text-[11px] font-mono uppercase tracking-wider text-[#346538]">
               <span className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#346538] opacity-60"></span>
@@ -80,7 +82,7 @@ export function Hero() {
 
         {/* Action Controls & External Handles */}
         <Reveal delay={0.24}>
-          <div className="flex flex-wrap items-center gap-3.5 pt-2 mb-16">
+          <div className="flex flex-wrap items-center gap-3.5 pt-2">
             <a
               href="#projects"
               className="inline-flex items-center gap-2 rounded-[4px] bg-[#111111] px-4 py-2.5 text-xs font-mono text-white transition-all hover:bg-[#2A2A2A] active:scale-[0.98] shadow-[0_1px_2px_rgba(0,0,0,0.05)]"
@@ -138,10 +140,11 @@ export function Hero() {
             </div>
           </div>
         </Reveal>
+        </div>
 
-        {/* Micro-dossier Quick Metrics Bar */}
+        {/* Micro-dossier Quick Metrics Bar (Anchored at Bottom of Screen) */}
         <Reveal delay={0.3}>
-          <div className="grid grid-cols-2 sm:grid-cols-4 border-t border-[#EAEAEA] pt-6 font-mono text-xs">
+          <div className="grid grid-cols-2 sm:grid-cols-4 border-t border-[#EAEAEA] pt-4 sm:pt-6 font-mono text-xs mt-auto">
             <div className="py-2 pr-4 border-r border-[#EAEAEA]">
               <span className="text-[#888888] block text-[10px] uppercase">Core Focus</span>
               <span className="text-[#111111] font-medium">Frontend & Systems</span>
