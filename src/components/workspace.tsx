@@ -58,23 +58,17 @@ export function Workspace() {
 
             <div
               onClick={() => setModalOpen(true)}
-              className="relative aspect-[16/9] w-full bg-[#F7F6F3] cursor-pointer group overflow-hidden"
+              className="relative aspect-[16/9] w-full bg-[#F7F6F3] cursor-pointer overflow-hidden"
             >
               <Image
                 src="/images/workspace.jpg"
                 alt="Joshua Abdiel engineering desk and workspace setup"
                 fill
-                className="object-cover transition-transform duration-700 group-hover:scale-[1.015]"
+                className="object-cover"
                 sizes="(max-width: 1024px) 100vw, 1024px"
                 priority={false}
               />
               <div className="absolute inset-0 bg-[#111111]/[0.02] pointer-events-none"></div>
-
-              {/* Hover overlay hint */}
-              <div className="absolute bottom-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity bg-white/90 backdrop-blur-md border border-[#EAEAEA] rounded px-3 py-1.5 text-xs font-mono text-[#111111] flex items-center gap-1.5 shadow-sm">
-                <ArrowsOut size={13} weight="bold" />
-                <span>Inspect Workspace High-Res</span>
-              </div>
             </div>
           </div>
         </Reveal>

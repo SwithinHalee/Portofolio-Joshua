@@ -93,7 +93,7 @@ function ProjectCard({ project, index }: { project: ProjectItem; index: number }
 
   return (
     <Reveal delay={index * 0.08} className={project.gridSpan}>
-      <div className="group relative flex flex-col justify-between rounded-[10px] border border-[#EAEAEA] bg-[#FFFFFF] p-6 sm:p-8 transition-all duration-300 hover:border-[#BBBBBB] hover:shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:-translate-y-0.5">
+      <div className="group relative flex flex-col justify-between rounded-[10px] border border-[#EAEAEA] bg-[#FFFFFF] p-6 sm:p-8 transition-colors duration-200 hover:border-[#CCCCCC]">
         <div>
           {/* Card Header & Category Badge */}
           <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
@@ -126,7 +126,7 @@ function ProjectCard({ project, index }: { project: ProjectItem; index: number }
               <ArrowRight
                 size={18}
                 weight="bold"
-                className="text-[#888888] group-hover:translate-x-1 group-hover:text-[#111111] transition-all opacity-0 group-hover:opacity-100"
+                className="text-[#888888] group-hover:text-[#111111] transition-colors opacity-0 group-hover:opacity-100"
               />
             </h3>
           </Link>
@@ -154,22 +154,16 @@ function ProjectCard({ project, index }: { project: ProjectItem; index: number }
             {/* Clickable Image Container */}
             <Link
               href={`/work/${project.slug}`}
-              className="block relative aspect-[16/9] w-full bg-[#F5F5F3] overflow-hidden group/img"
+              className="block relative aspect-[16/9] w-full bg-[#F5F5F3] overflow-hidden"
             >
               <Image
                 src={project.image}
                 alt={`${project.title} interface preview mockup`}
                 fill
-                className="object-cover transition-transform duration-500 group-hover/img:scale-[1.02]"
+                className="object-cover"
                 sizes={isLarge ? "(max-width: 1024px) 100vw, 1024px" : "(max-width: 1024px) 100vw, 560px"}
               />
               <div className="absolute inset-0 bg-[#000000]/[0.015] pointer-events-none"></div>
-
-              {/* Hover chip */}
-              <div className="absolute bottom-3 right-3 opacity-0 group-hover/img:opacity-100 transition-opacity bg-white/90 backdrop-blur-md border border-[#EAEAEA] rounded px-2.5 py-1 text-[11px] font-mono text-[#111111] flex items-center gap-1 shadow-sm">
-                <span>View Full Case Study</span>
-                <ArrowRight size={10} weight="bold" />
-              </div>
             </Link>
           </div>
 

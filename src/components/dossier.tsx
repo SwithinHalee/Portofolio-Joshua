@@ -30,7 +30,7 @@ export function Dossier() {
         <StaggerContainer className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {TECH_CATEGORIES.map((category) => (
             <StaggerItem key={category.title}>
-              <div className="h-full flex flex-col justify-between rounded-[8px] border border-[#EAEAEA] bg-[#FBFBFA] p-6 sm:p-7 transition-all duration-200 hover:border-[#CCCCCC] hover:bg-[#FFFFFF] hover:shadow-[0_2px_12px_rgba(0,0,0,0.02)]">
+              <div className="h-full flex flex-col justify-between rounded-[8px] border border-[#EAEAEA] bg-[#FBFBFA] p-6 sm:p-7 transition-colors duration-150 hover:border-[#CCCCCC] hover:bg-[#FFFFFF]">
                 <div>
                   <h3 className="font-mono text-xs uppercase tracking-wider text-[#111111] font-semibold mb-2">
                     {category.title}
@@ -51,7 +51,7 @@ export function Dossier() {
                             {skill.name}
                           </span>
                           {skill.kbd && (
-                            <kbd className="transition-transform group-hover/skill:scale-105">
+                            <kbd>
                               {skill.kbd}
                             </kbd>
                           )}

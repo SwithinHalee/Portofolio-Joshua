@@ -30,7 +30,7 @@ export function Colophon() {
       <div className="mx-auto max-w-5xl px-6 sm:px-8">
         {/* Contact Directive */}
         <Reveal>
-          <div id="contact" className="mb-20 rounded-[8px] border border-[#EAEAEA] bg-[#FFFFFF] p-8 sm:p-12 transition-all hover:border-[#CCCCCC] hover:shadow-[0_4px_24px_rgba(0,0,0,0.02)]">
+          <div id="contact" className="mb-20 rounded-[8px] border border-[#EAEAEA] bg-[#FFFFFF] p-8 sm:p-12 transition-colors duration-150 hover:border-[#CCCCCC]">
             <div className="flex items-center gap-2 font-mono text-xs text-[#787774] uppercase tracking-wider mb-3">
               <span>06 / INITIATION</span>
               <span className="text-[#EAEAEA]">•</span>
