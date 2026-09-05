@@ -1,6 +1,7 @@
 import { Navbar } from "@/components/navbar";
 import { Hero } from "@/components/hero";
 import { Projects } from "@/components/projects";
+import { StackingCardsSection } from "@/components/stacking-cards";
 import { Dossier } from "@/components/dossier";
 import { Principles } from "@/components/principles";
 import { Workspace } from "@/components/workspace";
@@ -14,6 +15,7 @@ export default function Home() {
       <main className="flex-1">
         <Hero />
         <Projects />
+        <StackingCardsSection />
         <Dossier />
         <Principles />
         <Workspace />
