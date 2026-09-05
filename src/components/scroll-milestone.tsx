@@ -88,14 +88,14 @@ export function ScrollMilestone() {
       >
         <div className="flex flex-col items-start group">
           {/* Top Rail Header */}
-          <div className="flex items-center gap-2 pb-1.5 mb-2 font-mono text-[9px] uppercase tracking-wider text-[#787774]">
+          <div className="flex items-center gap-2 pb-2 mb-3 font-mono text-[10px] uppercase tracking-wider text-[#787774]">
             <span className="relative flex h-1.5 w-1.5">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#346538] opacity-75"></span>
               <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-[#346538]"></span>
             </span>
             <span className="font-semibold text-[#111111]">DOSSIER RAIL</span>
             <span className="text-[#CCCCCC]">•</span>
-            <span className="tabular-nums text-[9px] font-mono text-[#888888]">
+            <span className="tabular-nums text-[10px] font-mono text-[#888888]">
               {MILESTONES[activeIndex]?.num}/08
             </span>
           </div>
@@ -103,19 +103,19 @@ export function ScrollMilestone() {
           {/* Milestone Nodes Track & Continuous Fill Line */}
           <div className="relative py-1">
             {/* Background Static Track */}
-            <div className="absolute left-[7px] top-2 bottom-2 w-[1.5px] bg-[#EAEAEA] rounded-full" />
+            <div className="absolute left-[7px] top-[9px] bottom-[9px] w-[1.5px] bg-[#EAEAEA] rounded-full" />
 
             {/* Dynamic Active Fill Track */}
             <div
-              className="absolute left-[7px] top-2 w-[1.5px] bg-[#111111] rounded-full transition-all duration-150 ease-out"
+              className="absolute left-[7px] top-[9px] w-[1.5px] bg-[#111111] rounded-full transition-all duration-150 ease-out"
               style={{
-                height: `${scrollProgress * 100}%`,
-                maxHeight: "calc(100% - 16px)",
+                height: `calc(${scrollProgress * 100}% - ${scrollProgress * 18}px)`,
+                maxHeight: "calc(100% - 18px)",
               }}
             />
 
-            {/* List of Milestones */}
-            <div className="flex flex-col space-y-3.5 relative">
+            {/* List of Milestones (Taller Spacing) */}
+            <div className="flex flex-col space-y-6 2xl:space-y-7 relative">
               {MILESTONES.map((item, idx) => {
                 const isActive = item.id === activeId;
                 const isPassed = idx <= activeIndex;
@@ -131,7 +131,7 @@ export function ScrollMilestone() {
                     <button
                       type="button"
                       onClick={() => scrollTo(item.id)}
-                      className="group/btn flex items-center gap-2.5 text-left focus:outline-none focus-visible:ring-1 focus-visible:ring-[#111111] rounded py-0.5"
+                      className="group/btn flex items-center gap-3 text-left focus:outline-none focus-visible:ring-1 focus-visible:ring-[#111111] rounded py-0.5"
                       aria-label={`Scroll to ${item.fullLabel}`}
                     >
                       {/* Node Bullet / Marker */}
@@ -139,21 +139,21 @@ export function ScrollMilestone() {
                         {isActive ? (
                           <motion.div
                             layoutId="active-milestone-marker"
-                            className="w-3 h-3 rounded-full bg-[#111111] ring-2 ring-[#346538]/30 flex items-center justify-center"
+                            className="w-3.5 h-3.5 rounded-full bg-[#111111] ring-2 ring-[#346538]/30 flex items-center justify-center"
                             transition={{ type: "spring", stiffness: 350, damping: 30 }}
                           >
                             <span className="w-1 h-1 rounded-full bg-white block" />
                           </motion.div>
                         ) : isPassed ? (
-                          <div className="w-2 h-2 rounded-full bg-[#111111] transition-colors duration-150" />
+                          <div className="w-2.5 h-2.5 rounded-full bg-[#111111] transition-colors duration-150" />
                         ) : (
-                          <div className="w-2 h-2 rounded-full border border-[#CCCCCC] bg-[#FFFFFF] transition-colors duration-150 group-hover/btn:border-[#111111]" />
+                          <div className="w-2.5 h-2.5 rounded-full border border-[#CCCCCC] bg-[#FFFFFF] transition-colors duration-150 group-hover/btn:border-[#111111]" />
                         )}
                       </div>
 
                       {/* Number Tag */}
                       <span
-                        className={`font-mono text-[10px] tabular-nums tracking-wider transition-colors duration-150 ${
+                        className={`font-mono text-[11px] tabular-nums tracking-wider transition-colors duration-150 ${
                           isActive
                             ? "font-bold text-[#111111]"
                             : isPassed
@@ -166,7 +166,7 @@ export function ScrollMilestone() {
 
                       {/* Compact Label */}
                       <span
-                        className={`font-mono text-[10px] tracking-tight transition-colors duration-150 ${
+                        className={`font-mono text-[11px] tracking-tight transition-colors duration-150 ${
                           isActive
                             ? "text-[#111111] font-semibold"
                             : isPassed
@@ -185,7 +185,7 @@ export function ScrollMilestone() {
                         animate={{ opacity: 1, x: 0 }}
                         exit={{ opacity: 0, x: -6 }}
                         transition={{ duration: 0.15 }}
-                        className="absolute left-full ml-3 px-2.5 py-1 rounded-[4px] bg-[#111111] text-white font-mono text-[10px] uppercase tracking-wider whitespace-nowrap z-50 pointer-events-none shadow-md border border-[#333333]"
+                        className="absolute left-full ml-3.5 px-2.5 py-1 rounded-[4px] bg-[#111111] text-white font-mono text-[10px] uppercase tracking-wider whitespace-nowrap z-50 pointer-events-none shadow-md border border-[#333333]"
                       >
                         <span>{item.num} // {item.fullLabel}</span>
                       </motion.div>
@@ -197,7 +197,7 @@ export function ScrollMilestone() {
           </div>
 
           {/* Bottom Live Digital Meter */}
-          <div className="mt-2.5 pt-1.5 flex items-center gap-2 font-mono text-[9px] text-[#787774]">
+          <div className="mt-3 pt-2 flex items-center gap-2 font-mono text-[10px] text-[#787774]">
             <span className="uppercase text-[#888888]">PROGRESS</span>
             <span className="font-semibold text-[#111111] tabular-nums">{percentage}%</span>
           </div>
