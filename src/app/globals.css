@@ -51,3 +51,91 @@ kbd {
   color: #111111;
   box-shadow: 0 1px 0 rgba(0, 0, 0, 0.04);
 }
+
+/* Visible keyboard focus for all interactive elements (WCAG 2.4.7) */
+:focus-visible {
+  outline: 2px solid #111111;
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+.dark-section :focus-visible,
+[data-theme="dark"] :focus-visible {
+  outline-color: #FFFFFF;
+}
+
+/* Respect users who request reduced motion (WCAG 2.3.3) */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Precision instrument cursor — native pointer is hidden only when the
+   custom cursor has mounted (JS-gated class) on devices with a fine pointer.
+   Text-entry elements keep their native I-beam for usability. */
+@media (pointer: fine) {
+  .custom-cursor-enabled,
+  .custom-cursor-enabled * {
+    cursor: none !important;
+  }
+
+  .custom-cursor-enabled input,
+  .custom-cursor-enabled textarea,
+  .custom-cursor-enabled select,
+  .custom-cursor-enabled [contenteditable="true"] {
+    cursor: auto !important;
+  }
+}
+
+@keyframes cursor-click-burst {
+  0% {
+    transform: translate(-50%, -50%) scale(0.45);
+    opacity: 0.9;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1.2);
+    opacity: 0;
+  }
+}
+
+.custom-cursor-burst {
+  animation: cursor-click-burst 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Default Selection (Light Sections) */
+::selection {
+  background-color: #111111;
+  color: #FFFFFF;
+}
+
+::-moz-selection {
+  background-color: #111111;
+  color: #FFFFFF;
+}
+
+/* Dark Mode Sections Selection (Background white with text black on block highlight) */
+#about ::selection,
+#dossier ::selection,
+#contact ::selection,
+.dark-section ::selection,
+[data-theme="dark"] ::selection {
+  background-color: #FFFFFF !important;
+  color: #0E0E0E !important;
+}
+
+#about ::-moz-selection,
+#dossier ::-moz-selection,
+#contact ::-moz-selection,
+.dark-section ::-moz-selection,
+[data-theme="dark"] ::-moz-selection {
+  background-color: #FFFFFF !important;
+  color: #0E0E0E !important;
+}

@@ -1,51 +1,72 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import {
   ArrowDown,
   Check,
-  Copy,
   EnvelopeSimple,
   GithubLogo,
   LinkedinLogo,
 } from "@phosphor-icons/react";
 import { PERSONAL_INFO } from "@/data/portfolio";
+import { cleanEmail } from "@/lib/portfolio-store";
+import { usePortfolio } from "@/components/portfolio-provider";
 import { Reveal } from "@/components/motion-wrapper";
+import { DossierTag } from "@/components/dossier-tag";
 
 export function Hero() {
+  const { data } = usePortfolio();
+  const personalInfo = data.personalInfo ?? PERSONAL_INFO;
+  const email = cleanEmail(personalInfo.email);
   const [copied, setCopied] = useState(false);
 
-  const handleCopyEmail = async () => {
+  const handleEmailClick = () => {
     try {
-      await navigator.clipboard.writeText(PERSONAL_INFO.email);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2400);
+      if (typeof navigator !== "undefined" && navigator.clipboard) {
+        navigator.clipboard.writeText(email).catch(() => {});
+      }
     } catch {
       // Fallback
     }
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2400);
   };
 
   return (
     <section id="hero" className="min-h-[calc(100dvh-57px)] flex flex-col justify-between border-b border-[#EAEAEA] relative overflow-hidden py-6 sm:py-8 md:py-10">
-      {/* Subtle architectural ambient radial spot (non-AI, ultra subtle) */}
-      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-radial from-[#F7F6F3]/80 to-transparent pointer-events-none -z-10 blur-3xl opacity-50" />
+      {/* Full-bleed photographic backdrop with restrained legibility veil */}
+      <div className="absolute inset-0 z-0 pointer-events-none" aria-hidden="true">
+        <Image
+          src="/images/hero/hero-1.webp"
+          alt=""
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover object-center opacity-80"
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#FFFFFF] via-[#FFFFFF]/90 to-[#FFFFFF]/45" />
+      </div>
 
-      <div className="mx-auto max-w-5xl px-6 sm:px-8 w-full flex-1 flex flex-col justify-between">
+      <div className="relative z-10 mx-auto max-w-5xl px-6 sm:px-8 w-full flex-1 flex flex-col justify-between">
         {/* Main Content Cluster (Centered Vertically in Viewport) */}
         <div className="my-auto py-2 sm:py-4">
           {/* Availability Dossier Tag */}
           <Reveal delay={0.05}>
             <div className="flex flex-wrap items-center gap-3 mb-6 sm:mb-8">
-            <div className="inline-flex items-center gap-2 rounded-full border border-[#D5E8D4] bg-[#EDF3EC] px-3 py-1 text-[11px] font-mono uppercase tracking-wider text-[#346538]">
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#346538] opacity-60"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-[#346538]"></span>
-              </span>
-              <span>{PERSONAL_INFO.availability.status}</span>
-            </div>
+            {personalInfo.availability.visible !== false && (
+            <DossierTag
+              tone={(personalInfo.availability.badgeType as "green" | "blue" | "amber" | "red" | "custom" | undefined) ?? "green"}
+              customColor={personalInfo.availability.customColor}
+              size="md"
+              pulse
+            >
+              {personalInfo.availability.status}
+            </DossierTag>
+            )}
 
-            <span className="hidden sm:inline text-xs font-mono text-[#787774]">
-              UNTAR Information Systems • Class of 2027
+            <span className="hidden sm:inline text-xs font-mono text-[#616161]">
+              {personalInfo.heroNote}
             </span>
           </div>
         </Reveal>
@@ -56,7 +77,7 @@ export function Hero() {
             className="text-4xl sm:text-5xl md:text-6xl font-serif text-[#111111] tracking-[-0.03em] leading-[1.1] max-w-3xl mb-8"
             style={{ fontFamily: "var(--font-newsreader), Georgia, serif" }}
           >
-            {PERSONAL_INFO.headline}
+            {personalInfo.headline}
           </h1>
         </Reveal>
 
@@ -64,17 +85,17 @@ export function Hero() {
         <Reveal delay={0.18}>
           <div className="grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-8 items-start mb-12">
             <p className="md:col-span-8 text-base sm:text-lg text-[#444444] leading-relaxed font-sans font-normal">
-              {PERSONAL_INFO.bio}
+              {personalInfo.bio}
             </p>
 
-            <div className="md:col-span-4 border-l border-[#EAEAEA] pl-5 font-mono text-xs text-[#787774] space-y-2">
+            <div className="md:col-span-4 border-l border-[#EAEAEA] pl-5 font-mono text-xs text-[#616161] space-y-2">
               <div>
-                <span className="text-[#111111] font-medium block">Current Engagement:</span>
-                <span>Frontend Intern at CarbonEthics</span>
+                <span className="text-[#111111] font-medium block">{personalInfo.engagementLabel}</span>
+                <span>{personalInfo.engagementValue}</span>
               </div>
               <div>
-                <span className="text-[#111111] font-medium block">Focus Areas:</span>
-                <span>Next.js App Router, TypeScript, Systems Architecture</span>
+                <span className="text-[#111111] font-medium block">{personalInfo.focusLabel}</span>
+                <span>{personalInfo.focusValue}</span>
               </div>
             </div>
           </div>
@@ -87,31 +108,32 @@ export function Hero() {
               href="#projects"
               className="inline-flex items-center gap-2 rounded-[4px] bg-[#111111] px-4 py-2.5 text-xs font-mono text-white transition-all hover:bg-[#2A2A2A] active:scale-[0.98] shadow-[0_1px_2px_rgba(0,0,0,0.05)]"
             >
-              <span>Inspect Selected Works</span>
+              <span>{personalInfo.ctaLabel}</span>
               <ArrowDown size={13} weight="bold" />
             </a>
 
-            <button
-              onClick={handleCopyEmail}
+            <a
+              href={`mailto:${email}`}
+              onClick={handleEmailClick}
+              aria-label={`Send direct email to ${email}`}
               className="inline-flex items-center gap-2 rounded-[4px] border border-[#EAEAEA] bg-[#FBFBFA] px-4 py-2.5 text-xs font-mono text-[#111111] transition-all hover:bg-[#F0F0EE] active:scale-[0.98]"
-              title="Copy email to clipboard"
             >
               {copied ? (
                 <>
                   <Check size={13} weight="bold" className="text-[#346538]" />
-                  <span className="text-[#346538]">Email Copied to Clipboard</span>
+                  <span className="text-[#346538]">Opening Mail Client • Copied</span>
                 </>
               ) : (
                 <>
-                  <Copy size={13} weight="regular" />
-                  <span>{PERSONAL_INFO.email}</span>
+                  <EnvelopeSimple size={13} weight="regular" />
+                  <span>{email}</span>
                 </>
               )}
-            </button>
+            </a>
 
             <div className="flex items-center gap-2 ml-auto">
               <a
-                href={PERSONAL_INFO.github}
+                href={personalInfo.github}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex h-9 w-9 items-center justify-center rounded-[4px] border border-[#EAEAEA] bg-[#FFFFFF] text-[#111111] transition-all hover:bg-[#F7F6F3] active:scale-[0.96]"
@@ -121,7 +143,7 @@ export function Hero() {
               </a>
 
               <a
-                href={PERSONAL_INFO.linkedin}
+                href={personalInfo.linkedin}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex h-9 w-9 items-center justify-center rounded-[4px] border border-[#EAEAEA] bg-[#FFFFFF] text-[#111111] transition-all hover:bg-[#F7F6F3] active:scale-[0.96]"
@@ -131,11 +153,17 @@ export function Hero() {
               </a>
 
               <a
-                href={`mailto:${PERSONAL_INFO.email}`}
+                href={`mailto:${email}`}
+                onClick={handleEmailClick}
                 className="inline-flex h-9 w-9 items-center justify-center rounded-[4px] border border-[#EAEAEA] bg-[#FFFFFF] text-[#111111] transition-all hover:bg-[#F7F6F3] active:scale-[0.96]"
                 aria-label="Send direct email"
+                title={copied ? "Email copied to clipboard" : `Send email to ${email}`}
               >
-                <EnvelopeSimple size={16} weight="regular" />
+                {copied ? (
+                  <Check size={16} weight="bold" className="text-[#346538]" />
+                ) : (
+                  <EnvelopeSimple size={16} weight="regular" />
+                )}
               </a>
             </div>
           </div>
@@ -144,24 +172,20 @@ export function Hero() {
 
         {/* Micro-dossier Quick Metrics Bar (Anchored at Bottom of Screen) */}
         <Reveal delay={0.3}>
-          <div className="grid grid-cols-2 sm:grid-cols-4 border-t border-[#EAEAEA] pt-4 sm:pt-6 font-mono text-xs mt-auto">
-            <div className="py-2 pr-4 border-r border-[#EAEAEA]">
-              <span className="text-[#888888] block text-[10px] uppercase">Core Focus</span>
-              <span className="text-[#111111] font-medium">Frontend & Systems</span>
+            <div className="grid grid-cols-2 sm:grid-cols-4 border-t border-[#EAEAEA] pt-4 sm:pt-6 font-mono text-xs mt-auto" aria-label="Quick profile facts">
+              {personalInfo.quickFacts.map((fact, i) => {
+                const last = i === personalInfo.quickFacts.length - 1;
+                return (
+                  <div
+                    key={`${fact.label}-${i}`}
+                    className={`py-2 ${i % 2 === 0 ? "pr-4 border-r border-[#EAEAEA]" : "pl-4"} sm:px-4 ${i === 0 ? "sm:pl-0" : ""} ${last ? "sm:pr-0" : "sm:border-r sm:border-[#EAEAEA]"}`}
+                  >
+                    <span className="text-[#616161] block text-[10px] uppercase">{fact.label}</span>
+                    <span className="text-[#111111] font-medium">{fact.value}</span>
+                  </div>
+                );
+              })}
             </div>
-            <div className="py-2 px-4 sm:border-r border-[#EAEAEA]">
-              <span className="text-[#888888] block text-[10px] uppercase">Affiliation</span>
-              <span className="text-[#111111] font-medium">UNTAR SI &apos;27</span>
-            </div>
-            <div className="py-2 pr-4 sm:px-4 border-r border-[#EAEAEA]">
-              <span className="text-[#888888] block text-[10px] uppercase">Active Lab</span>
-              <span className="text-[#111111] font-medium">CarbonEthics (FE)</span>
-            </div>
-            <div className="py-2 pl-4">
-              <span className="text-[#888888] block text-[10px] uppercase">Standard</span>
-              <span className="text-[#111111] font-medium">Type-Safe & Fast</span>
-            </div>
-          </div>
         </Reveal>
       </div>
     </section>

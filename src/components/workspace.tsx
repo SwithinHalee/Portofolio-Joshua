@@ -1,22 +1,37 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowsOut, X } from "@phosphor-icons/react";
 import { WORKSPACE_SETUP } from "@/data/portfolio";
+import { usePortfolio } from "@/components/portfolio-provider";
 import { Reveal, StaggerContainer, StaggerItem } from "@/components/motion-wrapper";
 
 export function Workspace() {
+  const { data } = usePortfolio();
+  const setup = data.workspaceSetup ?? WORKSPACE_SETUP;
   const [modalOpen, setModalOpen] = useState(false);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+
+  // Close the lightbox with Escape and move focus to the dialog when opened
+  useEffect(() => {
+    if (!modalOpen) return;
+    closeButtonRef.current?.focus();
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key === "Escape") setModalOpen(false);
+    }
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [modalOpen]);
 
   return (
-    <section id="workspace" className="py-24 md:py-32 border-b border-[#EAEAEA] bg-[#FBFBFA]">
+    <section id="workspace" className="pt-8 md:pt-12 pb-24 md:pb-28 border-b border-[#EAEAEA] bg-[#FBFBFA] md:sticky md:top-[calc(100dvh-1260px)] lg:top-[calc(100dvh-1334px)]">
       <div className="mx-auto max-w-5xl px-6 sm:px-8">
         {/* Section Header */}
         <Reveal>
           <div className="mb-14 max-w-2xl">
-            <div className="flex items-center gap-2 font-mono text-xs text-[#787774] uppercase tracking-wider mb-2">
+            <div className="flex items-center gap-2 font-mono text-xs text-[#616161] uppercase tracking-wider mb-2">
               <span>06 / PHYSICAL & DIGITAL ENVIRONMENT</span>
               <span className="text-[#EAEAEA]">•</span>
               <span>OPERATIONAL RIGOR</span>
@@ -43,13 +58,15 @@ export function Workspace() {
                 <span className="h-2.5 w-2.5 rounded-full bg-[#E5E5E5] inline-block"></span>
                 <span className="h-2.5 w-2.5 rounded-full bg-[#E5E5E5] inline-block"></span>
               </div>
-              <span className="font-mono text-[11px] text-[#787774]">
+              <span className="font-mono text-[11px] text-[#616161]">
                 workspace-environment.raw — studio-interior [calm focus]
               </span>
               <button
+                type="button"
                 onClick={() => setModalOpen(true)}
+                data-cursor-label="Enlarge"
                 className="font-mono text-[11px] text-[#555555] hover:text-[#111111] flex items-center gap-1 transition-colors"
-                title="Expand full resolution"
+                aria-label="Enlarge workspace photo"
               >
                 <ArrowsOut size={12} weight="bold" />
                 <span className="hidden sm:inline">Enlarge</span>
@@ -58,10 +75,11 @@ export function Workspace() {
 
             <div
               onClick={() => setModalOpen(true)}
+              data-cursor-label="Enlarge"
               className="relative aspect-[16/9] w-full bg-[#F7F6F3] cursor-pointer overflow-hidden"
             >
               <Image
-                src="/images/workspace.jpg"
+                src="/images/workspace/workspace.jpg"
                 alt="Joshua Abdiel engineering desk and workspace setup"
                 fill
                 className="object-cover"
@@ -75,7 +93,7 @@ export function Workspace() {
 
         {/* Setup Inventory Grid with Stagger */}
         <StaggerContainer className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {WORKSPACE_SETUP.map((group) => (
+          {setup.map((group) => (
             <StaggerItem key={group.category}>
               <div className="h-full rounded-[8px] border border-[#EAEAEA] bg-[#FFFFFF] p-6 flex flex-col justify-between transition-all duration-200 hover:border-[#CCCCCC]">
                 <div>
@@ -119,6 +137,9 @@ export function Workspace() {
               exit={{ scale: 0.96, opacity: 0 }}
               transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
               onClick={(e) => e.stopPropagation()}
+              role="dialog"
+              aria-modal="true"
+              aria-label="Workspace photo enlarged view"
               className="relative max-w-5xl w-full rounded-[10px] border border-[#EAEAEA] bg-[#FFFFFF] overflow-hidden shadow-2xl"
             >
               <div className="flex items-center justify-between border-b border-[#EAEAEA] bg-[#FFFFFF] px-4 py-3">
@@ -126,7 +147,10 @@ export function Workspace() {
                   Joshua Abdiel — Physical Workspace Environment
                 </span>
                 <button
+                  ref={closeButtonRef}
+                  type="button"
                   onClick={() => setModalOpen(false)}
+                  aria-label="Close enlarged workspace photo"
                   className="p-1 rounded hover:bg-[#F7F6F3] text-[#111111] transition-colors"
                 >
                   <X size={18} weight="bold" />
@@ -135,7 +159,7 @@ export function Workspace() {
 
               <div className="relative aspect-[16/9] w-full bg-[#000000]">
                 <Image
-                  src="/images/workspace.jpg"
+                  src="/images/workspace/workspace.jpg"
                   alt="Joshua Abdiel engineering desk and workspace setup full view"
                   fill
                   className="object-contain"

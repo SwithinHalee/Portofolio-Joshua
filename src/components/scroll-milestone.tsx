@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState, useRef, useCallback } from "react";
-import { motion } from "framer-motion";
 
 interface MilestoneItem {
   id: string;
@@ -25,7 +24,6 @@ const MILESTONES: MilestoneItem[] = [
 export function ScrollMilestone() {
   const [activeId, setActiveId] = useState<string>("hero");
   const [milestoneProgress, setMilestoneProgress] = useState<number>(0);
-  const [hoveredId, setHoveredId] = useState<string | null>(null);
 
   const [trackMetrics, setTrackMetrics] = useState<{ top: number; height: number }>({
     top: 10,
@@ -88,10 +86,32 @@ export function ScrollMilestone() {
             return;
           }
 
-          // 3. Compute absolute top position of each section
+          // 3. Compute absolute top position of each section.
+          // Stack sections are sticky-pinned (md+) while the next section
+          // overlaps them, so their bounding rects drift with scroll — anchor
+          // via wrapper-relative stable tops instead (smooth progress).
+          const stackWrap = document.getElementById("dossier-stack");
+          const studioWrap = document.getElementById("workspace-stack");
+          const dossierEl = document.getElementById("dossier");
+          const workspaceEl = document.getElementById("workspace");
+          const stableTop = (id: string): number | null => {
+            if (id === "dossier" && stackWrap) return stackWrap.offsetTop;
+            if (id === "principles" && stackWrap && dossierEl)
+              return stackWrap.offsetTop + dossierEl.offsetHeight;
+            if (id === "workspace" && studioWrap) return studioWrap.offsetTop;
+            if (id === "experience" && studioWrap && workspaceEl)
+              return studioWrap.offsetTop + workspaceEl.offsetHeight;
+            return null;
+          };
           const sectionTops: number[] = [];
           for (let i = 0; i < MILESTONES.length; i++) {
-            const el = document.getElementById(MILESTONES[i].id);
+            const id = MILESTONES[i].id;
+            const stable = stableTop(id);
+            if (stable !== null) {
+              sectionTops[i] = stable;
+              continue;
+            }
+            const el = document.getElementById(id);
             if (el) {
               const rect = el.getBoundingClientRect();
               sectionTops[i] = rect.top + scrollY;
@@ -113,6 +133,22 @@ export function ScrollMilestone() {
             setMilestoneProgress(heroProgress / numSegments);
             ticking = false;
             return;
+          }
+
+          // 3b. Lock CONNECT to the black 08/INITIATION container itself.
+          // The footer content below the container is shorter than one viewport
+          // on desktop, so the probe (scrollY + 85) can never reach the
+          // container top before max-scroll. Detect container visibility
+          // directly so 100% lands exactly on the container, not page bottom.
+          const contactEl = document.getElementById("contact");
+          if (contactEl) {
+            const cRect = contactEl.getBoundingClientRect();
+            if (cRect.top <= viewportH * 0.65 && cRect.bottom >= 120) {
+              setActiveId(MILESTONES[MILESTONES.length - 1].id);
+              setMilestoneProgress(1);
+              ticking = false;
+              return;
+            }
           }
 
           // Standard smooth section tracking for Sections 01 to 08
@@ -159,15 +195,87 @@ export function ScrollMilestone() {
   const currentIdx = activeIndex === -1 ? 0 : activeIndex;
 
   const scrollTo = (id: string) => {
+    const header = document.querySelector("header");
+    const headerH = header ? header.getBoundingClientRect().height : 59;
+
+    // Smooth-glide with guaranteed arrival: re-assert the destination until
+    // reached, the user takes over (wheel / touch / key / pointer), or the
+    // budget runs out. This heals glides that get aborted or clamped
+    // mid-flight and would otherwise strand the user in the wrong section.
+    const smoothTo = (target: number) => {
+      const dest = Math.max(0, target);
+      window.scrollTo({ top: dest, behavior: "smooth" });
+      let tries = 0;
+      let done = false;
+      const cancel = () => {
+        if (done) return;
+        done = true;
+        window.removeEventListener("wheel", cancel);
+        window.removeEventListener("touchmove", cancel);
+        window.removeEventListener("keydown", cancel);
+        window.removeEventListener("pointerdown", cancel);
+      };
+      window.addEventListener("wheel", cancel, { passive: true });
+      window.addEventListener("touchmove", cancel, { passive: true });
+      window.addEventListener("keydown", cancel);
+      window.addEventListener("pointerdown", cancel);
+      const tick = () => {
+        if (done) return;
+        tries += 1;
+        if (Math.abs(window.scrollY - dest) <= 4 || tries > 20) {
+          cancel();
+          return;
+        }
+        window.scrollTo({ top: dest, behavior: "smooth" });
+        window.setTimeout(tick, 350);
+      };
+      window.setTimeout(tick, 450);
+    };
+
     if (id === "hero") {
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      smoothTo(0);
+      return;
+    }
+    if (id === "dossier" || id === "principles" || id === "workspace" || id === "experience") {
+      // Stack sections are sticky-pinned (md+) while overlapping, so their
+      // bounding rects drift — anchor via wrapper-relative stable tops
+      // measured fresh at click time (never a cached range).
+      const dWrap = document.getElementById("dossier-stack");
+      const sWrap = document.getElementById("workspace-stack");
+      let top: number | null = null;
+      if (id === "dossier" && dWrap) top = dWrap.offsetTop;
+      if (id === "principles" && dWrap) {
+        const d = document.getElementById("dossier");
+        if (d) top = dWrap.offsetTop + d.offsetHeight;
+      }
+      if (id === "workspace" && sWrap) top = sWrap.offsetTop;
+      if (id === "experience" && sWrap) {
+        const w = document.getElementById("workspace");
+        if (w) top = sWrap.offsetTop + w.offsetHeight;
+      }
+      if (top === null) {
+        top = (document.getElementById(id)?.getBoundingClientRect().top ?? 0) + window.scrollY;
+      }
+      if (id === "principles" || id === "experience") {
+        // These sections slide in horizontally (md+): landing on their natural
+        // top would leave the card off-screen right (sweep start). Land one
+        // viewport past the dock point instead, so the slide value is settled
+        // at 0 on arrival. Mobile has no sweep: natural top as usual.
+        const wide = window.matchMedia("(min-width: 768px)").matches;
+        if (wide) {
+          smoothTo(top - headerH + window.innerHeight + 1);
+          return;
+        }
+      }
+      smoothTo(top - headerH + 1);
       return;
     }
     const el = document.getElementById(id);
     if (el) {
-      const navOffset = 65;
-      const elTop = el.getBoundingClientRect().top + window.scrollY - navOffset;
-      window.scrollTo({ top: Math.max(0, elTop), behavior: "smooth" });
+      // Subtract header height minus 1px so the section's top border aligns flush beneath the navbar,
+      // completely hiding the previous section above it.
+      const elTop = el.getBoundingClientRect().top + window.scrollY - headerH + 1;
+      smoothTo(elTop);
     }
   };
 
@@ -220,14 +328,11 @@ export function ScrollMilestone() {
                 const isActive = item.id === activeId;
                 const dotThreshold = idx / (MILESTONES.length - 1) - 0.005;
                 const isPassed = milestoneProgress >= dotThreshold || idx <= currentIdx;
-                const isHovered = hoveredId === item.id;
 
                 return (
                   <div
                     key={item.id}
                     className="relative flex items-center"
-                    onMouseEnter={() => setHoveredId(item.id)}
-                    onMouseLeave={() => setHoveredId(null)}
                   >
                     <button
                       type="button"
@@ -283,21 +388,6 @@ export function ScrollMilestone() {
                         {item.shortLabel}
                       </span>
                     </button>
-
-                    {/* Floating Tooltip Pill */}
-                    {isHovered && (
-                      <motion.div
-                        initial={{ opacity: 0, x: -6 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        exit={{ opacity: 0, x: -6 }}
-                        transition={{ duration: 0.15 }}
-                        className="absolute left-full ml-3 px-2.5 py-1 rounded-[4px] bg-white text-black font-mono text-[10px] uppercase tracking-wider whitespace-nowrap z-50 pointer-events-none shadow-md border border-white/30"
-                      >
-                        <span>
-                          {item.num} // {item.fullLabel}
-                        </span>
-                      </motion.div>
-                    )}
                   </div>
                 );
               })}

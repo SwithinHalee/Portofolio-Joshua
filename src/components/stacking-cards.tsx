@@ -6,6 +6,7 @@ import {
   ArrowUpRight,
   Code,
 } from "@phosphor-icons/react";
+import { DossierTag } from "@/components/dossier-tag";
 
 interface StackingCardItem {
   number: string;
@@ -29,7 +30,7 @@ const STACKING_CARDS: StackingCardItem[] = [
     title: "Sticky Scroll Animation",
     concept: "Spatial Navigation & Viewport Pinning",
     description:
-      "Memanfaatkan properti native CSS position: sticky agar elemen kartu menempel di batas atas viewport saat container induk di-scroll. Mengeliminasi overhead scroll listener JavaScript berat, menjaga eksekusi mulus di GPU rendering thread secara native.",
+      "Memanfaatkan properti native CSS position: sticky agar elemen kartu menempel di batas atas viewport saat container induk di-scroll. Mengurangi overhead scroll listener JavaScript berat, menjaga eksekusi mulus di GPU rendering thread secara native.",
     codeSnippet: `/* Sticky Viewport Pinning */
 .stacking-card {
   position: sticky;
@@ -39,7 +40,7 @@ const STACKING_CARDS: StackingCardItem[] = [
 }`,
     specs: [
       { label: "Rendering Thread", value: "Native Browser GPU" },
-      { label: "Layout Impact", value: "Zero Cumulative Layout Shift" },
+      { label: "Layout Impact", value: "Minimal Shift by Design" },
       { label: "Scroll Reference", value: "Framer Community Standard" },
     ],
     citationUrl: "https://www.framer.community/c/support/sticky-scroll-effect",
@@ -76,15 +77,15 @@ const scale = useTransform(
     title: "Type-Safe State Contracts",
     concept: "Compile-Time Immutability & Mathematical Soundness",
     description:
-      "Menjamin integritas data mulai dari network payload hingga reactive UI boundary. Kontrak antarmuka TypeScript ketat mencegah runtime bug tak terduga dan memastikan kalkulasi metriks emisi karbon selalu dapat diandalkan secara matematis.",
+      "Menjaga integritas data mulai dari network payload hingga reactive UI boundary. Kontrak antarmuka TypeScript ketat mengurangi risiko runtime bug tak terduga dan membuat kalkulasi metriks emisi karbon lebih dapat diandalkan secara matematis.",
     codeSnippet: `interface CarbonMetricContract {
   readonly co2Tons: number;
   readonly emissionFactor: EmissionFactor;
   readonly confidenceScore: number;
 }`,
     specs: [
-      { label: "Type Coverage", value: "100% Strict Interfaces" },
-      { label: "Runtime Safety", value: "Zero Unsafe Any" },
+      { label: "Type Coverage", value: "Strict Interfaces Throughout" },
+      { label: "Runtime Safety", value: "Typed Boundaries, No Any Leaks" },
       { label: "State Predictability", value: "Deterministic State Machines" },
     ],
     accent: "amber",
@@ -103,9 +104,9 @@ export default async function Page() {
   return <CalculatorIsland initialData={data} />;
 }`,
     specs: [
-      { label: "Largest Contentful Paint", value: "Sub-800ms Baseline" },
-      { label: "First Input Delay", value: "< 50ms Ultra Responsive" },
-      { label: "Bundle Discipline", value: "Zero Bloat Dependencies" },
+      { label: "Largest Contentful Paint", value: "Sub-second Budget (Lab)" },
+      { label: "First Input Delay", value: "Responsive Input Budget" },
+      { label: "Bundle Discipline", value: "Lean Dependency Set" },
     ],
     accent: "charcoal",
   },
@@ -122,12 +123,12 @@ export function StackingCardsSection() {
     <section
       id="stacking-mechanics"
       ref={containerRef}
-      className="relative py-24 md:py-32 border-b border-[#EAEAEA] bg-[#FBFBFA]"
+      className="relative pt-8 md:pt-12 pb-24 md:pb-28 border-b border-[#EAEAEA] bg-[#FBFBFA]"
     >
       <div className="mx-auto max-w-5xl px-6 sm:px-8">
         {/* Section Header */}
         <div className="mb-16 max-w-2xl">
-          <div className="flex items-center gap-2 font-mono text-xs text-[#787774] uppercase tracking-wider mb-2">
+          <div className="flex items-center gap-2 font-mono text-xs text-[#616161] uppercase tracking-wider mb-2">
             <span>03 / DESIGN ENGINEERING MECHANICS</span>
             <span className="text-[#EAEAEA]">•</span>
             <span>ISTILAH POPULER & EFEK PENDUKUNG</span>
@@ -200,25 +201,18 @@ function SingleStackingCard({
             <span className="font-mono text-sm font-semibold text-[#111111]">
               [{card.number}]
             </span>
-            <span className="font-mono text-xs uppercase tracking-wider text-[#787774]">
+            <span className="font-mono text-xs uppercase tracking-wider text-[#616161]">
               {card.category}
             </span>
           </div>
 
           <div className="flex items-center gap-2">
-            <span
-              className={`rounded-full px-2.5 py-0.5 text-[10px] font-mono tracking-wider font-medium ${
-                card.accent === "green"
-                  ? "bg-[#EDF3EC] text-[#346538] border border-[#D5E8D4]"
-                  : card.accent === "blue"
-                  ? "bg-[#E1F3FE] text-[#1F6C9F] border border-[#CDE7FB]"
-                  : card.accent === "amber"
-                  ? "bg-[#FBF3DB] text-[#956400] border border-[#F4E3B5]"
-                  : "bg-[#F7F6F3] text-[#111111] border border-[#EAEAEA]"
-              }`}
+            <DossierTag
+              tone={card.accent === "charcoal" ? "neutral" : card.accent}
+              code={card.number}
             >
               {card.badge}
-            </span>
+            </DossierTag>
           </div>
         </div>
 
@@ -251,7 +245,7 @@ function SingleStackingCard({
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-1.5 font-mono text-xs text-[#111111] hover:underline underline-offset-4"
                 >
-                  <span className="text-[#888888]">Reference:</span>
+                  <span className="text-[#616161]">Reference:</span>
                   <span className="font-medium">{card.citationLabel}</span>
                   <ArrowUpRight size={11} weight="bold" />
                 </a>
@@ -265,7 +259,7 @@ function SingleStackingCard({
                   key={s.label}
                   className="rounded border border-[#EAEAEA] bg-[#FBFBFA] p-2.5 font-mono"
                 >
-                  <span className="block text-[10px] text-[#888888] uppercase">
+                  <span className="block text-[10px] text-[#616161] uppercase">
                     {s.label}
                   </span>
                   <span className="text-xs font-medium text-[#111111] block mt-0.5">
@@ -278,7 +272,7 @@ function SingleStackingCard({
 
           {/* Right: Technical Code Chrome */}
           <div className="lg:col-span-5 rounded-[6px] border border-[#EAEAEA] bg-[#F7F6F3] overflow-hidden">
-            <div className="flex items-center justify-between border-b border-[#EAEAEA] bg-[#FFFFFF] px-3 py-2 font-mono text-[11px] text-[#787774]">
+            <div className="flex items-center justify-between border-b border-[#EAEAEA] bg-[#FFFFFF] px-3 py-2 font-mono text-[11px] text-[#616161]">
               <div className="flex items-center gap-1.5">
                 <span className="h-2 w-2 rounded-full bg-[#E5E5E5] inline-block"></span>
                 <span className="h-2 w-2 rounded-full bg-[#E5E5E5] inline-block"></span>

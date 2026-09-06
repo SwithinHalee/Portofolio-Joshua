@@ -10,6 +10,7 @@ import {
   TerminalWindow,
 } from "@phosphor-icons/react";
 import { Reveal } from "@/components/motion-wrapper";
+import { DossierGallery } from "@/components/dossier-gallery";
 
 type DossierLens = "philosophy" | "trajectory" | "terminal";
 
@@ -72,7 +73,7 @@ Core Responsibilities:
 - Engineered responsive client interfaces for Carbon Offset Estimator
 - Built dynamic tree-planting monitoring modules with live coordinates
 - Implemented modular design-token system eliminating style drift
-- Audited client bundle sizes ensuring sub-second Largest Contentful Paint`,
+- Audited client bundle sizes against Largest Contentful Paint budgets`,
     "cat stack.json": `// Engineering Instrument Cluster
 {
   "languages": ["TypeScript (Strict)", "JavaScript (ESNext)", "SQL"],
@@ -160,12 +161,12 @@ echo "Location: Tangerang / Jakarta / Remote"`,
   }, [activeLens, activeTerminalCmd, isTyping, isTerminalAutoPaused, isLensAutoPaused]);
 
   return (
-    <section id="about" className="py-24 md:py-32 border-b border-[#222222] bg-[#0E0E0E] text-[#FFFFFF]">
+    <section id="about" className="dark-section pt-8 md:pt-12 pb-24 md:pb-28 border-b border-[#222222] bg-[#0E0E0E] text-[#FFFFFF]">
       <div className="mx-auto max-w-5xl px-6 sm:px-8">
         {/* Main 2-Column Grid: Left Title & Context / Right Unified Specimen Dossier */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start mb-16">
           {/* Left Column (5 Cols): Headline, Bio, and Lens Navigation */}
-          <div className="lg:col-span-5 space-y-6 lg:sticky lg:top-24">
+          <div className="lg:col-span-5 space-y-6">
             <Reveal>
               <div className="flex items-center gap-2 font-mono text-xs text-[#888888] uppercase tracking-wider mb-3">
                 <span>01 / BIOGRAPHIC DOSSIER</span>
@@ -194,7 +195,10 @@ echo "Location: Tangerang / Jakarta / Remote"`,
               >
                 <div className="flex items-center justify-between text-[10px] uppercase text-[#777777] px-2.5 py-1">
                   <span>Select Inspection Lens</span>
-                  <div className="flex items-center gap-1.5 font-mono text-[9px]">
+                  <div
+                    className="flex items-center font-mono text-[9px]"
+                    title={isLensAutoPaused ? "Auto-cycle paused" : "Auto-cycling lenses"}
+                  >
                     <span
                       className={`w-1.5 h-1.5 rounded-full ${
                         isLensAutoPaused
@@ -202,12 +206,8 @@ echo "Location: Tangerang / Jakarta / Remote"`,
                           : "bg-[#4ADE80] animate-pulse"
                       }`}
                     />
-                    <span
-                      className={
-                        isLensAutoPaused ? "text-[#777777]" : "text-[#4ADE80] font-medium"
-                      }
-                    >
-                      {isLensAutoPaused ? "PAUSED" : "AUTO-CYCLE"}
+                    <span className="sr-only">
+                      {isLensAutoPaused ? "Auto-cycle paused" : "Auto-cycling lenses"}
                     </span>
                   </div>
                 </div>
@@ -312,9 +312,9 @@ echo "Location: Tangerang / Jakarta / Remote"`,
             onMouseLeave={() => setIsLensAutoPaused(false)}
           >
             <Reveal delay={0.08}>
-              <div className="rounded-[10px] border border-[#262626] bg-[#141414] overflow-hidden shadow-[0_4px_30px_rgba(0,0,0,0.5)]">
+              <div>
                 {/* 1. Master Specimen Barcode & Clearance Top Bar */}
-                <div className="border-b border-[#242424] bg-[#181818] px-4 py-3 flex items-center justify-between font-mono text-[11px] text-[#888888]">
+                <div className="border-b border-[#242424] py-3 flex items-center justify-between font-mono text-[11px] text-[#888888]">
                   <div className="flex items-center gap-2">
                     <Fingerprint size={16} weight="bold" className="text-white" />
                     <span className="font-semibold text-white tracking-wider">
@@ -333,13 +333,13 @@ echo "Location: Tangerang / Jakarta / Remote"`,
                 </div>
 
                 {/* 2. Unified Specimen Identity Grid (Portrait + Parameters Unified) */}
-                <div className="p-4 sm:p-5 border-b border-[#242424] bg-[#141414]">
+                <div className="py-6 border-b border-[#242424]">
                   <div className="grid grid-cols-1 sm:grid-cols-12 gap-5 items-center">
                     {/* Compact Portrait Frame */}
                     <div className="sm:col-span-4">
-                      <div className="relative aspect-[4/3] w-full rounded-[6px] border border-[#2A2A2A] bg-[#1A1A1A] overflow-hidden">
+                      <div className="relative aspect-[4/3] w-full rounded-[6px] overflow-hidden">
                         <Image
-                          src="/images/joshua.jpg"
+                          src="/images/about/joshua.jpg"
                           alt="Joshua Abdiel portrait"
                           fill
                           className="object-cover"
@@ -382,7 +382,7 @@ echo "Location: Tangerang / Jakarta / Remote"`,
                 </div>
 
                 {/* 3. Dynamic Lens Content Unified Under the Specimen ID */}
-                <div className="p-5 sm:p-6 bg-[#141414]">
+                <div data-lens-panel className="pt-6 min-h-[536px] sm:min-h-[412px]">
                   <AnimatePresence mode="wait">
                     {activeLens === "philosophy" && (
                       <motion.div
@@ -406,8 +406,8 @@ echo "Location: Tangerang / Jakarta / Remote"`,
                         </p>
 
                         {/* Standards Stack */}
-                        <div className="space-y-2.5 font-mono text-xs">
-                          <div className="rounded border border-[#242424] bg-[#181818] p-3">
+                        <div className="divide-y divide-[#242424] font-mono text-xs">
+                          <div className="py-3">
                             <div className="flex items-center gap-2 mb-1">
                               <span className="text-[#4ADE80] font-bold">01</span>
                               <span className="font-semibold text-white">
@@ -420,7 +420,7 @@ echo "Location: Tangerang / Jakarta / Remote"`,
                             </p>
                           </div>
 
-                          <div className="rounded border border-[#242424] bg-[#181818] p-3">
+                          <div className="py-3">
                             <div className="flex items-center gap-2 mb-1">
                               <span className="text-[#4ADE80] font-bold">02</span>
                               <span className="font-semibold text-white">
@@ -433,7 +433,7 @@ echo "Location: Tangerang / Jakarta / Remote"`,
                             </p>
                           </div>
 
-                          <div className="rounded border border-[#242424] bg-[#181818] p-3">
+                          <div className="py-3">
                             <div className="flex items-center gap-2 mb-1">
                               <span className="text-[#4ADE80] font-bold">03</span>
                               <span className="font-semibold text-white">
@@ -466,7 +466,7 @@ echo "Location: Tangerang / Jakarta / Remote"`,
                         </div>
 
                         {/* Trajectory Timeline in Master Card */}
-                        <div className="border border-[#242424] rounded-[8px] bg-[#181818] p-4 font-mono text-xs divide-y divide-[#242424]">
+                        <div className="font-mono text-xs divide-y divide-[#242424]">
                           <div className="pb-3">
                             <div className="flex items-center justify-between mb-1">
                               <span className="font-semibold text-white text-xs font-sans">
@@ -522,10 +522,10 @@ echo "Location: Tangerang / Jakarta / Remote"`,
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -6 }}
                         transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
-                        className="rounded-[8px] border border-[#2A2A2A] bg-[#111111] text-[#E0E0E0] font-mono text-xs overflow-hidden"
+                        className="text-[#E0E0E0] font-mono text-xs"
                       >
                         {/* Terminal Header */}
-                        <div className="border-b border-[#2A2A2A] bg-[#1A1A1A] px-3.5 py-2 flex items-center justify-between">
+                        <div className="px-1 py-2 flex items-center justify-between">
                           <div className="flex items-center gap-2">
                             <span className="h-2 w-2 rounded-full bg-[#FF5F56] inline-block"></span>
                             <span className="h-2 w-2 rounded-full bg-[#FFBD2E] inline-block"></span>
@@ -541,40 +541,31 @@ echo "Location: Tangerang / Jakarta / Remote"`,
                         <div
                           onMouseEnter={() => setIsTerminalAutoPaused(true)}
                           onMouseLeave={() => setIsTerminalAutoPaused(false)}
-                          className="border-b border-[#222222] bg-[#161616] px-3 py-1.5 flex flex-wrap items-center gap-1.5 text-[10px]"
+                          className="border-b border-[#222222] px-1 py-2 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-[11px]"
                         >
                           {TERMINAL_COMMANDS.map((cmd) => (
                             <button
                               key={cmd}
                               type="button"
                               onClick={() => setActiveTerminalCmd(cmd)}
-                              className={`px-2 py-0.5 rounded transition-colors relative overflow-hidden ${
+                              className={`transition-colors ${
                                 activeTerminalCmd === cmd
-                                  ? "bg-[#2A2A2A] text-white font-semibold"
-                                  : "text-[#888888] hover:text-white hover:bg-[#202020]"
+                                  ? "text-white font-semibold underline underline-offset-4"
+                                  : "text-[#888888] hover:text-white"
                               }`}
                             >
                               <span>$ {cmd}</span>
-                              {activeTerminalCmd === cmd && !isTyping && (
-                                <div className="absolute bottom-0 left-0 right-0 h-[1.5px] bg-white/10 overflow-hidden">
-                                  <motion.div
-                                    key={`cmd-timer-${cmd}-${isTerminalAutoPaused || isLensAutoPaused}`}
-                                    initial={{ width: "0%" }}
-                                    animate={{
-                                      width: isTerminalAutoPaused || isLensAutoPaused ? undefined : "100%",
-                                    }}
-                                    transition={{
-                                      duration: isTerminalAutoPaused || isLensAutoPaused ? 0 : 4.5,
-                                      ease: "linear",
-                                    }}
-                                    className="h-full bg-[#27C93F]"
-                                  />
-                                </div>
-                              )}
                             </button>
                           ))}
 
-                          <div className="flex items-center gap-1.5 ml-auto font-mono text-[9px]">
+                          <div
+                            className="flex items-center ml-auto font-mono text-[9px]"
+                            title={
+                              isTerminalAutoPaused || isLensAutoPaused
+                                ? "Auto-cycle paused"
+                                : "Auto-cycling commands"
+                            }
+                          >
                             <span
                               className={`w-1 h-1 rounded-full ${
                                 isTerminalAutoPaused || isLensAutoPaused
@@ -582,16 +573,10 @@ echo "Location: Tangerang / Jakarta / Remote"`,
                                   : "bg-[#27C93F] animate-pulse"
                               }`}
                             />
-                            <span
-                              className={
-                                isTerminalAutoPaused || isLensAutoPaused
-                                  ? "text-[#666666]"
-                                  : "text-[#27C93F]"
-                              }
-                            >
+                            <span className="sr-only">
                               {isTerminalAutoPaused || isLensAutoPaused
-                                ? "PAUSED"
-                                : "AUTO-CYCLE"}
+                                ? "Auto-cycle paused"
+                                : "Auto-cycling commands"}
                             </span>
                           </div>
                         </div>
@@ -600,7 +585,7 @@ echo "Location: Tangerang / Jakarta / Remote"`,
                         <div
                           onMouseEnter={() => setIsTerminalAutoPaused(true)}
                           onMouseLeave={() => setIsTerminalAutoPaused(false)}
-                          className="p-4 font-mono text-[11px] leading-relaxed overflow-x-auto min-h-[240px] bg-[#0E0E0E]"
+                          className="px-1 py-4 font-mono text-[11px] leading-relaxed overflow-x-auto min-h-[240px]"
                         >
                           {/* Active Prompt & Typed Command */}
                           <div className="flex items-center gap-1.5 text-[#27C93F] mb-2 text-[10px]">
@@ -641,6 +626,8 @@ echo "Location: Tangerang / Jakarta / Remote"`,
             </Reveal>
           </div>
         </div>
+
+        <DossierGallery />
 
         {/* Bottom Section: Three Contrarian Axioms */}
         <Reveal delay={0.15}>

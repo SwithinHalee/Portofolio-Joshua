@@ -15,7 +15,9 @@ export interface ProjectItem {
   gridSpan: "col-span-12" | "col-span-12 lg:col-span-7" | "col-span-12 lg:col-span-5";
   badge?: {
     text: string;
-    variant: "green" | "blue" | "amber" | "red";
+    variant: "green" | "blue" | "amber" | "red" | "custom";
+    /** Base hex (e.g. "#7C3AED") used when variant is "custom". */
+    customColor?: string;
   };
   caseStudy: {
     clientOrContext: string;
@@ -36,6 +38,11 @@ export interface ExperienceItem {
   type: string;
   impact: string;
   technologies: string[];
+  /** Optional visual: uploadable image shown with the entry. */
+  image?: string;
+  /** Destination opened when the image is clicked. */
+  imageLink?: string;
+  imageAlt?: string;
 }
 
 export interface EducationItem {
@@ -43,12 +50,17 @@ export interface EducationItem {
   degree: string;
   institution: string;
   details: string;
+  /** Optional visual: uploadable image shown with the entry. */
+  image?: string;
+  /** Destination opened when the image is clicked. */
+  imageLink?: string;
+  imageAlt?: string;
 }
 
 export interface TechCategory {
   title: string;
   description: string;
-  skills: { name: string; detail: string; kbd?: string }[];
+  skills: { name: string; detail: string; kbd?: string; logos?: string[] }[];
 }
 
 export interface PrincipleItem {
@@ -62,6 +74,19 @@ export interface SetupItem {
   items: { name: string; spec: string }[];
 }
 
+export interface GalleryPlate {
+  src: string;
+  alt: string;
+  title: string;
+  detail: string;
+  /**
+   * Layout template — tiles in a 12-col grid, rendered top-to-bottom in order:
+   * wide = full row (21:9), half = half row (4:3), tall = half row portrait (3:4),
+   * trio = third row square (1:1, groups of three fill a row).
+   */
+  span: "wide" | "half" | "tall" | "trio";
+}
+
 export const PERSONAL_INFO = {
   name: "Joshua Abdiel",
   callsign: "Josh",
@@ -73,9 +98,22 @@ export const PERSONAL_INFO = {
   availability: {
     status: "Internship Active • Open for Q4 2026 Roles",
     badgeType: "green" as const,
+    visible: true,
   },
   headline: "Engineering deliberate web interfaces with architectural rigor & utilitarian precision.",
   bio: "Frontend engineer and Information Systems undergraduate at Universitas Tarumanagara. Currently building climate-tech interfaces at CarbonEthics, focusing on web performance, component architecture, and type-safe systems.",
+  heroNote: "UNTAR Information Systems • Class of 2027",
+  engagementLabel: "Current Engagement:",
+  engagementValue: "Frontend Intern at CarbonEthics",
+  focusLabel: "Focus Areas:",
+  focusValue: "Next.js App Router, TypeScript, Systems Architecture",
+  ctaLabel: "Inspect Selected Works",
+  quickFacts: [
+    { label: "Core Focus", value: "Frontend & Systems" },
+    { label: "Affiliation", value: "UNTAR SI '27" },
+    { label: "Active Lab", value: "CarbonEthics (FE)" },
+    { label: "Standard", value: "Type-Safe & Fast" },
+  ],
   email: "joshuaabdiel365@gmail.com",
   github: "https://github.com/SwithinHalee",
   linkedin: "https://www.linkedin.com/in/joshua-abdiel-773965282/",
@@ -91,14 +129,14 @@ export const PROJECTS: ProjectItem[] = [
       "Enterprise sustainability web interface facilitating corporate and individual carbon offset calculations, mangrove restoration initiatives, and environmental monitoring.",
     description:
       "Engineered responsive, highly performant frontend components for CarbonEthics. Focused on dynamic carbon calculation workflows, accessible UI patterns, and efficient hydration performance across diverse client viewports.",
-    image: "/images/carbonethics.jpg",
+    image: "/images/projects/carbonethics.jpg",
     technicalHighlights: [
       "Dynamic offset calculator engine with real-time carbon metric estimation",
-      "Modular design-token integration ensuring 100% brand consistency",
-      "Hydration and asset optimization targeting sub-second Largest Contentful Paint",
+      "Modular design-token integration supporting consistent brand application",
+      "Hydration and asset optimization targeting a fast Largest Contentful Paint budget",
     ],
     metrics: [
-      { label: "Performance", value: "Sub-second LCP" },
+      { label: "Performance Goal", value: "Fast LCP Budget" },
       { label: "Architecture", value: "Next.js App Router" },
       { label: "Design Token", value: "Tailwind UI System" },
     ],
@@ -121,7 +159,7 @@ export const PROJECTS: ProjectItem[] = [
       deliverables: [
         "Interactive Carbon Offset Estimator with instant recalculation",
         "Responsive mangrove tree plantation tracking module",
-        "Accessible, high-contrast UI theme compliant with international web standards",
+        "Accessible, high-contrast UI theme following WCAG guidance",
       ],
       technicalDecisions: [
         {
@@ -130,7 +168,7 @@ export const PROJECTS: ProjectItem[] = [
         },
         {
           title: "Strict Interface Typing for Emission Factors",
-          rationale: "Eliminated runtime estimation bugs by establishing immutable mathematical conversion types.",
+          rationale: "Reduced runtime estimation errors by establishing immutable mathematical conversion types.",
         },
       ],
     },
@@ -144,15 +182,15 @@ export const PROJECTS: ProjectItem[] = [
       "Minimalist financial tracker and expense allocation engine providing clean tabular ledger views, recurring transaction math, and budgetary insights.",
     description:
       "Engineered to replace bloated financial trackers with a fast, zero-friction accounting interface. Built with strict client-side validation, categorical cash flow aggregation, and local persistence.",
-    image: "/images/xpense.jpg",
+    image: "/images/projects/xpense.jpg",
     technicalHighlights: [
       "Tabular ledger with instant client-side filtering and sorting",
       "Mathematical aggregation pipeline calculating burn rate and category ratios",
       "Strict data sanitization and modular state encapsulation",
     ],
     metrics: [
-      { label: "Load Time", value: "< 250ms" },
-      { label: "State", value: "Zero Re-render Waste" },
+      { label: "Loading", value: "Local-first, Cached" },
+      { label: "State", value: "Memoized Updates" },
     ],
     tags: ["React", "TypeScript", "Tailwind CSS", "Client State", "Chart.js"],
     githubUrl: "https://github.com/SwithinHalee/Xpense",
@@ -167,7 +205,7 @@ export const PROJECTS: ProjectItem[] = [
       timeline: "2025 — 2026",
       role: "Sole Software Engineer",
       challenge:
-        "Most budgeting apps enforce complex setups, advertisements, and slow sync latency. The goal was a clean ledger that loads in sub-250ms with instant keyboard navigation.",
+        "Most budgeting apps enforce complex setups, advertisements, and slow sync latency. The goal was a clean ledger that loads quickly from local state with keyboard-friendly navigation.",
       architectureSolution:
         "Implemented lightweight localized state management with transactional immutability. Built custom tabular views with keyboard shortcuts for rapid expense logging.",
       deliverables: [
@@ -196,15 +234,15 @@ export const PROJECTS: ProjectItem[] = [
       "High-throughput encyclopedia application consuming the PokeAPI, featuring aggressive client-side caching, virtualized listing, and stat comparison radars.",
     description:
       "Explores scalable pagination and asynchronous cache-first data fetching. Features instant search indexing, dual-type filtering matrices, and detailed numerical baseline comparisons.",
-    image: "/images/pokemon.jpg",
+    image: "/images/projects/pokemon.jpg",
     technicalHighlights: [
-      "Cache-first query pipeline preventing redundant network trips",
+      "Cache-first query pipeline reducing redundant network trips",
       "Adaptive search with debounce and multi-type matrix intersection",
       "Responsive metric breakdown bars rendered with CSS grid",
     ],
     metrics: [
-      { label: "API Cache Hit", value: "98% Repeat Rate" },
-      { label: "Search Index", value: "Instant Sub-10ms" },
+      { label: "API Caching", value: "Cache-first Repeats" },
+      { label: "Search", value: "Debounced Instant-feel" },
     ],
     tags: ["React", "TypeScript", "TanStack Query", "PokeAPI", "Tailwind CSS"],
     githubUrl: "https://github.com/SwithinHalee/pokemon-app",
@@ -230,11 +268,11 @@ export const PROJECTS: ProjectItem[] = [
       technicalDecisions: [
         {
           title: "Stale-While-Revalidate Query Strategy",
-          rationale: "Cached responses render instantaneously, only querying delta changes in background.",
+          rationale: "Cached responses render without waiting on the network, only querying delta changes in background.",
         },
         {
           title: "Component Level Error Boundaries",
-          rationale: "Prevents remote image or missing sprite anomalies from cascading crashes to the explorer.",
+          rationale: "Limits the impact of remote image or missing sprite anomalies so they do not cascade to the whole explorer.",
         },
       ],
     },
@@ -248,7 +286,7 @@ export const PROJECTS: ProjectItem[] = [
       "Emulated enterprise network architecture validating segmented peer-to-peer data distribution, protocol routing, access control lists, and packet analysis.",
     description:
       "Designed and tested in Graphical Network Simulator-3 (GNS3). Emulates router configurations, VLAN segmentation, and multi-node packet exchange security protocols across distributed workstation clusters.",
-    image: "/images/gns3.jpg",
+    image: "/images/projects/gns3.jpg",
     technicalHighlights: [
       "Multi-subnet IP addressing scheme and dynamic route distribution",
       "Packet verification using Wireshark to validate protocol handshakes",
@@ -277,7 +315,7 @@ export const PROJECTS: ProjectItem[] = [
       deliverables: [
         "Complete enterprise topology emulation file",
         "IP address scheme documentation & routing tables",
-        "Packet capture logs verifying 0% packet leakage between segmented VLANs",
+        "Packet capture logs with no leakage observed between segmented VLANs in lab captures",
       ],
       technicalDecisions: [
         {
@@ -298,7 +336,7 @@ export const WORKSPACE_SETUP: SetupItem[] = [
     category: "Hardware & Physical Instruments",
     items: [
       { name: "Primary Machine", spec: "Custom Workstation / Portable Silicon" },
-      { name: "Display", spec: "High-DPI Calibrated IPS Monitor with 100% sRGB" },
+      { name: "Display", spec: "High-DPI Calibrated IPS Monitor (100% sRGB, manufacturer rated)" },
       { name: "Input", spec: "Custom Mechanical Keyboard (Lubed Linears) & Precision Ergonomic Mouse" },
       { name: "Audio", spec: "Open-back reference monitors for focused engineering sessions" },
     ],
@@ -328,11 +366,11 @@ export const TECH_CATEGORIES: TechCategory[] = [
     title: "Frontend Architecture",
     description: "Production web interfaces, modern component systems, and state synchronization.",
     skills: [
-      { name: "TypeScript", detail: "End-to-end strict typing & contract safety", kbd: "TS" },
-      { name: "React 19 & Next.js", detail: "App Router, SSR, Server Components & Hydration", kbd: "NEXT" },
-      { name: "Tailwind CSS v4", detail: "Custom design systems & tokenized hairlines", kbd: "CSS" },
-      { name: "TanStack Query", detail: "Asynchronous state, caching & query invalidation", kbd: "RQ" },
-      { name: "Framer Motion", detail: "Subtle micro-interactions & hardware-accelerated reveals", kbd: "FM" },
+      { name: "TypeScript", detail: "End-to-end strict typing & contract safety", kbd: "TS", logos: ["typescript"] },
+      { name: "React 19 & Next.js", detail: "App Router, SSR, Server Components & Hydration", kbd: "NEXT", logos: ["react", "nextdotjs"] },
+      { name: "Tailwind CSS v4", detail: "Custom design systems & tokenized hairlines", kbd: "CSS", logos: ["tailwindcss"] },
+      { name: "TanStack Query", detail: "Asynchronous state, caching & query invalidation", kbd: "RQ", logos: ["tanstack"] },
+      { name: "Framer Motion", detail: "Subtle micro-interactions & hardware-accelerated reveals", kbd: "FM", logos: ["framer"] },
     ],
   },
   {
@@ -340,8 +378,8 @@ export const TECH_CATEGORIES: TechCategory[] = [
     description: "API communication, schema design, and server-side data models.",
     skills: [
       { name: "RESTful API Design", detail: "HTTP methods, status semantics & payload contracts", kbd: "REST" },
-      { name: "Node.js & Runtime", detail: "JavaScript server environments & asynchronous event loop", kbd: "NODE" },
-      { name: "PostgreSQL & Relational DB", detail: "Table schema design, foreign keys & query hygiene", kbd: "SQL" },
+      { name: "Node.js & Runtime", detail: "JavaScript server environments & asynchronous event loop", kbd: "NODE", logos: ["nodedotjs"] },
+      { name: "PostgreSQL & Relational DB", detail: "Table schema design, foreign keys & query hygiene", kbd: "SQL", logos: ["postgresql"] },
       { name: "Network Engineering", detail: "TCP/IP, routing protocols, subnets & GNS3 emulation", kbd: "NET" },
     ],
   },
@@ -350,9 +388,9 @@ export const TECH_CATEGORIES: TechCategory[] = [
     description: "Daily engineering instrument cluster for development, debugging, and review.",
     skills: [
       { name: "VS Code", detail: "Strict linting, TypeScript compiler integration & keybindings", kbd: "IDE" },
-      { name: "Postman", detail: "Endpoint interrogation, payload mocking & automated testing", kbd: "API" },
-      { name: "Git & GitHub", detail: "Branching strategies, semantic commits & PR reviews", kbd: "GIT" },
-      { name: "Figma", detail: "Design handoff, spacing audits & layout geometry parsing", kbd: "FIGMA" },
+      { name: "Postman", detail: "Endpoint interrogation, payload mocking & automated testing", kbd: "API", logos: ["postman"] },
+      { name: "Git & GitHub", detail: "Branching strategies, semantic commits & PR reviews", kbd: "GIT", logos: ["git", "github"] },
+      { name: "Figma", detail: "Design handoff, spacing audits & layout geometry parsing", kbd: "FIGMA", logos: ["figma"] },
     ],
   },
 ];
@@ -392,7 +430,7 @@ export const EXPERIENCES: ExperienceItem[] = [
     location: "Jakarta / Hybrid",
     type: "Internship",
     impact:
-      "Contributed to frontend development for CarbonEthics' client-facing platform. Implemented responsive interfaces for carbon footprint and tree planting initiatives, maintained design-token consistency, and ensured smooth cross-device accessibility.",
+      "Contributed to frontend development for CarbonEthics' client-facing platform. Implemented responsive interfaces for carbon footprint and tree planting initiatives, maintained design-token consistency, and supported cross-device accessibility.",
     technologies: ["Next.js", "TypeScript", "Tailwind CSS", "REST API", "Figma"],
   },
 ];
@@ -414,8 +452,31 @@ export const EDUCATION_HISTORY: EducationItem[] = [
   },
 ];
 
-export const COLOPHON_SPECS = {
-  designerDeveloper: "Joshua Abdiel",
+export const GALLERY_PLATES: GalleryPlate[] = [
+  {
+    src: "/images/hero/hero-1.webp",
+    alt: "Black-and-white double exposure portrait overlaid with a mountain lake",
+    title: "Double exposure — profile over still water",
+    detail: "SELF STUDY · BW",
+    span: "wide",
+  },
+  {
+    src: "/images/about/joshua.jpg",
+    alt: "Full-length portrait beside a workbench with code on screen",
+    title: "Full-length studio portrait",
+    detail: "WINDOW LIGHT · 35MM",
+    span: "half",
+  },
+  {
+    src: "/images/workspace/workspace.jpg",
+    alt: "Operational desk with monitor, keyboard, notebook, and coffee",
+    title: "Daily operational desk",
+    detail: "CODE · PAPER · COFFEE",
+    span: "half",
+  },
+];
+
+export const COLOPHON_SPECS = {  designerDeveloper: "Joshua Abdiel",
   typography: ["Newsreader (Display Editorial Serif)", "Geist Sans (Clean Grotesk)", "Geist Mono (Technical Monospace)"],
   framework: "Next.js 16 (App Router) + React 19",
   styling: "Tailwind CSS v4 + Custom Micro-Border Tokens",

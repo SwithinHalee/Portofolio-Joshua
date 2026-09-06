@@ -2,18 +2,82 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowUpRight, List, X } from "@phosphor-icons/react";
 import { PERSONAL_INFO } from "@/data/portfolio";
+import { cleanEmail } from "@/lib/portfolio-store";
+import { usePortfolio } from "@/components/portfolio-provider";
 
 export function Navbar() {
+  const { data } = usePortfolio();
+  const personalInfo = data.personalInfo ?? PERSONAL_INFO;
+  const email = cleanEmail(personalInfo.email);
   const pathname = usePathname();
+  const router = useRouter();
   const isHome = pathname === "/";
   const [timeString, setTimeString] = useState<string>("");
-  const [activeSection, setActiveSection] = useState<string>("projects");
+  const [activeSection, setActiveSection] = useState<string>("");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+
+  // Stable document top of the Dossier section. Dossier is sticky-pinned
+  // (md+) while Principles overlaps it, so its bounding rect drifts with
+  // scroll — the wrapper never sticks, hence its offsetTop stays exact.
+  function dossierDocTop() {
+    const wrap = document.getElementById("dossier-stack");
+    if (wrap) return wrap.offsetTop;
+    const el = document.getElementById("dossier");
+    return el ? el.getBoundingClientRect().top + window.scrollY : 0;
+  }
+
+  function scrollToSection(id: string) {
+    const header = document.querySelector("header");
+    const headerH = header ? header.getBoundingClientRect().height : 59;
+    if (id === "dossier") {
+      window.scrollTo({ top: Math.max(0, dossierDocTop() - headerH + 1), behavior: "smooth" });
+      return;
+    }
+    const el = document.getElementById(id);
+    if (!el) return;
+    const top = el.getBoundingClientRect().top + window.scrollY - headerH + 1;
+    window.scrollTo({ top: Math.max(0, top), behavior: "smooth" });
+  }
+
+  function handleAnchorClick(e: React.MouseEvent, id: string) {
+    e.preventDefault();
+    setMobileMenuOpen(false);
+    if (isHome) {
+      window.history.replaceState(null, "", `/#${id}`);
+      scrollToSection(id);
+    } else {
+      // Navigate home first; the effect below scrolls once the section exists
+      router.push(`/#${id}`);
+    }
+  }
+
+  // After cross-page navigation (e.g. Archive -> About/Work/Dossier/Contact),
+  // wait for the home section to mount then scroll with header offset.
+  // Also covers direct loads like /#dossier and hash back/forward.
+  useEffect(() => {
+    if (pathname !== "/") return;
+    const hash = window.location.hash.replace("#", "");
+    if (!hash) return;
+    if (!["about", "projects", "dossier", "contact"].includes(hash)) return;
+
+    let attempts = 0;
+    const maxAttempts = 40;
+    const timer = setInterval(() => {
+      attempts += 1;
+      if (document.getElementById(hash)) {
+        clearInterval(timer);
+        scrollToSection(hash);
+      } else if (attempts >= maxAttempts) {
+        clearInterval(timer);
+      }
+    }, 50);
+    return () => clearInterval(timer);
+  }, [pathname]);
 
   useEffect(() => {
     function updateClock() {
@@ -38,19 +102,35 @@ export function Navbar() {
 
       if (!isHome) return;
 
-      const scrollPosition = window.scrollY + 200;
-      const sections = ["projects", "dossier"];
-
-      for (const section of sections) {
-        const el = document.getElementById(section);
-        if (el) {
-          const top = el.offsetTop;
-          const height = el.offsetHeight;
-          if (scrollPosition >= top && scrollPosition < top + height) {
-            setActiveSection(section);
-            break;
-          }
+      // Contact locks to the black 08/INITIATION container (same rule as dossier rail)
+      const contactEl = document.getElementById("contact");
+      if (contactEl) {
+        const cRect = contactEl.getBoundingClientRect();
+        if (cRect.top <= window.innerHeight * 0.65 && cRect.bottom >= 120) {
+          setActiveSection("contact");
+          return;
         }
+      }
+
+      const probe = window.scrollY + 100;
+      const topOf = (id: string) => {
+        const el = document.getElementById(id);
+        return el ? el.getBoundingClientRect().top + window.scrollY : Number.POSITIVE_INFINITY;
+      };
+
+      const aboutTop = topOf("about");
+      const projectsTop = topOf("projects");
+      const dossierTop = dossierDocTop();
+
+      if (probe >= dossierTop) {
+        // Dossier stays active through stacking / principles / studio / chrono
+        setActiveSection("dossier");
+      } else if (probe >= projectsTop) {
+        setActiveSection("projects");
+      } else if (probe >= aboutTop - 80) {
+        setActiveSection("about");
+      } else {
+        setActiveSection("");
       }
     }
 
@@ -63,6 +143,7 @@ export function Navbar() {
     { label: "Work", href: "/#projects", id: "projects" },
     { label: "Dossier", href: "/#dossier", id: "dossier" },
     { label: "Archive", href: "/archive", id: "archive" },
+    { label: "Contact", href: "/#contact", id: "contact" },
   ];
 
   return (
@@ -80,12 +161,12 @@ export function Navbar() {
             href="/"
             className="font-medium tracking-tight text-[#111111] hover:text-[#444444] transition-colors text-sm font-sans"
           >
-            {PERSONAL_INFO.name}
+            {personalInfo.name}
           </Link>
 
           <span className="hidden sm:inline-block text-[#D5D5D5]">/</span>
 
-          <span className="hidden sm:inline-block font-mono text-xs text-[#787774]">
+          <span className="hidden sm:inline-block font-mono text-xs text-[#616161]">
             Tangerang, ID {timeString && `· ${timeString} WIB`}
           </span>
         </div>
@@ -93,36 +174,55 @@ export function Navbar() {
         {/* Minimalist Desktop Navigation */}
         <nav className="hidden md:flex items-center gap-7 text-xs font-mono">
           {navLinks.map((link) => {
-            const isActive =
-              link.id === "archive" ? pathname === "/archive" : isHome && activeSection === link.id;
+            const isPage = link.id === "archive";
+            const isActive = isPage
+              ? pathname === "/archive"
+              : isHome && activeSection === link.id;
+            const isContact = link.id === "contact";
+
+            if (isPage) {
+              return (
+                <Link
+                  key={link.label}
+                  href={link.href}
+                  className={`transition-colors ${
+                    isActive ? "text-[#111111] font-medium" : "text-[#616161] hover:text-[#111111]"
+                  }`}
+                >
+                  {link.label}
+                </Link>
+              );
+            }
 
             return (
               <Link
                 key={link.label}
                 href={link.href}
-                className={`transition-colors ${
-                  isActive ? "text-[#111111] font-medium" : "text-[#787774] hover:text-[#111111]"
+                onClick={(e) => handleAnchorClick(e, link.id)}
+                className={`inline-flex items-center gap-1 transition-colors ${
+                  isContact
+                    ? isActive
+                      ? "text-[#111111] font-medium"
+                      : "text-[#111111] hover:text-[#555555] font-medium"
+                    : isActive
+                    ? "text-[#111111] font-medium"
+                    : "text-[#616161] hover:text-[#111111]"
                 }`}
               >
-                {link.label}
+                <span>{link.label}</span>
+                {isContact && <ArrowUpRight size={11} weight="bold" />}
               </Link>
             );
           })}
-
-          <a
-            href={`mailto:${PERSONAL_INFO.email}`}
-            className="inline-flex items-center gap-1 text-[#111111] hover:text-[#555555] transition-colors font-medium"
-          >
-            <span>Contact</span>
-            <ArrowUpRight size={11} weight="bold" />
-          </a>
         </nav>
 
         {/* Mobile Toggle Button */}
         <button
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          aria-expanded={mobileMenuOpen}
+          aria-controls="mobile-navigation"
+          aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
           className="md:hidden p-1 text-[#111111] hover:text-[#555555] transition-colors"
-          aria-label="Toggle menu"
         >
           {mobileMenuOpen ? <X size={18} weight="bold" /> : <List size={18} weight="bold" />}
         </button>
@@ -138,24 +238,35 @@ export function Navbar() {
             transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
             className="md:hidden border-t border-[#EAEAEA] bg-[#FFFFFF] px-6 py-4 overflow-hidden"
           >
-            <div className="flex flex-col gap-3 font-mono text-xs text-[#787774]">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.label}
-                  href={link.href}
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="py-1 hover:text-[#111111] transition-colors"
-                >
-                  {link.label}
-                </Link>
-              ))}
+            <div id="mobile-navigation" className="flex flex-col gap-3 font-mono text-xs text-[#616161]">
+              {navLinks.map((link) =>
+                link.id === "archive" ? (
+                  <Link
+                    key={link.label}
+                    href={link.href}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="py-1 hover:text-[#111111] transition-colors"
+                  >
+                    {link.label}
+                  </Link>
+                ) : (
+                  <Link
+                    key={link.label}
+                    href={link.href}
+                    onClick={(e) => handleAnchorClick(e, link.id)}
+                    className="py-1 hover:text-[#111111] transition-colors"
+                  >
+                    {link.label}
+                  </Link>
+                )
+              )}
               <div className="border-t border-[#EAEAEA] pt-2 mt-1">
                 <a
-                  href={`mailto:${PERSONAL_INFO.email}`}
+                  href={`mailto:${email}`}
                   onClick={() => setMobileMenuOpen(false)}
                   className="py-1 text-[#111111] font-medium flex items-center justify-between"
                 >
-                  <span>{PERSONAL_INFO.email}</span>
+                  <span>{email}</span>
                   <ArrowUpRight size={12} weight="bold" />
                 </a>
               </div>
