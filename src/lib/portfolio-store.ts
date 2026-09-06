@@ -82,7 +82,7 @@ function isObject(v: unknown): v is Record<string, unknown> {
   return typeof v === "object" && v !== null;
 }
 
-function sanitizePortfolio(raw: unknown): PortfolioData | null {
+export function sanitizePortfolio(raw: unknown): PortfolioData | null {
   if (!isObject(raw)) return null;
   try {
     const data = raw as Partial<PortfolioData>;

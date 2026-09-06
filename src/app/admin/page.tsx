@@ -2,6 +2,7 @@
 
 import { useMemo, useRef, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   ArrowCounterClockwise,
   ArrowLeft,
@@ -11,7 +12,9 @@ import {
   Copy,
   Download,
   FloppyDisk,
+  Globe,
   Plus,
+  SignOut,
   Trash,
   Upload,
 } from "@phosphor-icons/react";
@@ -226,7 +229,8 @@ function emptyProject(): ProjectItem {
 }
 
 export default function AdminPage() {
-  const { data, update, setData, reset, hydrated } = usePortfolio();
+  const router = useRouter();
+  const { data, update, setData, reset, hydrated, syncStatus, syncError, isGlobal, isAdmin, redisAvailable, refreshGlobal, pushGlobal } = usePortfolio();
   const [tab, setTab] = useState<TabId>("personal");
   const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null);
   const [selectedCategoryIdx, setSelectedCategoryIdx] = useState(0);
@@ -311,6 +315,7 @@ export default function AdminPage() {
     }
   };
 
+  const refreshTick = `${data.projects.length}:${data.techCategories.length}:${data.principles.length}:${data.experiences.length}:${data.education.length}:${data.gallery.length}:${data.workspaceSetup.length}`;
   const storageSize = useMemo(() => {
     if (!hydrated || typeof window === "undefined") return "—";
     try {
@@ -319,7 +324,7 @@ export default function AdminPage() {
     } catch {
       return "—";
     }
-  }, [data, hydrated]);
+  }, [hydrated, refreshTick]);
 
   return (
     <div className="min-h-screen bg-[#FBFBFA] text-[#111111]">
@@ -346,10 +351,45 @@ export default function AdminPage() {
             </div>
           </div>
           <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => void refreshGlobal()}
+              title={isGlobal ? "Global store connected — sync now" : "Global store not connected — click to retry"}
+              className={`hidden items-center gap-1.5 rounded border px-2.5 py-1.5 font-mono text-[11px] sm:inline-flex ${
+                isGlobal
+                  ? "border-[#CBE3D0] bg-[#EDF3EC] text-[#346538]"
+                  : "border-[#EAEAEA] bg-[#FFFFFF] text-[#616161]"
+              }`}
+            >
+              <Globe size={13} weight="regular" />
+              <span>
+                {syncStatus === "loading"
+                  ? "Loading global…"
+                  : syncStatus === "saving"
+                    ? "Syncing global…"
+                    : isGlobal
+                      ? "Global · synced"
+                      : "Local only"}
+              </span>
+            </button>
             <span className="hidden items-center gap-1.5 rounded border border-[#EAEAEA] bg-[#FFFFFF] px-2.5 py-1.5 font-mono text-[11px] text-[#346538] sm:inline-flex">
               <FloppyDisk size={13} weight="regular" />
               <span>Auto-saved · {storageSize}</span>
             </span>
+            <button
+              type="button"
+              onClick={() => {
+                void fetch("/api/admin/logout", { method: "POST" }).finally(() => {
+                  router.push("/admin/login");
+                  router.refresh();
+                });
+              }}
+              title="Sign out of admin studio"
+              className={btnGhostClass()}
+            >
+              <SignOut size={13} weight="regular" />
+              <span className="hidden sm:inline">Sign out</span>
+            </button>
             <Link href="/" className={btnGhostClass()}>
               <ArrowSquareOut size={13} weight="regular" />
               <span className="hidden sm:inline">View site</span>
@@ -370,17 +410,21 @@ export default function AdminPage() {
             Edit text, categories, and projects in one place.
           </h2>
           <p className="text-sm leading-relaxed text-[#555555]">
-            Every change saves instantly to this browser and previews live on the homepage. When
-            finished, open the Export tab, copy the generated{" "}
-            <code className="rounded border border-[#EAEAEA] bg-[#FFFFFF] px-1 font-mono text-xs">
-              portfolio.ts
-            </code>{" "}
-            into{" "}
+            Every change saves instantly and syncs to the global store (Upstash Redis), so edits
+            appear on every visitor&apos;s device. Images upload to Vercel Blob storage. The Export
+            tab remains as an optional backup to{" "}
             <code className="rounded border border-[#EAEAEA] bg-[#FFFFFF] px-1 font-mono text-xs">
               src/data/portfolio.ts
-            </code>{" "}
-            so the changes ship permanently with the next deploy. New projects also need that
-            export step before their case-study pages exist on production.
+            </code>
+            . {syncError ? (
+              <span className="text-[#9F2F2D]">{syncError}</span>
+            ) : isGlobal ? (
+              <span className="text-[#346538]">Global sync is active.</span>
+            ) : (
+              <span className="text-[#956400]">
+                Global store not connected — edits stay in this browser until Redis is configured.
+              </span>
+            )}
           </p>
         </div>
 

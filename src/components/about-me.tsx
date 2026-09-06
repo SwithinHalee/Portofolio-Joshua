@@ -99,9 +99,11 @@ echo "Location: Tangerang / Jakarta / Remote"`,
     const targetCmd = activeTerminalCmd;
     const targetOutput = terminalOutputs[targetCmd] || "";
 
-    setIsTyping(true);
-    setTypedCmd("");
-    setTypedOutput("");
+    const initTimer = setTimeout(() => {
+      setIsTyping(true);
+      setTypedCmd("");
+      setTypedOutput("");
+    }, 0);
 
     let isCancelled = false;
     let cmdIndex = 0;
@@ -140,6 +142,7 @@ echo "Location: Tangerang / Jakarta / Remote"`,
 
     return () => {
       isCancelled = true;
+      clearTimeout(initTimer);
       clearInterval(cmdInterval);
     };
   }, [activeTerminalCmd, activeLens]);

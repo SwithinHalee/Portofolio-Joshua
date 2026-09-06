@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
+import { put } from "@vercel/blob";
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
+import { isAuthenticated } from "@/lib/admin-auth";
 
 export const runtime = "nodejs";
 
@@ -24,6 +26,11 @@ function sanitizeName(name: string): string {
 }
 
 export async function POST(req: Request) {
+  const authed = await isAuthenticated();
+  if (!authed) {
+    return NextResponse.json({ error: "Unauthorized. Please log in as admin." }, { status: 401 });
+  }
+
   let form: FormData;
   try {
     form = await req.formData();
@@ -50,15 +57,29 @@ export async function POST(req: Request) {
 
   const safe = sanitizeName(file.name);
   const filename = `${Date.now()}-${safe}`;
-  const dir = path.join(process.cwd(), "public", "images", "uploads");
 
+  // If Vercel Blob token is configured, use Blob storage (persists across all devices globally)
+  if (process.env.BLOB_READ_WRITE_TOKEN) {
+    try {
+      const blob = await put(`portfolio/${filename}`, file, {
+        access: "public",
+        addRandomSuffix: false,
+      });
+      return NextResponse.json({ url: blob.url, source: "blob" });
+    } catch (err) {
+      console.error("Vercel Blob upload failed:", err);
+      return NextResponse.json({ error: "Failed to upload to Vercel Blob storage." }, { status: 500 });
+    }
+  }
+
+  // Fallback: Local filesystem (for dev / local test)
+  const dir = path.join(process.cwd(), "public", "images", "uploads");
   try {
     await mkdir(dir, { recursive: true });
     const bytes = Buffer.from(await file.arrayBuffer());
     await writeFile(path.join(dir, filename), bytes);
+    return NextResponse.json({ url: `/images/uploads/${filename}`, source: "local" });
   } catch {
-    return NextResponse.json({ error: "Could not save the file on the server." }, { status: 500 });
+    return NextResponse.json({ error: "Could not save the file locally." }, { status: 500 });
   }
-
-  return NextResponse.json({ url: `/images/uploads/${filename}` });
 }

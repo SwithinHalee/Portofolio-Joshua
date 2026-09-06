@@ -28,9 +28,20 @@ export default function GlobalError({ reset }: GlobalErrorProps) {
             alignItems: "center",
           }}
         >
-          <a href="/" style={{ color: "#111111", textDecoration: "none", fontSize: 14 }}>
+          <button
+            type="button"
+            onClick={() => window.location.assign("/")}
+            style={{
+              color: "#111111",
+              background: "none",
+              border: "none",
+              padding: 0,
+              fontSize: 14,
+              cursor: "pointer",
+            }}
+          >
             Joshua Abdiel
-          </a>
+          </button>
           <span style={{ fontSize: 12, color: "#616161" }}>INDEX / CRITICAL</span>
         </header>
         <main
@@ -76,8 +87,9 @@ export default function GlobalError({ reset }: GlobalErrorProps) {
               >
                 Reload archive
               </button>
-              <a
-                href="/"
+              <button
+                type="button"
+                onClick={() => window.location.assign("/")}
                 style={{
                   border: "1px solid #EAEAEA",
                   backgroundColor: "#FBFBFA",
@@ -85,11 +97,11 @@ export default function GlobalError({ reset }: GlobalErrorProps) {
                   borderRadius: 4,
                   padding: "12px 20px",
                   fontSize: 12,
-                  textDecoration: "none",
+                  cursor: "pointer",
                 }}
               >
                 Return to index
-              </a>
+              </button>
             </div>
           </div>
         </main>
