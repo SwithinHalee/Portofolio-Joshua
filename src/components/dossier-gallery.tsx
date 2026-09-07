@@ -1,7 +1,6 @@
 "use client";
 
 import Image from "next/image";
-import { GALLERY_PLATES } from "@/data/portfolio";
 import type { GalleryPlate } from "@/data/portfolio";
 import { usePortfolio } from "@/components/portfolio-provider";
 import { Reveal } from "@/components/motion-wrapper";
@@ -16,20 +15,18 @@ interface PlateView {
   position?: string;
 }
 
-const GALLERY_FALLBACK = "/images/about/joshua.jpg";
-
-function resolvePlateImage(src: string | undefined | null): string {
-  if (!src || !src.trim()) return GALLERY_FALLBACK;
+function isRenderableSrc(src: string | undefined | null): src is string {
+  if (!src || !src.trim()) return false;
   const t = src.trim();
-  if (t.startsWith("/") || t.startsWith("https://") || t.startsWith("http://")) return t;
-  return GALLERY_FALLBACK;
+  return t.startsWith("/") || t.startsWith("https://") || t.startsWith("http://");
 }
 
-function toView(plate: GalleryPlate): PlateView {
+function toView(plate: GalleryPlate): PlateView | null {
+  if (!isRenderableSrc(plate.src)) return null;
   switch (plate.span) {
     case "tall":
       return {
-        src: resolvePlateImage(plate.src),
+        src: plate.src.trim(),
         alt: plate.alt,
         title: plate.title,
         detail: plate.detail,
@@ -38,7 +35,7 @@ function toView(plate: GalleryPlate): PlateView {
       };
     case "trio":
       return {
-        src: resolvePlateImage(plate.src),
+        src: plate.src.trim(),
         alt: plate.alt,
         title: plate.title,
         detail: plate.detail,
@@ -47,7 +44,7 @@ function toView(plate: GalleryPlate): PlateView {
       };
     case "wide":
       return {
-        src: resolvePlateImage(plate.src),
+        src: plate.src.trim(),
         alt: plate.alt,
         title: plate.title,
         detail: plate.detail,
@@ -57,7 +54,7 @@ function toView(plate: GalleryPlate): PlateView {
     case "half":
     default:
       return {
-        src: resolvePlateImage(plate.src),
+        src: plate.src.trim(),
         alt: plate.alt,
         title: plate.title,
         detail: plate.detail,
@@ -109,9 +106,15 @@ function PlateFigure({ plate, index }: { plate: PlateView; index: string }) {
 // Contact-sheet plates for the dossier: border-only hairline frames on the
 // bare section background, archival grayscale that develops into color on
 // hover, and a mono caption ledger under each exposure.
+// Gallery is sourced exclusively from the database (admin studio → global
+// store). Plates without a usable image are skipped instead of falling back
+// to a hardcoded picture; an empty gallery hides the whole section.
 export function DossierGallery() {
   const { data } = usePortfolio();
-  const plates = data.gallery && data.gallery.length > 0 ? data.gallery : GALLERY_PLATES;
+  const views = (data.gallery ?? [])
+    .map((plate) => ({ plate, view: toView(plate) }))
+    .filter((e): e is { plate: GalleryPlate; view: PlateView } => e.view !== null);
+  if (views.length === 0) return null;
   const pad = (n: number) => `PLATE ${String(n).padStart(2, "0")}`;
 
   return (
@@ -120,7 +123,7 @@ export function DossierGallery() {
         <div className="mb-8 flex items-center justify-between font-mono text-xs uppercase tracking-wider text-[#888888]">
           <span>{"// VISUAL RECORD — FIELD PLATES"}</span>
           <span className="text-[10px] text-[#666666]">
-            {String(plates.length).padStart(2, "0")} EXPOSURES
+            {String(views.length).padStart(2, "0")} EXPOSURES
           </span>
         </div>
 
@@ -128,9 +131,9 @@ export function DossierGallery() {
             and talls share a row in pairs, trios group in threes.
             Stacks on mobile. */}
         <div className="grid grid-cols-1 gap-6 md:grid-cols-12">
-          {plates.map((plate, i) => (
+          {views.map(({ plate, view }, i) => (
             <div key={`${plate.src}-${i}`} className={plateColSpan(plate.span)}>
-              <PlateFigure plate={toView(plate)} index={pad(i + 1)} />
+              <PlateFigure plate={view} index={pad(i + 1)} />
             </div>
           ))}
         </div>

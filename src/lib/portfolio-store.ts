@@ -3,7 +3,6 @@ import {
   EDUCATION_HISTORY,
   ENGINEERING_PRINCIPLES,
   EXPERIENCES,
-  GALLERY_PLATES,
   PERSONAL_INFO,
   PROJECTS,
   TECH_CATEGORIES,
@@ -74,13 +73,25 @@ export const DEFAULT_PORTFOLIO: PortfolioData = {
   principles: JSON.parse(JSON.stringify(ENGINEERING_PRINCIPLES)) as PrincipleItem[],
   experiences: JSON.parse(JSON.stringify(EXPERIENCES)) as ExperienceItem[],
   education: JSON.parse(JSON.stringify(EDUCATION_HISTORY)) as EducationItem[],
-  gallery: JSON.parse(JSON.stringify(GALLERY_PLATES)) as GalleryPlate[],
+  gallery: [] as GalleryPlate[],
   colophon: JSON.parse(JSON.stringify(COLOPHON_SPECS)) as ColophonData,
 };
 
 function isObject(v: unknown): v is Record<string, unknown> {
   return typeof v === "object" && v !== null;
 }
+
+/**
+ * Bundled gallery images removed from the codebase (gallery is now 100%
+ * database-driven via the admin studio). Plates still referencing them —
+ * e.g. from an older localStorage copy or an early Redis seed — are dropped
+ * on load so no hardcoded picture can resurface.
+ */
+const RETIRED_BUNDLED_GALLERY_SRC = new Set([
+  "/images/hero/hero-1.webp",
+  "/images/about/joshua.jpg",
+  "/images/workspace/workspace.jpg",
+]);
 
 export function sanitizePortfolio(raw: unknown): PortfolioData | null {
   if (!isObject(raw)) return null;
@@ -119,10 +130,12 @@ export function sanitizePortfolio(raw: unknown): PortfolioData | null {
       experiences: Array.isArray(data.experiences) ? (data.experiences as ExperienceItem[]) : DEFAULT_PORTFOLIO.experiences,
       education: Array.isArray(data.education) ? (data.education as EducationItem[]) : DEFAULT_PORTFOLIO.education,
       gallery: Array.isArray(data.gallery)
-        ? (data.gallery as GalleryPlate[]).map((g) => ({
-            ...g,
-            span: g.span === "wide" || g.span === "half" || g.span === "tall" || g.span === "trio" ? g.span : "half" as const,
-          }))
+        ? (data.gallery as GalleryPlate[])
+            .filter((g) => !RETIRED_BUNDLED_GALLERY_SRC.has(typeof g.src === "string" ? g.src.trim() : ""))
+            .map((g) => ({
+              ...g,
+              span: g.span === "wide" || g.span === "half" || g.span === "tall" || g.span === "trio" ? g.span : "half" as const,
+            }))
         : DEFAULT_PORTFOLIO.gallery,
       colophon: { ...DEFAULT_PORTFOLIO.colophon, ...((data.colophon as object) ?? {}) },
     };

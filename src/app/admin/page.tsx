@@ -411,7 +411,8 @@ export default function AdminPage() {
           </h2>
           <p className="text-sm leading-relaxed text-[#555555]">
             Every change saves instantly and syncs to the global store (Upstash Redis), so edits
-            appear on every visitor&apos;s device. Images upload to Vercel Blob storage. The Export
+            appear on every visitor&apos;s device. Images upload to Vercel Blob storage, with
+            automatic fallback to the database for files under 700 KB when Blob is not configured. The Export
             tab remains as an optional backup to{" "}
             <code className="rounded border border-[#EAEAEA] bg-[#FFFFFF] px-1 font-mono text-xs">
               src/data/portfolio.ts
@@ -974,7 +975,7 @@ export default function AdminPage() {
                             onUploaded={(url) => patchProject(selectedProject.id, (p) => ({ ...p, image: url }))}
                           />
                           <span className="font-mono text-[11px] text-[#A0A0A0]">
-                            JPG/PNG/WebP ≤ 8 MB → /images/uploads/
+                            JPG/PNG/WebP ≤ 8 MB → Blob / database
                           </span>
                         </span>
                       </Field>
@@ -2276,16 +2277,16 @@ export default function AdminPage() {
                   const id = `gallery-${data.gallery.length}`;
                   update((p) => ({
                     ...p,
-                    gallery: [
-                      ...p.gallery,
-                      {
-                        src: "/images/about/joshua.jpg",
-                        alt: "Describe the exposure",
-                        title: "New plate title",
-                        detail: "CONTEXT · MEDIUM",
-                        span: "half" as const,
-                      },
-                    ],
+                      gallery: [
+                        ...p.gallery,
+                        {
+                          src: "",
+                          alt: "Describe the exposure",
+                          title: "New plate title",
+                          detail: "CONTEXT · MEDIUM",
+                          span: "half" as const,
+                        },
+                      ],
                   }));
                   focusCard(id);
                 }}
@@ -2378,7 +2379,7 @@ export default function AdminPage() {
                           }))
                         }
                         className={textInputClass(true)}
-                        placeholder="/images/about/joshua.jpg"
+                        placeholder="/api/image?id=… or https://…"
                       />
                       <span className="mt-2 flex flex-wrap items-center gap-2">
                         <ImageUploadButton
@@ -2390,9 +2391,14 @@ export default function AdminPage() {
                           }
                         />
                         <span className="font-mono text-[11px] text-[#A0A0A0]">
-                          JPG/PNG/WebP ≤ 8 MB → /images/uploads/
+                          JPG/PNG/WebP ≤ 8 MB → Blob / database
                         </span>
                       </span>
+                      {!plate.src.trim() && (
+                        <span className="mt-1.5 block font-mono text-[11px] text-[#956400]">
+                          No image yet — upload or paste a URL. Empty plates stay hidden on the site.
+                        </span>
+                      )}
                     </Field>
                     <Field label="Layout template">
                       <select

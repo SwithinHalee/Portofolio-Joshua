@@ -452,29 +452,10 @@ export const EDUCATION_HISTORY: EducationItem[] = [
   },
 ];
 
-export const GALLERY_PLATES: GalleryPlate[] = [
-  {
-    src: "/images/hero/hero-1.webp",
-    alt: "Black-and-white double exposure portrait overlaid with a mountain lake",
-    title: "Double exposure — profile over still water",
-    detail: "SELF STUDY · BW",
-    span: "wide",
-  },
-  {
-    src: "/images/about/joshua.jpg",
-    alt: "Full-length portrait beside a workbench with code on screen",
-    title: "Full-length studio portrait",
-    detail: "WINDOW LIGHT · 35MM",
-    span: "half",
-  },
-  {
-    src: "/images/workspace/workspace.jpg",
-    alt: "Operational desk with monitor, keyboard, notebook, and coffee",
-    title: "Daily operational desk",
-    detail: "CODE · PAPER · COFFEE",
-    span: "half",
-  },
-];
+// Gallery plates are fully managed from the admin studio (/admin → Gallery)
+// and persisted in the database (Upstash Redis). No bundled images here —
+// add exposures via Upload instead of hardcoding paths.
+export const GALLERY_PLATES: GalleryPlate[] = [];
 
 export const COLOPHON_SPECS = {  designerDeveloper: "Joshua Abdiel",
   typography: ["Newsreader (Display Editorial Serif)", "Geist Sans (Clean Grotesk)", "Geist Mono (Technical Monospace)"],
