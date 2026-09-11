@@ -142,7 +142,7 @@ export function Colophon() {
           </div>
           <div className="flex items-center gap-4">
             <span>Tangerang, Banten, Indonesia</span>
-            <span className="text-[#CCCCCC]">/</span>
+            <span className="text-[#6B6B6B]">/</span>
             <span>{colophon.year} Edition</span>
           </div>
         </div>

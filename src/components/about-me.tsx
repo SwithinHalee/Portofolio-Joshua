@@ -326,7 +326,7 @@ echo "Location: Tangerang / Jakarta / Remote"`,
                   </div>
 
                   <div className="flex items-center gap-2">
-                    <span className="hidden sm:inline text-[#666666] font-mono text-[10px] tracking-tighter">
+                    <span className="hidden sm:inline text-[#9A9A9A] font-mono text-[10px] tracking-tighter">
                       ||| | |||| | || | |||| ||
                     </span>
                     <span className="text-[#4ADE80] bg-[#14331C] px-2 py-0.5 rounded text-[10px] font-semibold border border-[#22542B]">
@@ -376,7 +376,7 @@ echo "Location: Tangerang / Jakarta / Remote"`,
                       </div>
                       <div className="flex items-baseline justify-between pt-0.5">
                         <span className="text-[#777777] text-[10px] uppercase">Barcode Verification</span>
-                        <span className="font-mono text-[10px] tracking-tighter text-[#666666]">
+                        <span className="font-mono text-[10px] tracking-tighter text-[#9A9A9A]">
                           ||| | |||| | || | |||| ||
                         </span>
                       </div>
@@ -400,7 +400,7 @@ echo "Location: Tangerang / Jakarta / Remote"`,
                           <span className="uppercase text-[10px] text-white font-semibold">
                             LENS [01]: CORE ENGINEERING ETHOS
                           </span>
-                          <span className="text-[#666666]">STANDARDS ENFORCED</span>
+                          <span className="text-[#9A9A9A]">STANDARDS ENFORCED</span>
                         </div>
 
                         <p className="text-xs sm:text-sm text-[#AAAAAA] font-sans leading-relaxed">
@@ -465,7 +465,7 @@ echo "Location: Tangerang / Jakarta / Remote"`,
                           <span className="uppercase text-[10px] text-white font-semibold">
                             LENS [02]: CHRONOLOGICAL ROOTS
                           </span>
-                          <span className="text-[#666666]">ACADEMIC & PRODUCTION</span>
+                          <span className="text-[#9A9A9A]">ACADEMIC & PRODUCTION</span>
                         </div>
 
                         {/* Trajectory Timeline in Master Card */}
@@ -537,7 +537,7 @@ echo "Location: Tangerang / Jakarta / Remote"`,
                               joshua@tangerang:~ (zsh)
                             </span>
                           </div>
-                          <span className="text-[9px] text-[#666666]">CLI TELEMETRY</span>
+                          <span className="text-[9px] text-[#9A9A9A]">CLI TELEMETRY</span>
                         </div>
 
                         {/* Interactive Command Tabs with Auto-Cycle and Progress Indicator */}
@@ -637,7 +637,7 @@ echo "Location: Tangerang / Jakarta / Remote"`,
           <div className="border-t border-[#222222] pt-12">
             <div className="mb-6 font-mono text-xs uppercase tracking-wider text-[#888888] flex items-center justify-between">
               <span>{"// CONTRARIAN AXIOMS & CONVICTIONS"}</span>
-              <span className="text-[#666666] text-[10px]">STANDARDS HELD HIGH</span>
+              <span className="text-[#9A9A9A] text-[10px]">STANDARDS HELD HIGH</span>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

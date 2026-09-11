@@ -115,7 +115,7 @@ export function Experience() {
                             </span>
                           </span>
                         )}
-                        <figcaption className="pt-1.5 font-mono text-[10px] uppercase tracking-wider text-[#A0A0A0]">
+                        <figcaption className="pt-1.5 font-mono text-[10px] uppercase tracking-wider text-[#6B6B6B]">
                           Fig · {exp.company}
                         </figcaption>
                       </figure>
@@ -199,7 +199,7 @@ export function Experience() {
                             </span>
                           </span>
                         )}
-                        <figcaption className="pt-1.5 font-mono text-[10px] uppercase tracking-wider text-[#A0A0A0]">
+                        <figcaption className="pt-1.5 font-mono text-[10px] uppercase tracking-wider text-[#6B6B6B]">
                           Fig · {edu.institution}
                         </figcaption>
                       </figure>

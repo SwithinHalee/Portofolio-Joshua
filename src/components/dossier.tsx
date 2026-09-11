@@ -128,15 +128,15 @@ export function Dossier() {
         <Reveal delay={0.05}>
           <dl className="mb-12 grid grid-cols-3 border-y border-[#242424] font-mono text-xs">
             <div className="py-3 pr-4">
-              <dt className="block text-[10px] uppercase tracking-wider text-[#666666]">Files</dt>
+              <dt className="block text-[10px] uppercase tracking-wider text-[#9A9A9A]">Files</dt>
               <dd className="font-semibold text-white">{pad(categories.length)} categories</dd>
             </div>
             <div className="border-l border-[#242424] px-4 py-3">
-              <dt className="block text-[10px] uppercase tracking-wider text-[#666666]">Instruments</dt>
+              <dt className="block text-[10px] uppercase tracking-wider text-[#9A9A9A]">Instruments</dt>
               <dd className="font-semibold text-white">{pad(instrumentCount)} entries</dd>
             </div>
             <div className="border-l border-[#242424] py-3 pl-4">
-              <dt className="block text-[10px] uppercase tracking-wider text-[#666666]">Audit</dt>
+              <dt className="block text-[10px] uppercase tracking-wider text-[#9A9A9A]">Audit</dt>
               <dd className="font-semibold text-white">2026 edition</dd>
             </div>
           </dl>
@@ -155,7 +155,7 @@ export function Dossier() {
               onClick={() => scrollToFile(i)}
               className="inline-flex shrink-0 items-center gap-2 rounded-[4px] border border-[#2A2A2A] bg-[#141414] px-3 py-2 font-mono text-xs text-[#CCCCCC] transition-colors hover:border-[#3D3D3D] hover:text-white active:scale-[0.98]"
             >
-              <span className="text-[#666666]">{pad(i + 1)}</span>
+              <span className="text-[#9A9A9A]">{pad(i + 1)}</span>
               <span>{category.title}</span>
             </button>
           ))}
@@ -165,7 +165,7 @@ export function Dossier() {
           {/* Sticky filing index */}
           <div className="hidden md:col-span-4 md:block">
             <div className="sticky top-24">
-              <p className="mb-4 font-mono text-[10px] uppercase tracking-wider text-[#666666]">
+              <p className="mb-4 font-mono text-[10px] uppercase tracking-wider text-[#9A9A9A]">
                 Filing index
               </p>
               <ol className="border-t border-[#242424]">
@@ -186,7 +186,7 @@ export function Dossier() {
                         <span className="block truncate font-mono text-xs font-semibold uppercase tracking-wider text-[#CCCCCC] group-hover:text-white">
                           {category.title}
                         </span>
-                        <span className="mt-0.5 block font-mono text-[11px] text-[#666666]">
+                        <span className="mt-0.5 block font-mono text-[11px] text-[#9A9A9A]">
                           {category.skills.length} instruments
                         </span>
                       </span>
@@ -210,7 +210,7 @@ export function Dossier() {
                 >
                   {/* Folder tab */}
                   <div className="flex items-center justify-between gap-3 border-b border-[#242424] px-6 py-3 sm:px-7">
-                    <span className="font-mono text-[10px] uppercase tracking-wider text-[#666666]">
+                    <span className="font-mono text-[10px] uppercase tracking-wider text-[#9A9A9A]">
                       File · {pad(i + 1)} / {pad(categories.length)}
                     </span>
                     <span className="rounded-[3px] border border-[#2A2A2A] bg-[#1B1B1B] px-1.5 py-0.5 font-mono text-[10px] text-[#AAAAAA]">
@@ -273,7 +273,7 @@ export function Dossier() {
 
         {/* Protocol strip */}
         <Reveal delay={0.05}>
-          <div className="mt-12 flex flex-col gap-3 border-t border-[#242424] pt-5 font-mono text-[11px] text-[#666666] sm:flex-row sm:items-center sm:justify-between">
+          <div className="mt-12 flex flex-col gap-3 border-t border-[#242424] pt-5 font-mono text-[11px] text-[#9A9A9A] sm:flex-row sm:items-center sm:justify-between">
             <span className="uppercase tracking-wider">
               Protocol — strict typing · perf budgets · hairline precision
             </span>

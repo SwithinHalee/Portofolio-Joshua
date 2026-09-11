@@ -73,7 +73,7 @@ function Field({
     <label className="block">
       <span className="mb-1.5 flex items-baseline justify-between font-mono text-[11px] uppercase tracking-wider text-[#616161]">
         <span>{label}</span>
-        {hint && <span className="normal-case tracking-normal text-[#A0A0A0]">{hint}</span>}
+        {hint && <span className="normal-case tracking-normal text-[#6B6B6B]">{hint}</span>}
       </span>
       {children}
     </label>
@@ -81,7 +81,7 @@ function Field({
 }
 
 function textInputClass(mono = false): string {
-  return `w-full rounded-[6px] border border-[#EAEAEA] bg-[#FFFFFF] px-3 py-2 text-sm text-[#111111] placeholder:text-[#B5B5B5] outline-none transition-colors focus:border-[#111111] ${
+  return `w-full rounded-[6px] border border-[#EAEAEA] bg-[#FFFFFF] px-3 py-2 text-sm text-[#111111] placeholder:text-[#6B6B6B] outline-none transition-colors focus:border-[#111111] ${
     mono ? "font-mono text-[13px]" : "font-sans"
   }`;
 }
@@ -116,7 +116,7 @@ function LogoSlugPreview({ slugs }: { slugs: string[] }) {
   const [failed, setFailed] = useState<Record<string, true>>({});
   const list = slugs.map((s) => s.trim().toLowerCase()).filter(Boolean);
   if (list.length === 0) {
-    return <span className="font-mono text-[11px] text-[#A0A0A0]">Monogram</span>;
+    return <span className="font-mono text-[11px] text-[#6B6B6B]">Monogram</span>;
   }
   return (
     <span className="inline-flex flex-wrap items-center gap-1.5">
@@ -459,7 +459,7 @@ export default function AdminPage() {
                   active ? "bg-[#111111] font-medium text-white" : "text-[#616161] hover:text-[#111111]"
                 }`}
               >
-                <span className={active ? "text-[#B5B5B5]" : "text-[#C9C9C9]"}>{t.hint}</span>
+                <span className={active ? "text-[#B5B5B5]" : "text-[#6B6B6B]"}>{t.hint}</span>
                 <span>{t.label}</span>
                 {count !== null && (
                   <span
@@ -974,7 +974,7 @@ export default function AdminPage() {
                           <ImageUploadButton
                             onUploaded={(url) => patchProject(selectedProject.id, (p) => ({ ...p, image: url }))}
                           />
-                          <span className="font-mono text-[11px] text-[#A0A0A0]">
+                          <span className="font-mono text-[11px] text-[#6B6B6B]">
                             JPG/PNG/WebP ≤ 8 MB → Blob / database
                           </span>
                         </span>
@@ -1555,7 +1555,7 @@ export default function AdminPage() {
                             />
                             <span className="mt-2 flex flex-wrap items-center gap-2">
                               <LogoSlugPreview slugs={s.logos ?? []} />
-                              <span className="font-mono text-[10px] text-[#A0A0A0]">
+                              <span className="font-mono text-[10px] text-[#6B6B6B]">
                                 Cek slug di simpleicons.org (cari brand → slug ada di URL), atau
                                 buka cdn.simpleicons.org/nama — kalau gambar muncul berarti benar.
                               </span>
@@ -1885,7 +1885,7 @@ export default function AdminPage() {
                             }))
                           }
                         />
-                        <span className="font-mono text-[11px] text-[#A0A0A0]">
+                        <span className="font-mono text-[11px] text-[#6B6B6B]">
                           JPG/PNG/WebP ≤ 8 MB
                         </span>
                       </span>
@@ -2073,7 +2073,7 @@ export default function AdminPage() {
                             }))
                           }
                         />
-                        <span className="font-mono text-[11px] text-[#A0A0A0]">
+                        <span className="font-mono text-[11px] text-[#6B6B6B]">
                           JPG/PNG/WebP ≤ 8 MB
                         </span>
                       </span>
@@ -2390,7 +2390,7 @@ export default function AdminPage() {
                             }))
                           }
                         />
-                        <span className="font-mono text-[11px] text-[#A0A0A0]">
+                        <span className="font-mono text-[11px] text-[#6B6B6B]">
                           JPG/PNG/WebP ≤ 8 MB → Blob / database
                         </span>
                       </span>

@@ -94,10 +94,10 @@ function PlateFigure({ plate, index }: { plate: PlateView; index: string }) {
       </div>
       <figcaption className="flex items-baseline justify-between gap-4 pt-3 font-mono text-[11px]">
         <span className="min-w-0 truncate">
-          <span className="mr-2 text-[#666666]">{index}</span>
+          <span className="mr-2 text-[#9A9A9A]">{index}</span>
           <span className="uppercase tracking-wider text-[#E0E0E0]">{plate.title}</span>
         </span>
-        <span className="shrink-0 uppercase tracking-wider text-[#666666]">{plate.detail}</span>
+        <span className="shrink-0 uppercase tracking-wider text-[#9A9A9A]">{plate.detail}</span>
       </figcaption>
     </figure>
   );
@@ -122,7 +122,7 @@ export function DossierGallery() {
       <div className="mb-16 border-t border-[#222222] pt-12">
         <div className="mb-8 flex items-center justify-between font-mono text-xs uppercase tracking-wider text-[#888888]">
           <span>{"// VISUAL RECORD — FIELD PLATES"}</span>
-          <span className="text-[10px] text-[#666666]">
+          <span className="text-[10px] text-[#9A9A9A]">
             {String(views.length).padStart(2, "0")} EXPOSURES
           </span>
         </div>
