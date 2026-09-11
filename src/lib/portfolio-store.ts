@@ -93,6 +93,14 @@ const RETIRED_BUNDLED_GALLERY_SRC = new Set([
   "/images/workspace/workspace.jpg",
 ]);
 
+/** Old bundled paths rewritten to current files so stored copies can't pin dead images. */
+const MIGRATED_PROJECT_IMAGES: Record<string, string> = {
+  "/images/projects/carbonethics.jpg": "/images/projects/carbonethics-homepage.jpg",
+  "/images/projects/pokemon.jpg": "/images/projects/pokemon-app.jpg",
+  "/images/projects/gns3.jpg": "/images/projects/gns3-project.jpg",
+  "/images/projects/xpense.jpg": "/images/projects/xpense.mp4",
+};
+
 export function sanitizePortfolio(raw: unknown): PortfolioData | null {
   if (!isObject(raw)) return null;
   try {
@@ -104,8 +112,33 @@ export function sanitizePortfolio(raw: unknown): PortfolioData | null {
     // Normalize project images: empty/invalid src crashes next/image ("Failed to construct 'URL'").
     const projects = (data.projects as ProjectItem[]).map((p) => {
       const img = typeof p.image === "string" ? p.image.trim() : "";
-      const valid = img.startsWith("/") || img.startsWith("https://") || img.startsWith("http://");
-      return valid ? p : { ...p, image: "/images/projects/xpense.jpg" };
+      const migrated = MIGRATED_PROJECT_IMAGES[img] ?? img;
+      const valid = migrated.startsWith("/") || migrated.startsWith("https://") || migrated.startsWith("http://");
+      const next: ProjectItem = !valid
+        ? { ...p, image: "/images/projects/pokemon-app.jpg" }
+        : migrated !== img
+          ? { ...p, image: migrated }
+          : p;
+      // Staging move: old production URL persisted in stored copies.
+      if (
+        (next.id === "carbonethics-platform" || next.slug === "carbonethics-platform") &&
+        typeof next.liveUrl === "string" &&
+        next.liveUrl.includes("carbonethics.org")
+      ) {
+        return { ...next, liveUrl: "https://web-staging.carbonethics.co/" };
+      }
+      // Demo + APK links added later: stored copies predate them.
+      if (next.id === "pokemon-explorer" || next.slug === "pokemon-explorer") {
+        let patched = next;
+        if (!patched.liveUrl) {
+          patched = { ...patched, liveUrl: "https://pokemon-app-sigma-blond.vercel.app/" };
+        }
+        if (!patched.downloadUrl) {
+          patched = { ...patched, downloadUrl: "https://github.com/SwithinHalee/pokemon-app/releases/download/v1.0.0/Pokedex.apk" };
+        }
+        return patched;
+      }
+      return next;
     });
     return {
       personalInfo: {
@@ -234,6 +267,7 @@ function generateProjectTs(p: ProjectItem, indent: string): string {
   lines.push(`${i2}tags: ${tsStringArray(p.tags, i2)},`);
   if (p.liveUrl) lines.push(`${i2}liveUrl: ${tsString(p.liveUrl)},`);
   if (p.githubUrl) lines.push(`${i2}githubUrl: ${tsString(p.githubUrl)},`);
+  if (p.downloadUrl) lines.push(`${i2}downloadUrl: ${tsString(p.downloadUrl)},`);
   lines.push(`${i2}featured: ${p.featured ? "true" : "false"},`);
   lines.push(`${i2}gridSpan: ${tsString(p.gridSpan)},`);
   if (p.badge) {
@@ -320,6 +354,7 @@ export function exportPortfolioTS(data: PortfolioData): string {
   tags: string[];
   liveUrl?: string;
   githubUrl?: string;
+  downloadUrl?: string;
   featured: boolean;
   gridSpan: "col-span-12" | "col-span-12 lg:col-span-7" | "col-span-12 lg:col-span-5";
   badge?: {

@@ -3,7 +3,7 @@ import { Navbar } from "@/components/navbar";
 import { Hero } from "@/components/hero";
 import { AboutMe } from "@/components/about-me";
 import { Projects } from "@/components/projects";
-import { StackingCardsSection } from "@/components/stacking-cards";
+import { CertificatesSection } from "@/components/certificates";
 import { Dossier } from "@/components/dossier";
 import { Principles } from "@/components/principles";
 import { Workspace } from "@/components/workspace";
@@ -25,7 +25,7 @@ export default function Home() {
         <Hero />
         <AboutMe />
         <Projects />
-        <StackingCardsSection />
+        <CertificatesSection />
         {/* Stacking overlap: Principles slides over pinned Dossier as you scroll */}
         <div id="dossier-stack" className="relative overflow-x-clip">
           <Dossier />

@@ -14,15 +14,20 @@ export function Workspace() {
   const [modalOpen, setModalOpen] = useState(false);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
 
-  // Close the lightbox with Escape and move focus to the dialog when opened
+  // Close the lightbox with Escape, lock background scroll, and move focus to the dialog when opened
   useEffect(() => {
     if (!modalOpen) return;
     closeButtonRef.current?.focus();
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
     function handleKeyDown(e: KeyboardEvent) {
       if (e.key === "Escape") setModalOpen(false);
     }
     window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      document.body.style.overflow = prevOverflow;
+    };
   }, [modalOpen]);
 
   return (
@@ -79,7 +84,7 @@ export function Workspace() {
               className="relative aspect-[16/9] w-full bg-[#F7F6F3] cursor-pointer overflow-hidden"
             >
               <Image
-                src="/images/workspace/workspace.jpg"
+                src="/images/workspace/setup.png"
                 alt="Joshua Abdiel engineering desk and workspace setup"
                 fill
                 className="object-cover"
@@ -159,7 +164,7 @@ export function Workspace() {
 
               <div className="relative aspect-[16/9] w-full bg-[#000000]">
                 <Image
-                  src="/images/workspace/workspace.jpg"
+                  src="/images/workspace/setup.png"
                   alt="Joshua Abdiel engineering desk and workspace setup full view"
                   fill
                   className="object-contain"

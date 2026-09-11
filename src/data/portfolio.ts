@@ -11,6 +11,7 @@ export interface ProjectItem {
   tags: string[];
   liveUrl?: string;
   githubUrl?: string;
+  downloadUrl?: string;
   featured: boolean;
   gridSpan: "col-span-12" | "col-span-12 lg:col-span-7" | "col-span-12 lg:col-span-5";
   badge?: {
@@ -90,7 +91,7 @@ export interface GalleryPlate {
 export const PERSONAL_INFO = {
   name: "Joshua Abdiel",
   callsign: "Josh",
-  role: "Frontend Engineer & Information Systems Student",
+  role: "Frontend Developer & Information System Undergraduate",
   institution: "Universitas Tarumanagara (UNTAR)",
   currentRole: "Frontend Engineering Intern at CarbonEthics",
   location: "Tangerang, Banten, Indonesia",
@@ -129,7 +130,7 @@ export const PROJECTS: ProjectItem[] = [
       "Enterprise sustainability web interface facilitating corporate and individual carbon offset calculations, mangrove restoration initiatives, and environmental monitoring.",
     description:
       "Engineered responsive, highly performant frontend components for CarbonEthics. Focused on dynamic carbon calculation workflows, accessible UI patterns, and efficient hydration performance across diverse client viewports.",
-    image: "/images/projects/carbonethics.jpg",
+    image: "/images/projects/carbonethics-homepage.jpg",
     technicalHighlights: [
       "Dynamic offset calculator engine with real-time carbon metric estimation",
       "Modular design-token integration supporting consistent brand application",
@@ -141,7 +142,7 @@ export const PROJECTS: ProjectItem[] = [
       { label: "Design Token", value: "Tailwind UI System" },
     ],
     tags: ["Next.js", "TypeScript", "Tailwind CSS", "TanStack Query", "REST API"],
-    liveUrl: "https://www.carbonethics.org",
+    liveUrl: "https://web-staging.carbonethics.co/",
     featured: true,
     gridSpan: "col-span-12",
     badge: {
@@ -177,22 +178,24 @@ export const PROJECTS: ProjectItem[] = [
     id: "xpense-ledger",
     slug: "xpense-ledger",
     title: "Xpense Ledger",
-    category: "Financial Engineering / Personal Accounting",
+    category: "Mobile Engineering / Local-first Finance",
     summary:
-      "Minimalist financial tracker and expense allocation engine providing clean tabular ledger views, recurring transaction math, and budgetary insights.",
+      "Flutter expense tracker built on MVVM with Provider, a versioned SQLite schema, real-time FX via Frankfurter, 24-hour rate caching, and premium PDF/CSV export.",
     description:
-      "Engineered to replace bloated financial trackers with a fast, zero-friction accounting interface. Built with strict client-side validation, categorical cash flow aggregation, and local persistence.",
-    image: "/images/projects/xpense.jpg",
+      "Local-first personal finance app for multi-account, multi-currency tracking. ViewModels own auth session and ledger logic, ProxyProvider keeps MainViewModel synced to the logged-in user, and a singleton SQLite service guards a single database connection with foreign keys enforced.",
+    image: "/images/projects/xpense.mp4",
     technicalHighlights: [
-      "Tabular ledger with instant client-side filtering and sorting",
-      "Mathematical aggregation pipeline calculating burn rate and category ratios",
-      "Strict data sanitization and modular state encapsulation",
+      "MVVM with Provider and ProxyProvider DI syncing MainViewModel to the active user",
+      "SQLite schema v5 (users, accounts, transactions) with UUID keys, cascade deletes, and PRAGMA foreign_keys = ON",
+      "Frankfurter FX rates with 24-hour SharedPreferences TTL cache and auto-update toggle",
     ],
     metrics: [
-      { label: "Loading", value: "Local-first, Cached" },
-      { label: "State", value: "Memoized Updates" },
+      { label: "Database", value: "SQLite Schema v5" },
+      { label: "FX Cache", value: "24h TTL" },
+      { label: "Security", value: "SHA-256 + User Isolation" },
     ],
-    tags: ["React", "TypeScript", "Tailwind CSS", "Client State", "Chart.js"],
+    tags: ["Flutter", "Dart", "Provider (MVVM)", "SQLite (sqflite)", "Frankfurter API", "fl_chart"],
+    liveUrl: "https://youtube.com/shorts/I1ZCUK5RzLQ?feature=share",
     githubUrl: "https://github.com/SwithinHalee/Xpense",
     featured: true,
     gridSpan: "col-span-12 lg:col-span-7",
@@ -203,24 +206,34 @@ export const PROJECTS: ProjectItem[] = [
     caseStudy: {
       clientOrContext: "Personal Engineering Project",
       timeline: "2025 — 2026",
-      role: "Sole Software Engineer",
+      role: "Sole Mobile Engineer (Flutter)",
       challenge:
-        "Most budgeting apps enforce complex setups, advertisements, and slow sync latency. The goal was a clean ledger that loads quickly from local state with keyboard-friendly navigation.",
+        "Most budgeting apps assume one user, one currency, and an always-online connection — plus complex setup, ads, and slow sync on top. Xpense had to work the opposite way: offline-first on a single shared device, with multiple users isolated by userId, each holding several accounts across ISO 4217 currencies. Balances live as REAL values tied to UUID account keys, transactions carry income/expense types with ISO8601 dates and category icon codepoints, and every delete must cascade cleanly through users to accounts to transactions. On top of that ledger core, the app must convert all balances into one base currency with presisi FX math, cache rates for 24 hours to survive rate limits and dead zones, hash passwords with SHA-256 before they ever touch SQLite, generate premium PDF and CSV exports on demand, and aggregate thousands of categorized transactions into interactive pie stats without freezing the UI thread.",
       architectureSolution:
-        "Implemented lightweight localized state management with transactional immutability. Built custom tabular views with keyboard shortcuts for rapid expense logging.",
+        "MVVM with Provider: models (Account, Transaction, User) use Equatable plus toMap/fromMap, views stay reactive through Consumer, and AuthViewModel plus MainViewModel split session from ledger logic. ProxyProvider injects auth into MainViewModel so every query stays scoped to the logged-in user. SqliteService is a singleton holding one connection to xpense.db with PRAGMA foreign_keys = ON.",
       deliverables: [
-        "Instant transaction insertion ledger",
-        "Burn rate and net financial velocity dashboard",
-        "Categorical expense allocation breakdown",
+        "Multi-account ledger with income/expense CRUD, ISO8601 dates, and category icon codepoints",
+        "Dashboard total-balance engine converting every account into the base currency",
+        "Frankfurter FX pipeline with SharedPreferences TTL cache and isAutoUpdateEnabled toggle",
+        "Premium PDF and CSV export shared via share_plus from path_provider temp files",
+        "Interactive fl_chart pie stats grouped by category across daily, weekly, monthly, and yearly periods",
       ],
       technicalDecisions: [
         {
-          title: "Client-Side Transaction Pipeline",
-          rationale: "Allows instant optimistic UI updates with zero network wait-state.",
+          title: "Relational Schema v5 With Cascade Deletes",
+          rationale: "users, accounts, and transactions link through UUID keys and ON DELETE CASCADE, so removing a user or account cleans dependents without orphan rows.",
         },
         {
-          title: "Monospace Numerical Formatting",
-          rationale: "Prevents tabular jitter by ensuring tabular figures align vertically down the penny.",
+          title: "24-Hour Manual TTL Rate Cache",
+          rationale: "Cached rates keyed per currency with timestamp validation cut bandwidth; cache hit under 24 hours, API miss after, and manual toggle for offline use.",
+        },
+        {
+          title: "SHA-256 Hashing Plus userId-Scoped Queries",
+          rationale: "Passwords hash with crypto before storage and login comparison, while every account query filters WHERE userId = ? for cross-user isolation.",
+        },
+        {
+          title: "Isolate Compute Plus RepaintBoundary Charts",
+          rationale: "Stat aggregation over 500+ transactions moves to a background isolate, PieTouchData expands the tapped sector, and RepaintBoundary keeps chart repaints isolated.",
         },
       ],
     },
@@ -234,7 +247,7 @@ export const PROJECTS: ProjectItem[] = [
       "High-throughput encyclopedia application consuming the PokeAPI, featuring aggressive client-side caching, virtualized listing, and stat comparison radars.",
     description:
       "Explores scalable pagination and asynchronous cache-first data fetching. Features instant search indexing, dual-type filtering matrices, and detailed numerical baseline comparisons.",
-    image: "/images/projects/pokemon.jpg",
+    image: "/images/projects/pokemon-app.jpg",
     technicalHighlights: [
       "Cache-first query pipeline reducing redundant network trips",
       "Adaptive search with debounce and multi-type matrix intersection",
@@ -245,7 +258,9 @@ export const PROJECTS: ProjectItem[] = [
       { label: "Search", value: "Debounced Instant-feel" },
     ],
     tags: ["React", "TypeScript", "TanStack Query", "PokeAPI", "Tailwind CSS"],
+    liveUrl: "https://pokemon-app-sigma-blond.vercel.app/",
     githubUrl: "https://github.com/SwithinHalee/pokemon-app",
+    downloadUrl: "https://github.com/SwithinHalee/pokemon-app/releases/download/v1.0.0/Pokedex.apk",
     featured: true,
     gridSpan: "col-span-12 lg:col-span-5",
     badge: {
@@ -286,7 +301,7 @@ export const PROJECTS: ProjectItem[] = [
       "Emulated enterprise network architecture validating segmented peer-to-peer data distribution, protocol routing, access control lists, and packet analysis.",
     description:
       "Designed and tested in Graphical Network Simulator-3 (GNS3). Emulates router configurations, VLAN segmentation, and multi-node packet exchange security protocols across distributed workstation clusters.",
-    image: "/images/projects/gns3.jpg",
+    image: "/images/projects/gns3-project.jpg",
     technicalHighlights: [
       "Multi-subnet IP addressing scheme and dynamic route distribution",
       "Packet verification using Wireshark to validate protocol handshakes",

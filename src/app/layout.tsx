@@ -118,7 +118,7 @@ function structuredData(): Record<string, unknown> {
         worksFor: {
           "@type": "Organization",
           name: "CarbonEthics",
-          url: "https://www.carbonethics.org",
+          url: "https://web-staging.carbonethics.co/",
         },
         knowsAbout: [
           "TypeScript",

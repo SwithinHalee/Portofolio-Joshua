@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, GithubLogo, Globe, MagnifyingGlass, X } from "@phosphor-icons/react";
+import { ArrowLeft, DownloadSimple, GithubLogo, Globe, MagnifyingGlass, X } from "@phosphor-icons/react";
 import { Navbar } from "@/components/navbar";
 import { Colophon } from "@/components/colophon";
 
@@ -14,6 +14,7 @@ interface ArchiveEntry {
   tech: string[];
   link?: string;
   github?: string;
+  download?: string;
   slug?: string;
 }
 
@@ -24,15 +25,16 @@ const ARCHIVE_ITEMS: ArchiveEntry[] = [
     category: "Climate Tech / Web Platform",
     context: "CarbonEthics (Internship)",
     tech: ["Next.js", "TypeScript", "Tailwind CSS", "TanStack Query", "REST API"],
-    link: "https://www.carbonethics.org",
+    link: "https://web-staging.carbonethics.co/",
     slug: "carbonethics-platform",
   },
   {
     year: "2026",
     title: "Xpense Ledger",
-    category: "Financial Engineering / Ledger",
+    category: "Mobile / Local-first Finance",
     context: "Open Source Tool",
-    tech: ["React", "TypeScript", "Tailwind CSS", "Client State", "Chart.js"],
+    tech: ["Flutter", "Dart", "Provider (MVVM)", "SQLite", "Frankfurter API", "fl_chart"],
+    link: "https://youtube.com/shorts/I1ZCUK5RzLQ?feature=share",
     github: "https://github.com/SwithinHalee/Xpense",
     slug: "xpense-ledger",
   },
@@ -42,7 +44,9 @@ const ARCHIVE_ITEMS: ArchiveEntry[] = [
     category: "Data Caching & Visualization",
     context: "Engineering Prototype",
     tech: ["React", "TypeScript", "TanStack Query", "PokeAPI", "Tailwind CSS"],
+    link: "https://pokemon-app-sigma-blond.vercel.app/",
     github: "https://github.com/SwithinHalee/pokemon-app",
+    download: "https://github.com/SwithinHalee/pokemon-app/releases/download/v1.0.0/Pokedex.apk",
     slug: "pokemon-explorer",
   },
   {
@@ -280,6 +284,17 @@ export default function ArchivePage() {
                             title="Live Site"
                           >
                             <Globe size={14} weight="regular" />
+                          </a>
+                        )}
+                        {item.download && (
+                          <a
+                            href={item.download}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-[#616161] hover:text-[#111111]"
+                            title="Download APK"
+                          >
+                            <DownloadSimple size={14} weight="regular" />
                           </a>
                         )}
                       </div>

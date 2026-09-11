@@ -1,13 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   ArrowRight,
   ArrowUpRight,
   CaretDown,
+  DownloadSimple,
   GithubLogo,
   Globe,
   ListBullets,
@@ -20,6 +20,7 @@ import { PROJECTS, ProjectItem } from "@/data/portfolio";
 import { usePortfolio } from "@/components/portfolio-provider";
 import { Reveal } from "@/components/motion-wrapper";
 import { DossierTag } from "@/components/dossier-tag";
+import { ProjectMedia } from "@/components/project-media";
 
 type ViewMode = "grid" | "detail" | "list";
 
@@ -31,15 +32,6 @@ const VIEW_MODES: { id: ViewMode; label: string; icon: PhosphorIcon }[] = [
 
 function projectYear(project: ProjectItem): string {
   return project.caseStudy.timeline.match(/\d{4}/)?.[0] ?? "—";
-}
-
-const PROJECT_IMAGE_FALLBACK = "/images/projects/xpense.jpg";
-
-function resolveProjectImage(src: string | undefined | null): string {
-  if (!src || !src.trim()) return PROJECT_IMAGE_FALLBACK;
-  const t = src.trim();
-  if (t.startsWith("/") || t.startsWith("https://") || t.startsWith("http://")) return t;
-  return PROJECT_IMAGE_FALLBACK;
 }
 
 export function Projects() {
@@ -167,7 +159,7 @@ export function Projects() {
             transition={{ duration: 0.15, ease: "easeOut" }}
             className={
               viewMode === "grid"
-                ? "grid grid-cols-12 gap-6"
+                ? "grid grid-cols-12 gap-6 items-stretch"
                 : viewMode === "detail"
                   ? "flex flex-col gap-6"
                   : "flex flex-col border-t border-[#EAEAEA]"
@@ -194,9 +186,9 @@ function ProjectCard({ project, index }: { project: ProjectItem; index: number }
   const [blueprintExpanded, setBlueprintExpanded] = useState(false);
 
   return (
-    <Reveal delay={index * 0.08} className={project.gridSpan}>
-      <div className="group relative flex flex-col justify-between rounded-[10px] border border-[#EAEAEA] bg-[#FFFFFF] p-6 sm:p-8 transition-colors duration-200 hover:border-[#CCCCCC]">
-        <div>
+    <Reveal delay={index * 0.08} className={`${project.gridSpan} h-full`}>
+      <div className="group relative flex h-full flex-col justify-between rounded-[10px] border border-[#EAEAEA] bg-[#FFFFFF] p-6 sm:p-8 transition-colors duration-200 hover:border-[#CCCCCC]">
+        <div className="flex-1">
           {/* Card Header & Category Badge */}
           <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
             <span className="font-mono text-xs uppercase tracking-wider text-[#616161]">
@@ -253,11 +245,9 @@ function ProjectCard({ project, index }: { project: ProjectItem; index: number }
               data-cursor-label="Open case"
               className="block relative aspect-[16/9] w-full bg-[#F5F5F3] overflow-hidden"
             >
-              <Image
-                src={resolveProjectImage(project.image)}
+              <ProjectMedia
+                src={project.image}
                 alt={`${project.title} interface preview mockup`}
-                fill
-                className="object-cover"
                 sizes={isLarge ? "(max-width: 1024px) 100vw, 1024px" : "(max-width: 1024px) 100vw, 560px"}
               />
               <div className="absolute inset-0 bg-[#000000]/[0.015] pointer-events-none"></div>
@@ -415,6 +405,18 @@ function ProjectCard({ project, index }: { project: ProjectItem; index: number }
                 <ArrowUpRight size={11} weight="bold" />
               </a>
             )}
+
+            {project.downloadUrl && (
+              <a
+                href={project.downloadUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 rounded-[4px] bg-[#111111] px-2.5 py-1.5 font-mono text-xs font-semibold text-white transition-colors hover:bg-[#2A2A2A]"
+              >
+                <DownloadSimple size={13} weight="bold" />
+                <span>Download APK</span>
+              </a>
+            )}
           </div>
         </div>
       </div>
@@ -522,6 +524,18 @@ function ProjectDetailRow({ project, index }: { project: ProjectItem; index: num
                   <ArrowUpRight size={11} weight="bold" />
                 </a>
               )}
+
+              {project.downloadUrl && (
+                <a
+                  href={project.downloadUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 rounded-[4px] bg-[#111111] px-2.5 py-1.5 font-mono text-xs font-semibold text-white transition-colors hover:bg-[#2A2A2A]"
+                >
+                  <DownloadSimple size={13} weight="bold" />
+                  <span>Download APK</span>
+                </a>
+              )}
             </div>
           </div>
         </div>
@@ -546,11 +560,9 @@ function ProjectDetailRow({ project, index }: { project: ProjectItem; index: num
               href={`/work/${project.slug}`}
               className="relative block aspect-[16/9] w-full overflow-hidden bg-[#F5F5F3]"
             >
-              <Image
-                src={resolveProjectImage(project.image)}
+              <ProjectMedia
+                src={project.image}
                 alt={`${project.title} interface preview mockup`}
-                fill
-                className="object-cover"
                 sizes="(max-width: 1024px) 100vw, 560px"
               />
               <div className="pointer-events-none absolute inset-0 bg-[#000000]/[0.015]"></div>
@@ -577,7 +589,7 @@ function ProjectListRow({ project, index }: { project: ProjectItem; index: numbe
           0{index + 1}
         </span>
 
-        <div className="col-span-10 sm:col-span-6 lg:col-span-5">
+        <div className="col-span-10 sm:col-span-5 lg:col-span-4">
           <Link
             href={`/work/${project.slug}`}
             className="font-serif text-lg text-[#111111] underline-offset-4 hover:underline"
@@ -590,7 +602,7 @@ function ProjectListRow({ project, index }: { project: ProjectItem; index: numbe
           </div>
         </div>
 
-        <div className="hidden flex-wrap gap-1 lg:col-span-4 lg:flex">
+        <div className="hidden flex-wrap gap-1 lg:col-span-3 lg:flex">
           {project.tags.slice(0, 3).map((t) => (
             <span
               key={t}
@@ -610,7 +622,7 @@ function ProjectListRow({ project, index }: { project: ProjectItem; index: numbe
           {year}
         </span>
 
-        <div className="col-span-12 flex items-center gap-3 sm:col-span-3 sm:justify-end lg:col-span-1">
+        <div className="col-span-12 flex flex-wrap items-center gap-2 sm:col-span-4 sm:justify-end lg:col-span-3">
           <Link
             href={`/work/${project.slug}`}
             aria-label={`Open ${project.title} case study`}
@@ -641,6 +653,20 @@ function ProjectListRow({ project, index }: { project: ProjectItem; index: numbe
               className="text-[#616161] transition-colors hover:text-[#111111]"
             >
               <Globe size={14} weight="regular" />
+            </a>
+          )}
+
+          {project.downloadUrl && (
+            <a
+              href={project.downloadUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={`Download ${project.title} APK`}
+              title={`Download ${project.title} APK`}
+              className="inline-flex items-center gap-1 rounded-[4px] bg-[#111111] px-2 py-1 font-mono text-[11px] font-semibold text-white transition-colors hover:bg-[#2A2A2A]"
+            >
+              <DownloadSimple size={13} weight="bold" />
+              <span>APK</span>
             </a>
           )}
         </div>

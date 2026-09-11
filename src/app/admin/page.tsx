@@ -207,12 +207,13 @@ function emptyProject(): ProjectItem {
     category: "New Category",
     summary: "One-sentence summary of what this project does and who it serves.",
     description: "Longer paragraph describing scope, constraints, and outcomes.",
-    image: "/images/projects/xpense.jpg",
+    image: "/images/projects/pokemon-app.jpg",
     technicalHighlights: ["First technical highlight"],
     metrics: [{ label: "Status", value: "Draft" }],
     tags: ["Next.js", "TypeScript"],
     liveUrl: "",
     githubUrl: "",
+    downloadUrl: "",
     featured: true,
     gridSpan: "col-span-12 lg:col-span-7",
     badge: { text: "DRAFT ENTRY", variant: "amber" },
@@ -883,7 +884,7 @@ export default function AdminPage() {
                           value={selectedProject.image}
                           onChange={(e) => patchProject(selectedProject.id, (p) => ({ ...p, image: e.target.value }))}
                           className={textInputClass(true)}
-                          placeholder="/images/projects/xpense.jpg"
+                          placeholder="/images/projects/pokemon-app.jpg"
                         />
                         <span className="mt-2 flex flex-wrap items-center gap-2">
                           <ImageUploadButton
@@ -967,7 +968,7 @@ export default function AdminPage() {
                         />
                       </Field>
                     </div>
-                    <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
+                    <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-3">
                       <Field label="Live URL">
                         <input
                           value={selectedProject.liveUrl ?? ""}
@@ -982,6 +983,14 @@ export default function AdminPage() {
                           onChange={(e) => patchProject(selectedProject.id, (p) => ({ ...p, githubUrl: e.target.value }))}
                           className={textInputClass(true)}
                           placeholder="https://github.com/…"
+                        />
+                      </Field>
+                      <Field label="Download URL" hint="APK / file">
+                        <input
+                          value={selectedProject.downloadUrl ?? ""}
+                          onChange={(e) => patchProject(selectedProject.id, (p) => ({ ...p, downloadUrl: e.target.value }))}
+                          className={textInputClass(true)}
+                          placeholder="https://…/app.apk"
                         />
                       </Field>
                     </div>

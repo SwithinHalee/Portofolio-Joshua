@@ -23,9 +23,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!project) return { title: "Project Case Study | Joshua Abdiel" };
 
   const url = `${SITE_URL}/work/${project.slug}`;
-  const image = project.image.startsWith("/")
+  const isVideo = /\.mp4($|\?)/i.test(project.image.trim());
+  const image = !isVideo && project.image.startsWith("/")
     ? `${SITE_URL}${project.image}`
-    : project.image.startsWith("http")
+    : !isVideo && project.image.startsWith("http")
       ? project.image
       : undefined;
 

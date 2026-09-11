@@ -130,6 +130,7 @@ export function CustomCursor() {
   const [label, setLabel] = useState("");
   const [pressed, setPressed] = useState(false);
   const [visible, setVisible] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(false);
 
   const cursorRef = useRef<HTMLDivElement>(null);
   const stateRef = useRef({ variant: "default" as CursorVariant, label: "" });
@@ -144,9 +145,29 @@ export function CustomCursor() {
   const burstTimersRef = useRef<number[]>([]);
 
   useEffect(() => {
+    // Fullscreen content renders in the browser top layer, above the fixed
+    // custom cursor. Restore the native pointer while any element is
+    // fullscreen so the user never ends up with no visible cursor.
+    const handleFs = () => {
+      const fs = !!document.fullscreenElement;
+      setIsFullscreen(fs);
+      if (fs) {
+        document.documentElement.classList.remove("custom-cursor-enabled");
+      } else if (enabled) {
+        document.documentElement.classList.add("custom-cursor-enabled");
+      }
+    };
+    handleFs();
+    document.addEventListener("fullscreenchange", handleFs);
+    return () => document.removeEventListener("fullscreenchange", handleFs);
+  }, [enabled]);
+
+  useEffect(() => {
     if (!enabled) return;
 
-    document.documentElement.classList.add("custom-cursor-enabled");
+    if (!document.fullscreenElement) {
+      document.documentElement.classList.add("custom-cursor-enabled");
+    }
 
     const place = (x: number, y: number) => {
       if (cursorRef.current) {
@@ -325,6 +346,7 @@ export function CustomCursor() {
   }, [enabled]);
 
   if (!enabled) return null;
+  if (isFullscreen) return null;
 
   const showVisuals = visible && variant !== "hidden";
   const showHand = variant === "hover" || variant === "label";

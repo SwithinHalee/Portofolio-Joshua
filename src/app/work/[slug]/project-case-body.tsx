@@ -1,21 +1,12 @@
 "use client";
 
 import { useEffect } from "react";
-import Image from "next/image";
 import Link from "next/link";
-import { ArrowLeft, ArrowUpRight, GithubLogo, Globe } from "@phosphor-icons/react";
+import { ArrowLeft, ArrowUpRight, DownloadSimple, GithubLogo, Globe } from "@phosphor-icons/react";
 import type { ProjectItem } from "@/data/portfolio";
 import { usePortfolio } from "@/components/portfolio-provider";
 import { DossierTag } from "@/components/dossier-tag";
-
-const PROJECT_IMAGE_FALLBACK = "/images/projects/xpense.jpg";
-
-function resolveProjectImage(src: string | undefined | null): string {
-  if (!src || !src.trim()) return PROJECT_IMAGE_FALLBACK;
-  const t = src.trim();
-  if (t.startsWith("/") || t.startsWith("https://") || t.startsWith("http://")) return t;
-  return PROJECT_IMAGE_FALLBACK;
-}
+import { ProjectMedia } from "@/components/project-media";
 
 interface Props {
   slug: string;
@@ -166,6 +157,17 @@ export function ProjectCaseBody({ slug, initialProject, initialIndex, initialPre
                   <ArrowUpRight size={10} weight="bold" />
                 </a>
               )}
+              {project.downloadUrl && (
+                <a
+                  href={project.downloadUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 rounded-[4px] bg-[#111111] px-2.5 py-1.5 text-white transition-colors hover:bg-[#2A2A2A] hover:no-underline"
+                >
+                  <DownloadSimple size={13} weight="bold" />
+                  <span>Download APK</span>
+                </a>
+              )}
             </div>
           </div>
         </div>
@@ -184,11 +186,9 @@ export function ProjectCaseBody({ slug, initialProject, initialIndex, initialPre
           </div>
 
           <div className="relative aspect-[16/9] w-full bg-[#F5F5F3]">
-            <Image
-              src={resolveProjectImage(project.image)}
+            <ProjectMedia
+              src={project.image}
               alt={`${project.title} Interface Preview`}
-              fill
-              className="object-cover"
               sizes="(max-width: 1024px) 100vw, 896px"
               priority
             />

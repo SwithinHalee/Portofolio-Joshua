@@ -57,13 +57,13 @@ export function AboutMe() {
 {
   "name": "Joshua Abdiel",
   "callsign": "Josh",
-  "title": "Frontend Engineer & Systems Undergraduate",
+  "title": "Frontend Developer & Information System Undergraduate",
   "institution": "Universitas Tarumanagara (UNTAR)",
   "degree": "Bachelor of Science, Information Systems",
   "current_engagement": "Frontend Engineering Intern @ CarbonEthics",
-  "location": "Tangerang Kota, Banten, ID [6.1783° S, 106.6319° E]",
+  "location": "Tangerang Kota, Banten, ID [6.175722° S, 106.686231° E]",
   "timezone": "WIB (UTC+7)",
-  "status": "Available for select full-time roles starting Q4 2026"
+  "status": "Q4 2026 plans open — possible CarbonEthics extension, unconfirmed"
 }`,
     "cat carbonethics.md": `# CarbonEthics Engagement Brief
 Role: Frontend Engineering Intern (Feb 2026 – Oct 2026)
@@ -181,13 +181,12 @@ echo "Location: Tangerang / Jakarta / Remote"`,
                 className="text-3xl sm:text-4xl lg:text-[40px] font-serif text-[#FFFFFF] tracking-[-0.03em] leading-[1.12] mb-5"
                 style={{ fontFamily: "var(--font-newsreader), Georgia, serif" }}
               >
-                Deliberate Craft, Not Default Output
+                If this was a fairy tale, passion would awake dormant power, to grant you
+                the ability to defeat me. But this is reality. Nothing so perfect would happen.
               </h2>
 
               <p className="text-sm sm:text-base text-[#AAAAAA] leading-relaxed font-sans mb-6">
-                I build web software with architectural rigor, strict type safety, and utilitarian
-                restraint. Navigating between systems theory at <strong className="text-white font-medium">Universitas Tarumanagara</strong> and
-                production climate-tech platforms at <strong className="text-white font-medium">CarbonEthics</strong>.
+                - Ainz Ooal Gown
               </p>
 
               {/* Vertical Perspective Selector with Auto-Cycle Animation (Inverted Colors) */}
@@ -224,9 +223,9 @@ echo "Location: Tangerang / Jakarta / Remote"`,
                       : "text-[#888888] hover:text-white hover:bg-[#202020]"
                   }`}
                 >
-                  <span>[01] Ethos & Philosophy</span>
+                  <span>[01] Personal Loadout</span>
                   <span className={`text-[10px] ${activeLens === "philosophy" ? "text-[#555555]" : "opacity-70"}`}>
-                    Standards
+                    Off-duty
                   </span>
                   {activeLens === "philosophy" && (
                     <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-black/15 overflow-hidden">
@@ -342,7 +341,7 @@ echo "Location: Tangerang / Jakarta / Remote"`,
                     <div className="sm:col-span-4">
                       <div className="relative aspect-[4/3] w-full rounded-[6px] overflow-hidden">
                         <Image
-                          src="/images/about/joshua.jpg"
+                          src="/images/about/joshua-2.jpg"
                           alt="Joshua Abdiel portrait"
                           fill
                           className="object-cover"
@@ -368,7 +367,7 @@ echo "Location: Tangerang / Jakarta / Remote"`,
                       </div>
                       <div className="flex items-baseline justify-between border-b border-[#242424] pb-1">
                         <span className="text-[#777777] text-[10px] uppercase">Coordinates</span>
-                        <span className="text-[#CCCCCC] text-xs">6.1783° S, 106.6319° E</span>
+                        <span className="text-[#CCCCCC] text-xs">6.175722° S, 106.686231° E</span>
                       </div>
                       <div className="flex items-baseline justify-between border-b border-[#242424] pb-1">
                         <span className="text-[#777777] text-[10px] uppercase">Homebase</span>
@@ -398,28 +397,28 @@ echo "Location: Tangerang / Jakarta / Remote"`,
                       >
                         <div className="flex items-center justify-between border-b border-[#242424] pb-2 font-mono text-[11px] text-[#888888]">
                           <span className="uppercase text-[10px] text-white font-semibold">
-                            LENS [01]: CORE ENGINEERING ETHOS
+                            LENS [01]: PERSONAL LOADOUT
                           </span>
-                          <span className="text-[#9A9A9A]">STANDARDS ENFORCED</span>
+                          <span className="text-[#9A9A9A]">OFF-DUTY LOG</span>
                         </div>
 
                         <p className="text-xs sm:text-sm text-[#AAAAAA] font-sans leading-relaxed">
-                          In an era flooded with boilerplate AI templates, I build software that treats
-                          performance as an ethical duty and type safety as an immutable contract.
+                          Off-duty rotation: games, side-quest coding, badminton, and camping.
+                          Baseline fuel is noodles in any form, with PC hardware and alutsista talk on the side.
                         </p>
 
-                        {/* Standards Stack */}
+                        {/* Personal Loadout */}
                         <div className="divide-y divide-[#242424] font-mono text-xs">
                           <div className="py-3">
                             <div className="flex items-center gap-2 mb-1">
                               <span className="text-[#4ADE80] font-bold">01</span>
                               <span className="font-semibold text-white">
-                                Type Contracts Before Pixel Painting
+                                Off-Duty Rotation
                               </span>
                             </div>
                             <p className="text-[11px] text-[#999999] font-sans leading-relaxed">
-                              Immutable TypeScript interfaces established prior to component creation.
-                              Eliminating runtime defects at compile-time.
+                              Gaming, coding side quests, badminton rallies, and camping trips.
+                              Movement and fresh air balance the screen hours.
                             </p>
                           </div>
 
@@ -427,12 +426,12 @@ echo "Location: Tangerang / Jakarta / Remote"`,
                             <div className="flex items-center gap-2 mb-1">
                               <span className="text-[#4ADE80] font-bold">02</span>
                               <span className="font-semibold text-white">
-                                Sub-Second Painting & Minimalist Dependencies
+                                Active Barracks
                               </span>
                             </div>
                             <p className="text-[11px] text-[#999999] font-sans leading-relaxed">
-                              Speed is a design feature. Auditing bundle sizes and isolating client hydration
-                              boundaries to preserve battery and attention.
+                              RimWorld, War Thunder, Minecraft, Delta Force, and Clash of Clans.
+                              Colony sims, armor doctrine, sandbox builds, tactical FPS, and clan raids.
                             </p>
                           </div>
 
@@ -440,12 +439,13 @@ echo "Location: Tangerang / Jakarta / Remote"`,
                             <div className="flex items-center gap-2 mb-1">
                               <span className="text-[#4ADE80] font-bold">03</span>
                               <span className="font-semibold text-white">
-                                Utilitarian Restraint Over Eye-Candy
+                                AI Toolchain & Mess Hall
                               </span>
                             </div>
                             <p className="text-[11px] text-[#999999] font-sans leading-relaxed">
-                              Interfaces exist to convey truth and facilitate action. 1px hairline precision
-                              outlasts superficial animation trends.
+                              Daily drivers: Gemini (Antigravity), Muse Spark, DeepSeek, and 9Router.
+                              Routed by task across drafting, debugging, and model comparison.
+                              Off-screen topics: noodle variants, PC specs, and alutsista deep dives.
                             </p>
                           </div>
                         </div>
@@ -503,10 +503,10 @@ echo "Location: Tangerang / Jakarta / Remote"`,
                               <span className="font-semibold text-white text-xs font-sans">
                                 Santo Fransiskus Asisi
                               </span>
-                              <span className="text-[9px] text-[#888888]">PRIMARY — SENIOR HIGH</span>
+                              <span className="text-[9px] text-[#888888]">2020 — 2023 · SOCIAL SCIENCES (IPS)</span>
                             </div>
                             <p className="text-[11px] text-[#999999] font-sans leading-relaxed">
-                              Analytical discipline, mathematical reasoning, and logical foundational training.
+                              Senior high in the social sciences (IPS) track — economics, sociology, and geography grounding before moving into information systems.
                             </p>
                           </div>
                         </div>

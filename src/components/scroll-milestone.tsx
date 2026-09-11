@@ -13,7 +13,7 @@ const MILESTONES: MilestoneItem[] = [
   { id: "hero", num: "00", shortLabel: "INTRO", fullLabel: "Overview & Status" },
   { id: "about", num: "01", shortLabel: "BIO", fullLabel: "Biographic Dossier" },
   { id: "projects", num: "02", shortLabel: "WORKS", fullLabel: "Selected Works" },
-  { id: "stacking-mechanics", num: "03", shortLabel: "PARALLAX", fullLabel: "Design Mechanics" },
+  { id: "stacking-mechanics", num: "03", shortLabel: "CERTS", fullLabel: "Certifications" },
   { id: "dossier", num: "04", shortLabel: "STACK", fullLabel: "Technical Stack" },
   { id: "principles", num: "05", shortLabel: "ARCH", fullLabel: "System Architecture" },
   { id: "workspace", num: "06", shortLabel: "STUDIO", fullLabel: "Engineering Studio" },
