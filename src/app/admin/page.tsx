@@ -600,84 +600,6 @@ export default function AdminPage() {
                   </div>
                 </div>
               </div>
-              <div className="rounded-[8px] border border-[#EAEAEA] bg-[#FFFFFF] p-6">
-                <h3 className="mb-1 font-serif text-xl tracking-tight" style={{ fontFamily: "var(--font-newsreader), Georgia, serif" }}>
-                  Availability badge
-                </h3>
-                <p className="mb-5 font-mono text-xs text-[#616161]">Status pill above the hero headline.</p>
-                <button
-                  type="button"
-                  role="switch"
-                  aria-checked={data.personalInfo.availability.visible !== false}
-                  aria-label="Show availability badge on hero"
-                  onClick={() =>
-                    update((p) => ({
-                      ...p,
-                      personalInfo: {
-                        ...p.personalInfo,
-                        availability: {
-                          ...p.personalInfo.availability,
-                          visible: p.personalInfo.availability.visible === false,
-                        },
-                      },
-                    }))
-                  }
-                  className="mb-5 flex w-full items-center justify-between rounded-[6px] border border-[#EAEAEA] bg-[#FBFBFA] px-3 py-2.5 transition-colors hover:bg-[#F0F0EE]"
-                >
-                  <span className="font-mono text-xs text-[#111111]">Show badge</span>
-                  <span
-                    aria-hidden="true"
-                    className={`relative inline-flex h-5 w-9 shrink-0 items-center rounded-full transition-colors ${
-                      data.personalInfo.availability.visible !== false ? "bg-[#111111]" : "bg-[#D5D5D5]"
-                    }`}
-                  >
-                    <span
-                      className={`inline-block h-3.5 w-3.5 rounded-full bg-white transition-transform ${
-                        data.personalInfo.availability.visible !== false ? "translate-x-[18px]" : "translate-x-[3px]"
-                      }`}
-                    />
-                  </span>
-                </button>
-                <div className="space-y-4">
-                  <Field label="Status text">
-                    <input
-                      value={data.personalInfo.availability.status}
-                      onChange={(e) =>
-                        update((p) => ({
-                          ...p,
-                          personalInfo: { ...p.personalInfo, availability: { ...p.personalInfo.availability, status: e.target.value } },
-                        }))
-                      }
-                      className={textInputClass()}
-                    />
-                  </Field>
-                  <Field label="Badge color">
-                    <TonePicker
-                      tone={data.personalInfo.availability.badgeType}
-                      customColor={data.personalInfo.availability.customColor ?? "#3E7C4F"}
-                      previewText={data.personalInfo.availability.status || "Status"}
-                      onTone={(t) =>
-                        update((p) => ({
-                          ...p,
-                          personalInfo: {
-                            ...p.personalInfo,
-                            availability: { ...p.personalInfo.availability, badgeType: t },
-                          },
-                        }))
-                      }
-                      onCustomColor={(hex) =>
-                        update((p) => ({
-                          ...p,
-                          personalInfo: {
-                            ...p.personalInfo,
-                            availability: { ...p.personalInfo.availability, customColor: hex },
-                          },
-                        }))
-                      }
-                    />
-                  </Field>
-                </div>
-              </div>
             </div>
             <div className="rounded-[8px] border border-[#EAEAEA] bg-[#FFFFFF] p-6 lg:col-span-12">
               <div className="mb-5 flex flex-wrap items-start justify-between gap-3">
@@ -685,18 +607,11 @@ export default function AdminPage() {
                   <h3 className="mb-1 font-serif text-xl tracking-tight" style={{ fontFamily: "var(--font-newsreader), Georgia, serif" }}>
                     Hero spotlight & quick facts
                   </h3>
-                  <p className="font-mono text-xs text-[#616161]">Side notes, CTA label, and the bottom metrics bar.</p>
+                  <p className="font-mono text-xs text-[#616161]">CTA label, engagement, focus, and the bottom metrics bar.</p>
                 </div>
                 <ViewSectionLink href="/#hero" />
               </div>
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                <Field label="Hero note" hint="Next to the badge">
-                  <input
-                    value={data.personalInfo.heroNote}
-                    onChange={(e) => update((p) => ({ ...p, personalInfo: { ...p.personalInfo, heroNote: e.target.value } }))}
-                    className={textInputClass()}
-                  />
-                </Field>
                 <Field label="CTA label" hint="Primary button">
                   <input
                     value={data.personalInfo.ctaLabel}
