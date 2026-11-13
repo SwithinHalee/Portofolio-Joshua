@@ -26,13 +26,13 @@ export function ProjectCaseBody({ slug, initialProject, initialIndex, initialPre
   const project = (liveProject ?? initialProject) as ProjectItem | undefined;
 
   useEffect(() => {
-    if (project) document.title = `${project.title} — Case Study | Joshua Abdiel`;
+    if (project) document.title = `${project.title} · Case Study | Joshua Abdiel`;
   }, [project]);
 
   if (!project) {
     if (!hydrated) {
       return (
-        <main id="main-content" className="flex-1 py-12 md:py-20">
+        <main id="main-content" className="flex-1 pt-20 sm:pt-24 xl:pt-14 pb-16 md:pb-24">
           <div className="mx-auto max-w-5xl px-6 sm:px-8">
             <p className="font-mono text-xs uppercase tracking-wider text-[#616161]">Loading project…</p>
           </div>
@@ -40,7 +40,7 @@ export function ProjectCaseBody({ slug, initialProject, initialIndex, initialPre
       );
     }
     return (
-      <main id="main-content" className="flex-1 py-12 md:py-20">
+      <main id="main-content" className="flex-1 pt-20 sm:pt-24 xl:pt-14 pb-16 md:pb-24">
         <div className="mx-auto max-w-5xl px-6 sm:px-8">
           <p className="mb-2 font-mono text-xs uppercase tracking-wider text-[#616161]">404 / Missing dossier</p>
           <h1
@@ -86,7 +86,7 @@ export function ProjectCaseBody({ slug, initialProject, initialIndex, initialPre
     : initialNext ?? project;
 
   return (
-    <main id="main-content" className="flex-1 py-12 md:py-20">
+    <main id="main-content" className="flex-1 pt-20 sm:pt-24 xl:pt-14 pb-16 md:pb-24">
       <div className="mx-auto max-w-5xl px-6 sm:px-8">
         <div className="mb-10">
           <Link
@@ -110,59 +110,67 @@ export function ProjectCaseBody({ slug, initialProject, initialIndex, initialPre
             {project.title}
           </h1>
 
-          <p className="text-lg text-[#444444] font-sans leading-relaxed max-w-[35rem] mb-8">
+          <p className="text-lg text-[#444444] font-sans leading-relaxed mb-8">
             {project.description}
           </p>
 
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 rounded-[6px] border border-[#EAEAEA] bg-[#FBFBFA] p-4 font-sans text-xs">
-            <div>
-              <span className="text-[#525252] block text-[11px] font-medium uppercase tracking-wider">Context</span>
-              <span className="text-[#111111] font-medium">{project.caseStudy.clientOrContext}</span>
+          <div className="flex flex-col gap-4 rounded-[6px] border border-[#EAEAEA] bg-[#FBFBFA] p-4 font-sans text-xs md:flex-row md:items-center md:justify-between md:gap-6">
+            <div className="grid flex-1 min-w-0 grid-cols-2 gap-4 sm:grid-cols-[minmax(0,1.35fr)_minmax(0,0.8fr)_minmax(0,1fr)]">
+              {[
+                { label: "Context", value: project.caseStudy.clientOrContext, mono: false },
+                { label: "Timeline", value: project.caseStudy.timeline, mono: true },
+                { label: "Role", value: project.caseStudy.role, mono: false },
+              ].map((meta) => (
+                <div key={meta.label} className="min-w-0">
+                  <span className="mb-1.5 block text-[11px] font-medium uppercase leading-none tracking-wider text-[#525252]">
+                    {meta.label}
+                  </span>
+                  <span
+                    className={`block font-medium leading-snug text-[#111111] ${meta.mono ? "font-mono" : ""}`}
+                  >
+                    {meta.value}
+                  </span>
+                </div>
+              ))}
             </div>
-            <div>
-              <span className="text-[#525252] block text-[11px] font-medium uppercase tracking-wider">Timeline</span>
-              <span className="font-mono text-[#111111] font-medium">{project.caseStudy.timeline}</span>
-            </div>
-            <div>
-              <span className="text-[#525252] block text-[11px] font-medium uppercase tracking-wider">Role</span>
-              <span className="text-[#111111] font-medium">{project.caseStudy.role}</span>
-            </div>
-            <div className="flex items-center gap-3 self-end sm:justify-end">
-              {project.githubUrl && (
-                <a
-                  href={project.githubUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 text-[#111111] font-medium hover:underline"
-                >
-                  <GithubLogo size={13} weight="bold" />
-                  <span>Repo</span>
-                </a>
-              )}
-              {project.liveUrl && (
-                <a
-                  href={project.liveUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 text-[#111111] font-medium hover:underline"
-                >
-                  <Globe size={13} weight="bold" />
-                  <span>Live</span>
-                  <ArrowUpRight size={10} weight="bold" />
-                </a>
-              )}
-              {project.downloadUrl && (
-                <a
-                  href={project.downloadUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 rounded-[4px] bg-[#111111] px-2.5 py-1.5 text-white font-medium transition-colors hover:bg-[#2A2A2A] hover:no-underline"
-                >
-                  <DownloadSimple size={13} weight="bold" />
-                  <span>Download APK</span>
-                </a>
-              )}
-            </div>
+            {(project.githubUrl || project.liveUrl || project.downloadUrl) && (
+              <div className="flex shrink-0 flex-wrap items-center gap-3 border-t border-[#EAEAEA] pt-3 md:justify-end md:border-t-0 md:pt-0">
+                {project.githubUrl && (
+                  <a
+                    href={project.githubUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex shrink-0 items-center gap-1 whitespace-nowrap font-medium text-[#111111] hover:underline"
+                  >
+                    <GithubLogo size={13} weight="bold" />
+                    <span>Repo</span>
+                  </a>
+                )}
+                {project.liveUrl && (
+                  <a
+                    href={project.liveUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex shrink-0 items-center gap-1 whitespace-nowrap font-medium text-[#111111] hover:underline"
+                  >
+                    <Globe size={13} weight="bold" />
+                    <span>Live</span>
+                    <ArrowUpRight size={10} weight="bold" />
+                  </a>
+                )}
+                {project.downloadUrl && (
+                  <a
+                    href={project.downloadUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-[4px] bg-[#111111] px-2.5 py-1.5 font-medium leading-none text-white transition-colors hover:bg-[#2A2A2A] hover:no-underline"
+                  >
+                    <DownloadSimple size={13} weight="bold" />
+                    <span>Download APK</span>
+                  </a>
+                )}
+              </div>
+            )}
           </div>
         </div>
 
@@ -174,7 +182,7 @@ export function ProjectCaseBody({ slug, initialProject, initialIndex, initialPre
               <span className="h-2.5 w-2.5 rounded-full bg-[#E5E5E5] inline-block"></span>
             </div>
             <span className="font-mono text-xs text-[#525252]">
-              {project.slug} — architectural-preview [16:9 verified]
+              {project.slug} · architectural-preview [16:9 verified]
             </span>
             <div className="w-8"></div>
           </div>
@@ -194,16 +202,16 @@ export function ProjectCaseBody({ slug, initialProject, initialIndex, initialPre
             <h2 className="font-sans text-xs font-semibold uppercase tracking-wider text-[#525252] mb-3">
               01. The Problem & Engineering Challenge
             </h2>
-            <p className="text-base text-[#333333] leading-relaxed max-w-[32rem]">{project.caseStudy.challenge}</p>
+            <p className="text-base text-[#333333] leading-relaxed">{project.caseStudy.challenge}</p>
           </section>
 
           <section className="border-b border-[#EAEAEA] pb-12">
             <h2 className="font-sans text-xs font-semibold uppercase tracking-wider text-[#525252] mb-3">
               02. Architectural Solution
             </h2>
-            <p className="text-base text-[#333333] leading-relaxed max-w-[32rem] mb-6">{project.caseStudy.architectureSolution}</p>
+            <p className="text-base text-[#333333] leading-relaxed mb-6">{project.caseStudy.architectureSolution}</p>
 
-            <div className="rounded-[6px] border border-[#EAEAEA] bg-[#FBFBFA] p-5 max-w-3xl">
+            <div className="w-full rounded-[6px] border border-[#EAEAEA] bg-[#FBFBFA] p-5">
               <h3 className="font-sans text-xs uppercase tracking-wider text-[#111111] mb-3 font-semibold">
                 Key Deliverables
               </h3>

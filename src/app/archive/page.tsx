@@ -3,7 +3,6 @@
 import { useState } from "react";
 import Link from "next/link";
 import { ArrowLeft, DownloadSimple, GithubLogo, Globe, MagnifyingGlass, X } from "@phosphor-icons/react";
-import { Navbar } from "@/components/navbar";
 import { Colophon } from "@/components/colophon";
 
 interface ArchiveEntry {
@@ -91,9 +90,7 @@ export default function ArchivePage() {
 
   return (
     <div className="flex min-h-screen flex-col bg-[#FFFFFF] text-[#111111]">
-      <Navbar />
-
-      <main id="main-content" className="flex-1 pt-8 md:pt-12 pb-24 md:pb-28">
+      <main id="main-content" className="flex-1 pt-20 sm:pt-24 xl:pt-14 pb-24 md:pb-28">
         <div className="mx-auto max-w-5xl px-6 sm:px-8">
           {/* Back Link */}
           <div className="mb-10">
@@ -120,7 +117,7 @@ export default function ArchivePage() {
               systems research, and technical explorations spanning 2023 to present.
             </p>
 
-            {/* Filter Search Input — client-side only, nothing is sent or stored */}
+            {/* Filter Search Input (client-side only, nothing is sent or stored) */}
             <div className="relative max-w-md">
               <label htmlFor="archive-filter" className="sr-only">
                 Filter archive entries by keyword, technology, or year
@@ -165,7 +162,7 @@ export default function ArchivePage() {
             {searchQuery.trim() && (
               <span className="text-[#525252]">
                 {" "}
-                — filtered by &ldquo;{searchQuery.trim()}&rdquo;
+                · filtered by &ldquo;{searchQuery.trim()}&rdquo;
               </span>
             )}
           </div>

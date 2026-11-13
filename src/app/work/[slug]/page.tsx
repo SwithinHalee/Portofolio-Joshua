@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { PROJECTS } from "@/data/portfolio";
 import { SITE_URL } from "@/lib/site";
-import { Navbar } from "@/components/navbar";
 import { Colophon } from "@/components/colophon";
 import { ProjectCaseBody } from "./project-case-body";
 
@@ -31,20 +30,20 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       : undefined;
 
   return {
-    title: `${project.title} — Case Study | Joshua Abdiel`,
+    title: `${project.title} · Case Study | Joshua Abdiel`,
     description: project.summary,
     keywords: [...project.tags, project.title, "case study", "Joshua Abdiel"],
     alternates: { canonical: url },
     openGraph: {
       type: "article",
       url,
-      title: `${project.title} — Case Study | Joshua Abdiel`,
+      title: `${project.title} · Case Study | Joshua Abdiel`,
       description: project.summary,
       ...(image ? { images: [{ url: image, alt: `${project.title} interface preview` }] } : {}),
     },
     twitter: {
       card: "summary_large_image",
-      title: `${project.title} — Case Study | Joshua Abdiel`,
+      title: `${project.title} · Case Study | Joshua Abdiel`,
       description: project.summary,
       ...(image ? { images: [image] } : {}),
     },
@@ -64,7 +63,6 @@ export default async function ProjectCaseStudyPage({ params }: Props) {
 
   return (
     <div className="flex min-h-screen flex-col bg-[#FFFFFF] text-[#111111]">
-      <Navbar />
       <ProjectCaseBody
         slug={slug}
         initialProject={project}

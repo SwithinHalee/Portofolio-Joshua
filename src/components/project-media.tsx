@@ -53,7 +53,7 @@ export function ProjectMedia({ src, alt, sizes, priority }: ProjectMediaProps) {
         return;
       }
       // Fullscreen the frame (not the video alone) so the 16:9 box becomes a
-      // full-viewport stage and the video fits with contain — no cropping.
+      // full-viewport stage and the video fits with contain, without cropping.
       const frame = video.parentElement ?? video;
       frame.classList.add("pm-frame");
       if (frame.requestFullscreen) {

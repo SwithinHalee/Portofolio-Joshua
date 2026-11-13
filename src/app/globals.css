@@ -18,6 +18,34 @@ html {
   color: #111111;
 }
 
+/* Pre-hydration veil + centered JA monogram on reload until React SplashIntro
+   mounts, preventing any Hero flash and making JA visible from byte 0. */
+html.splash-pending::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-color: #FFFFFF;
+  z-index: 95;
+  pointer-events: none;
+}
+
+html.splash-pending::after {
+  content: "JA";
+  position: fixed;
+  inset: 0;
+  z-index: 96;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-hanken-grotesk), -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 56px;
+  font-weight: 500;
+  line-height: 1.15;
+  letter-spacing: -0.025em;
+  color: #111111;
+  pointer-events: none;
+}
+
 body {
   background-color: #FFFFFF;
   color: #111111;
@@ -88,9 +116,19 @@ kbd {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
+  [data-splash-surface],
+  [data-splash-monogram] {
+    display: none !important;
+  }
+  [data-navbar-brand],
+  [data-navbar-chrome] {
+    opacity: 1 !important;
+    transform: none !important;
+    pointer-events: auto !important;
+  }
 }
 
-/* Precision instrument cursor — native pointer is hidden only when the
+/* Precision instrument cursor: native pointer is hidden only when the
    custom cursor has mounted (JS-gated class) on devices with a fine pointer.
    Text-entry elements keep their native I-beam for usability. */
 @media (pointer: fine) {

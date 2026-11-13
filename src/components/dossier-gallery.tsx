@@ -121,7 +121,7 @@ export function DossierGallery() {
     <Reveal delay={0.1}>
       <div className="mb-16 border-t border-[#222222] pt-12">
         <div className="mb-8 flex items-center justify-between font-mono text-xs uppercase tracking-wider text-[#B3B3B3]">
-          <span>Visual Record — Field Plates</span>
+          <span>Visual Record · Field Plates</span>
           <span className="text-[11px] text-[#A3A3A3]">
             {String(views.length).padStart(2, "0")} EXPOSURES
           </span>

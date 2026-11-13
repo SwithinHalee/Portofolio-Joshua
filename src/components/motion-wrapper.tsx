@@ -98,7 +98,7 @@ export function StaggerItem({
 /**
  * Shared sweep ranges, written by useStackSlide and read by rail/scroll
  * navigation. Landing on a shared range guarantees the slide value is
- * exactly clamped to 0 — even if layout shifted after measuring (font
+ * exactly clamped to 0, even if layout shifted after measuring (font
  * swap, expand/collapse), because the same numbers drive both the sweep
  * and the landing target.
  */
@@ -115,7 +115,7 @@ export function getStackRange(stackId: string): [number, number] | undefined {
  * 0vw across exactly one viewport of scrolling after it docks, clamped
  * on both ends. All geometry is measured live so it stays exact across
  * breakpoints, font loading, and resize. Returns a MotionValue `x` plus
- * a `wide` flag — apply `style={wide ? { x } : undefined}` so mobile
+ * a `wide` flag; apply `style={wide ? { x } : undefined}` so mobile
  * keeps normal vertical flow.
  */
 /**
@@ -137,8 +137,8 @@ export function useStickyBottomPin(
         return;
       }
       const h = Math.ceil(el.getBoundingClientRect().height);
-      const header = document.querySelector("header");
-      const headerH = header ? Math.ceil(header.getBoundingClientRect().height) : 59;
+      const header = document.querySelector<HTMLElement>("header[data-navbar-header]");
+      const headerH = header ? Math.ceil(header.getBoundingClientRect().height) : 0;
       const pinTop = Math.min(headerH, window.innerHeight - h);
       el.style.top = `${pinTop}px`;
     };
@@ -181,11 +181,10 @@ export function useStackSlide(stackId: string) {
       const pinned = wrap.querySelector(":scope > section:first-child") as HTMLElement | null;
       if (!pinned) return;
       const vh = window.innerHeight;
-      const header = document.querySelector("header");
-      const headerH = header ? header.getBoundingClientRect().height : 59;
-      // Scroll position where the sliding section finishes docking flush
-      // beneath the navbar (its sticky top) — the horizontal sweep runs
-      // for exactly one viewport after this point.
+      const header = document.querySelector<HTMLElement>("header[data-navbar-header]");
+      const headerH = header ? header.getBoundingClientRect().height : 0;
+      // Scroll position where the sliding section finishes docking cleanly
+      // at the viewport top; the horizontal sweep runs for one viewport after.
       const dockY = wrap.offsetTop + pinned.offsetHeight - headerH;
       const computed: [number, number] = [dockY, dockY + vh];
       stackRanges.set(stackId, computed);

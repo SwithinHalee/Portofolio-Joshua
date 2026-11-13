@@ -318,12 +318,12 @@ export default function AdminPage() {
 
   const refreshTick = `${data.projects.length}:${data.techCategories.length}:${data.principles.length}:${data.experiences.length}:${data.education.length}:${data.gallery.length}:${data.workspaceSetup.length}`;
   const storageSize = useMemo(() => {
-    if (!hydrated || typeof window === "undefined") return "—";
+    if (!hydrated || typeof window === "undefined") return "-";
     try {
       const raw = window.localStorage.getItem("joshua-portfolio-v1") ?? "";
       return `${(raw.length / 1024).toFixed(1)} KB`;
     } catch {
-      return "—";
+      return "-";
     }
   }, [hydrated, refreshTick]);
 
@@ -355,7 +355,7 @@ export default function AdminPage() {
             <button
               type="button"
               onClick={() => void refreshGlobal()}
-              title={isGlobal ? "Global store connected — sync now" : "Global store not connected — click to retry"}
+              title={isGlobal ? "Global store connected; sync now" : "Global store not connected; click to retry"}
               className={`hidden items-center gap-1.5 rounded border px-2.5 py-1.5 font-mono text-[11px] sm:inline-flex ${
                 isGlobal
                   ? "border-[#CBE3D0] bg-[#EDF3EC] text-[#346538]"
@@ -424,7 +424,7 @@ export default function AdminPage() {
               <span className="text-[#346538]">Global sync is active.</span>
             ) : (
               <span className="text-[#956400]">
-                Global store not connected — edits stay in this browser until Redis is configured.
+                Global store not connected; edits stay in this browser until Redis is configured.
               </span>
             )}
           </p>
@@ -565,8 +565,8 @@ export default function AdminPage() {
                       }`}
                     >
                       {isValidEmail(cleanEmail(data.personalInfo.email))
-                        ? "Valid — mailto will work"
-                        : "Invalid format — mailto will fail, please fix"}
+                        ? "Valid: mailto will work"
+                        : "Invalid format: mailto will fail, please fix"}
                     </span>
                   </Field>
                   <Field label="GitHub URL">
@@ -576,10 +576,10 @@ export default function AdminPage() {
                       className={textInputClass(true)}
                     />
                   </Field>
-                  <Field label="LinkedIn URL">
+                  <Field label="Instagram URL">
                     <input
-                      value={data.personalInfo.linkedin}
-                      onChange={(e) => update((p) => ({ ...p, personalInfo: { ...p.personalInfo, linkedin: e.target.value } }))}
+                      value={data.personalInfo.instagram}
+                      onChange={(e) => update((p) => ({ ...p, personalInfo: { ...p.personalInfo, instagram: e.target.value } }))}
                       className={textInputClass(true)}
                     />
                   </Field>
@@ -1450,7 +1450,7 @@ export default function AdminPage() {
                             </div>
                             <input
                               value={(s.logos ?? []).join(", ")}
-                              placeholder="Logo slugs, comma separated — e.g. typescript, react (empty = monogram)"
+                              placeholder="Logo slugs, comma separated (e.g. typescript, react; empty = monogram)"
                               aria-label={`Skill ${sIdx + 1} logo slugs`}
                               onChange={(e) =>
                                 update((p) => ({
@@ -1481,7 +1481,7 @@ export default function AdminPage() {
                               <LogoSlugPreview slugs={s.logos ?? []} />
                               <span className="font-sans text-[11px] text-[#525252]">
                                 Cek slug di simpleicons.org (cari brand → slug ada di URL), atau
-                                buka cdn.simpleicons.org/nama — kalau gambar muncul berarti benar.
+                                buka cdn.simpleicons.org/nama; kalau gambar muncul berarti benar.
                               </span>
                             </span>
                           </div>
@@ -1641,7 +1641,7 @@ export default function AdminPage() {
                   const id = `experience-${data.experiences.length}`;
                   update((p) => {
                     const item: ExperienceItem = {
-                      period: "2026 — Present",
+                      period: "2026 - Present",
                       role: "New Role",
                       company: "Company",
                       location: "Jakarta / Remote",
@@ -1870,7 +1870,7 @@ export default function AdminPage() {
                   const id = `education-${data.education.length}`;
                   update((p) => {
                     const item: EducationItem = {
-                      period: "2023 — Present",
+                      period: "2023 - Present",
                       degree: "New Degree",
                       institution: "Institution",
                       details: "Focus areas and notes.",
@@ -2186,7 +2186,7 @@ export default function AdminPage() {
             <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
               <div>
                 <h3 className="font-serif text-xl tracking-tight" style={{ fontFamily: "var(--font-newsreader), Georgia, serif" }}>
-                  Visual record — field plates
+                  Visual record · field plates
                 </h3>
                 <p className="font-mono text-xs text-[#616161]">
                   Gallery under About, rendered top-to-bottom in this order. Wide = full row,
@@ -2320,7 +2320,7 @@ export default function AdminPage() {
                       </span>
                       {!plate.src.trim() && (
                         <span className="mt-1.5 block font-mono text-[11px] text-[#956400]">
-                          No image yet — upload or paste a URL. Empty plates stay hidden on the site.
+                          No image yet: upload or paste a URL. Empty plates stay hidden on the site.
                         </span>
                       )}
                     </Field>
@@ -2337,10 +2337,10 @@ export default function AdminPage() {
                         }
                         className={textInputClass(true)}
                       >
-                        <option value="wide">Wide — full row · 21:9</option>
-                        <option value="half">Half — shared row · 4:3</option>
-                        <option value="tall">Tall — shared portrait · 3:4</option>
-                        <option value="trio">Trio — third row square · 1:1</option>
+                        <option value="wide">Wide (full row · 21:9)</option>
+                        <option value="half">Half (shared row · 4:3)</option>
+                        <option value="tall">Tall (shared portrait · 3:4)</option>
+                        <option value="trio">Trio (third row square · 1:1)</option>
                       </select>
                     </Field>
                   </div>
@@ -2388,7 +2388,7 @@ export default function AdminPage() {
               ))}
               {data.gallery.length === 0 && (
                 <p className="rounded-[6px] border border-dashed border-[#EAEAEA] p-4 font-mono text-xs text-[#616161]">
-                  No plates yet. Add the first exposure — it appears under About as PLATE 01.
+                  No plates yet. Add the first exposure and it appears under About as PLATE 01.
                 </p>
               )}
             </div>

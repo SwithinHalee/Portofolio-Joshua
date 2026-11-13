@@ -17,7 +17,7 @@ export function Principles() {
     <motion.section
       id="principles"
       style={slideWide ? { x: slideX } : undefined}
-      className="relative z-10 bg-white rounded-tr-[16px] shadow-[0_-8px_24px_rgba(0,0,0,0.06)] pt-8 md:pt-12 pb-24 md:pb-28 border-b border-[#EAEAEA] overflow-x-clip md:sticky md:top-[59px]"
+      className="relative z-10 bg-white rounded-tr-[16px] md:rounded-none shadow-[0_-8px_24px_rgba(0,0,0,0.06)] pt-12 md:pt-[108px] pb-24 md:pb-28 border-b border-[#EAEAEA] overflow-x-clip md:sticky md:top-0"
     >
       <div className="mx-auto max-w-5xl px-6 sm:px-8">
         {/* Single one-shot entrance: header + rows reveal together, at once */}

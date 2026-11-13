@@ -30,7 +30,7 @@ export default function OpengraphImage() {
             color: "#616161",
           }}
         >
-          <span>JOSHUA ABDIEL — ENGINEERING PORTFOLIO</span>
+          <span>JOSHUA ABDIEL · ENGINEERING PORTFOLIO</span>
         </div>
         <div style={{ display: "flex", flexDirection: "column" }}>
           <div

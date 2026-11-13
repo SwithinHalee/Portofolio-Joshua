@@ -4,11 +4,13 @@ import { CustomCursor } from "@/components/custom-cursor";
 import { ScrollMemory } from "@/components/scroll-memory";
 import { WeightedScroll } from "@/components/weighted-scroll";
 import { PortfolioProvider } from "@/components/portfolio-provider";
+import { SplashProvider } from "@/components/splash-intro";
+import { Navbar } from "@/components/navbar";
 import {
   GOOGLE_VERIFICATION,
   SITE_DESCRIPTION,
   SITE_GITHUB,
-  SITE_LINKEDIN,
+  SITE_INSTAGRAM,
   SITE_LOCALE,
   SITE_NAME,
   SITE_TAGLINE,
@@ -38,7 +40,7 @@ const newsreader = Newsreader({
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: `${SITE_NAME} — ${SITE_TAGLINE}`,
+    default: `${SITE_NAME} | ${SITE_TAGLINE}`,
     template: `%s | ${SITE_NAME}`,
   },
   description: SITE_DESCRIPTION,
@@ -76,8 +78,8 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     url: SITE_URL,
-    siteName: `${SITE_NAME} — Engineering Portfolio`,
-    title: `${SITE_NAME} — ${SITE_TAGLINE}`,
+    siteName: `${SITE_NAME} · Engineering Portfolio`,
+    title: `${SITE_NAME} | ${SITE_TAGLINE}`,
     description: SITE_DESCRIPTION,
     locale: SITE_LOCALE,
     images: [
@@ -85,13 +87,13 @@ export const metadata: Metadata = {
         url: "/opengraph-image",
         width: 1200,
         height: 630,
-        alt: `${SITE_NAME} — ${SITE_TAGLINE}`,
+        alt: `${SITE_NAME} | ${SITE_TAGLINE}`,
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: `${SITE_NAME} — ${SITE_TAGLINE}`,
+    title: `${SITE_NAME} | ${SITE_TAGLINE}`,
     description: SITE_DESCRIPTION,
     images: ["/opengraph-image"],
   },
@@ -111,7 +113,7 @@ function structuredData(): Record<string, unknown> {
         url: SITE_URL,
         jobTitle: "Frontend Engineer",
         description: SITE_DESCRIPTION,
-        sameAs: [SITE_GITHUB, SITE_LINKEDIN],
+        sameAs: [SITE_GITHUB, SITE_INSTAGRAM],
         alumniOf: {
           "@type": "CollegeOrUniversity",
           name: "Universitas Tarumanagara",
@@ -134,7 +136,7 @@ function structuredData(): Record<string, unknown> {
         "@type": "WebSite",
         "@id": `${SITE_URL}/#website`,
         url: SITE_URL,
-        name: `${SITE_NAME} — Engineering Portfolio`,
+        name: `${SITE_NAME} · Engineering Portfolio`,
         description: SITE_DESCRIPTION,
         inLanguage: "en",
         author: { "@id": `${SITE_URL}/#person` },
@@ -142,6 +144,8 @@ function structuredData(): Record<string, unknown> {
     ],
   };
 }
+
+const SPLASH_BOOT_SCRIPT = `(function(){try{if(window.location.pathname.indexOf("/admin")===0)return;if(window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches)return;document.documentElement.classList.add("splash-pending");window.setTimeout(function(){document.documentElement.classList.remove("splash-pending");},2500);}catch(e){}})();`;
 
 export default function RootLayout({
   children,
@@ -151,8 +155,12 @@ export default function RootLayout({
   return (
     <html
       lang="en"
+      suppressHydrationWarning
       className={`${hankenGrotesk.variable} ${jetbrainsMono.variable} ${newsreader.variable} scroll-smooth antialiased`}
     >
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: SPLASH_BOOT_SCRIPT }} />
+      </head>
       <body className="min-h-screen bg-[#FFFFFF] text-[#111111] selection:bg-[#111111] selection:text-[#FFFFFF]">
         <script
           type="application/ld+json"
@@ -164,7 +172,12 @@ export default function RootLayout({
         >
           Skip to main content
         </a>
-        <PortfolioProvider>{children}</PortfolioProvider>
+        <PortfolioProvider>
+          <SplashProvider>
+            <Navbar />
+            {children}
+          </SplashProvider>
+        </PortfolioProvider>
         <WeightedScroll />
         <ScrollMemory />
         <CustomCursor />

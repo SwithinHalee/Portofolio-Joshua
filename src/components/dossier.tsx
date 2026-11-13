@@ -247,7 +247,7 @@ export function Dossier() {
         <Reveal delay={0.05}>
           <div className="mt-12 border-t border-[#242424] pt-5 font-sans text-xs text-[#B3B3B3]">
             <span className="uppercase tracking-wider">
-              Protocol — strict typing · perf budgets · hairline precision
+              Protocol: strict typing · perf budgets · hairline precision
             </span>
           </div>
         </Reveal>

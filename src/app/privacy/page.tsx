@@ -27,7 +27,7 @@ export default function PrivacyPage() {
             {PERSONAL_INFO.name}
           </strong>
           , based in {PERSONAL_INFO.location}. It is a personal, non-commercial
-          showcase of projects and experience — not a registered company, online
+          showcase of projects and experience (not a registered company, online
           store, or data-driven service. There are no accounts, checkouts,
           newsletters, or contact-form databases on this site.
         </p>
@@ -89,8 +89,8 @@ export default function PrivacyPage() {
         <p>
           Like virtually all websites, the hosting infrastructure (e.g. the
           platform serving these pages) may automatically process strictly
-          technical records needed to deliver the site securely — such as IP
-          address, date and time, requested URL, and user-agent string — for
+          technical records needed to deliver the site securely (such as IP
+          address, date and time, requested URL, and user-agent string) for
           security, load balancing, and error diagnosis. This site operator does
           not purchase, combine, or resell those logs, and does not use them to
           identify individuals.
@@ -115,7 +115,7 @@ export default function PrivacyPage() {
       <LegalSection id="third-parties" index="05" title="Third-party links">
         <p>
           Project cards link out to independent third parties: GitHub
-          repositories, LinkedIn, and the CarbonEthics website. Selecting those
+          repositories, Instagram, and the CarbonEthics website. Selecting those
           links leaves this site and loads content governed by that
           provider&apos;s own privacy terms. No content from those providers is
           embedded in these pages (no iframes, feeds, or players), so they
@@ -123,7 +123,7 @@ export default function PrivacyPage() {
         </p>
         <p>
           Fonts (Hanken Grotesk, JetBrains Mono, Newsreader) are self-hosted
-          through the application bundle — loading a page does not contact
+          through the application bundle, so loading a page does not contact
           external font servers.
         </p>
       </LegalSection>
@@ -137,7 +137,7 @@ export default function PrivacyPage() {
           . Visitors from the European Economic Area are additionally respected
           under the principles of the EU General Data Protection Regulation
           (GDPR). In practice, because no personal data is collected through
-          browsing, there is minimal processing to object to — but your rights
+          browsing, there is minimal processing to object to, though your rights
           still apply to any email correspondence:
         </p>
         <ul className="list-disc space-y-2 pl-5">
@@ -180,7 +180,7 @@ export default function PrivacyPage() {
         <p>
           If this site ever adds analytics, a contact form backend, comments, or
           any other data processing, this policy will be updated first, the
-          “Last updated” date revised, and — where required — a consent
+          “Last updated” date revised, and (where required) a consent
           mechanism added before the new processing begins. Material changes
           will be noted here rather than hidden.
         </p>

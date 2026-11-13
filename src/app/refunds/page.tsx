@@ -39,7 +39,7 @@ export default function RefundsPage() {
           work as a result of an introduction made through this site, payment,
           delivery, revision, and refund terms will be agreed in writing
           separately (for example in a statement of work or service agreement)
-          before work begins. Those separately agreed terms — not this page —
+          before work begins. Those separately agreed terms (not this page)
           will govern that engagement.
         </p>
       </LegalSection>

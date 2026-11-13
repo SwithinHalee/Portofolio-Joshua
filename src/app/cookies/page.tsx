@@ -16,7 +16,7 @@ export default function CookiesPage() {
     <LegalLayout
       eyebrow="Legal / Cookies"
       title="Cookie Policy"
-      description="Short version: this site does not use advertising or analytics cookies, so there is no cookie banner — there is nothing non-essential to consent to."
+      description="Short version: this site does not use advertising or analytics cookies, so there is no cookie banner because there is nothing non-essential to consent to."
       lastUpdated={LEGAL_LAST_UPDATED}
     >
       <LegalSection id="do-we-use" index="01" title="Do we need cookie consent?">
@@ -78,7 +78,7 @@ export default function CookiesPage() {
             sessionStorage
           </code>
           . Your browser may still cache static assets (images, stylesheets) on
-          your own device to load repeat visits faster — that cache lives under
+          your own device to load repeat visits faster. That cache lives under
           your control and can be cleared at any time in your browser settings.
         </p>
       </LegalSection>

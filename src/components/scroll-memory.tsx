@@ -17,7 +17,7 @@ function readMemory(): ScrollMemoryMap {
     const parsed: unknown = JSON.parse(raw);
     if (parsed && typeof parsed === "object") return parsed as ScrollMemoryMap;
   } catch {
-    // Storage unavailable or corrupted — fall back to no memory.
+    // Storage unavailable or corrupted; fall back to no memory.
   }
   return {};
 }
@@ -26,7 +26,7 @@ function savePosition(pathname: string, y: number): void {
   try {
     sessionStorage.setItem(STORAGE_KEY, JSON.stringify({ ...readMemory(), [pathname]: y }));
   } catch {
-    // Private mode etc. — memory simply stays in-page.
+    // Private mode etc.; memory simply stays in-page.
   }
 }
 
@@ -50,6 +50,7 @@ function jumpTo(y: number): number {
 export function ScrollMemory() {
   const pathname = usePathname();
   const pathnameRef = useRef(pathname);
+  const prevRouteRef = useRef(pathname);
   const wentBackRef = useRef(false);
   const transitioningRef = useRef(false);
   const guardTimerRef = useRef(0);
@@ -75,7 +76,7 @@ export function ScrollMemory() {
     try {
       window.history.scrollRestoration = "manual";
     } catch {
-      // Older engines — the browser default still applies.
+      // Older engines; the browser default still applies.
     }
     const onPopState = () => {
       savePosition(pathnameRef.current, window.scrollY);
@@ -109,7 +110,7 @@ export function ScrollMemory() {
         return;
       }
       if (url.origin !== window.location.origin) return;
-      // In-page anchors never change route — nothing to memorize or guard.
+      // In-page anchors never change route; nothing to memorize or guard.
       if (url.pathname === window.location.pathname && url.hash) return;
       savePosition(pathnameRef.current, window.scrollY);
       openGuard();
@@ -133,15 +134,24 @@ export function ScrollMemory() {
   // and the router's own scroll handling can otherwise leave the user
   // clamped mid-page (e.g. dropped at the dossier instead of the footer).
   useEffect(() => {
+    const prevRoute = prevRouteRef.current;
+    prevRouteRef.current = pathname;
     pathnameRef.current = pathname;
 
     const navEntries = window.performance?.getEntriesByType?.("navigation") ?? [];
     const navType = navEntries.length > 0 ? (navEntries[0] as PerformanceNavigationTiming).type : "";
+    const isInitialLoad = prevRoute === pathname;
     const shouldRestore =
-      (wentBackRef.current || navType === "back_forward" || navType === "reload") &&
+      (wentBackRef.current ||
+        (isInitialLoad && (navType === "back_forward" || navType === "reload"))) &&
       window.location.hash === "";
     wentBackRef.current = false;
     if (!shouldRestore) {
+      // Forward intra-app navigation without a hash must snap immediately to top rather than
+      // inheriting CSS `scroll-behavior: smooth` from the previous route's scroll offset.
+      if (prevRoute !== pathname && window.location.hash === "" && window.scrollY > 0) {
+        jumpTo(0);
+      }
       closeGuard();
       return;
     }

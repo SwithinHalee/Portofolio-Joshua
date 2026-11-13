@@ -2,28 +2,17 @@ import Link from "next/link";
 import { ArrowLeft, ArrowUpRight } from "@phosphor-icons/react/dist/ssr";
 
 export const metadata = {
-  title: "404 — Dossier Not Found | Joshua Abdiel",
+  title: "404: Dossier Not Found | Joshua Abdiel",
   description: "The requested page is not part of this portfolio archive.",
 };
 
 export default function NotFound() {
   return (
     <div className="flex min-h-screen flex-col bg-[#FFFFFF] text-[#111111]">
-      <header className="border-b border-[#EAEAEA] bg-white/80 backdrop-blur-md">
-        <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-4 sm:px-8">
-          <Link
-            href="/"
-            className="font-sans text-sm font-medium tracking-tight text-[#111111] transition-colors hover:text-[#444444]"
-          >
-            Joshua Abdiel
-          </Link>
-          <span className="font-mono text-xs text-[#616161]">INDEX / 404</span>
-        </div>
-      </header>
-
-      <main id="main-content" className="flex flex-1 items-center py-16 md:py-24">
+      <main id="main-content" className="flex flex-1 items-center pt-24 pb-16 md:py-24">
         <div className="mx-auto w-full max-w-5xl px-6 sm:px-8">
           <div className="max-w-2xl">
+            <p className="mb-3 font-mono text-xs text-[#616161]">INDEX / 404</p>
             <h1
               className="mb-4 font-serif text-4xl tracking-[-0.02em] text-[#111111] sm:text-5xl"
               style={{ fontFamily: "var(--font-newsreader), Georgia, serif" }}
@@ -81,7 +70,7 @@ export default function NotFound() {
           </div>
 
           <p className="mt-10 border-t border-[#EAEAEA] pt-4 font-sans text-xs text-[#525252]">
-            If you followed a link from this site and landed here, the reference is stale — the
+            If you followed a link from this site and landed here, the reference is stale; the
             canonical index lives at <span className="text-[#111111]">/</span>.
           </p>
         </div>

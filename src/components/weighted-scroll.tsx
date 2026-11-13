@@ -72,8 +72,8 @@ function getMaxScroll(): number {
 }
 
 /**
- * Adds damped inertial resistance to desktop wheel and trackpad scrolling — plus shared
- * guided section transitions via `scrollWithWeight` — while keeping native `position: sticky`,
+ * Adds damped inertial resistance to desktop wheel and trackpad scrolling, plus shared
+ * guided section transitions via `scrollWithWeight`, while keeping native `position: sticky`,
  * `IntersectionObserver`, touch gestures, and keyboard scrolling untouched.
  */
 export function WeightedScroll() {

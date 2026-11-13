@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { ArrowLeft } from "@phosphor-icons/react/dist/ssr";
-import { Navbar } from "@/components/navbar";
 import { Colophon } from "@/components/colophon";
 import { PERSONAL_INFO } from "@/data/portfolio";
 
@@ -23,8 +22,7 @@ export function LegalLayout({
 }: LegalLayoutProps) {
   return (
     <div className="flex min-h-screen flex-col bg-[#FFFFFF] text-[#111111]">
-      <Navbar />
-      <main id="main-content" className="flex-1 py-16 md:py-24">
+      <main id="main-content" className="flex-1 pt-20 sm:pt-24 xl:py-20 pb-16 md:pb-24">
         <div className="mx-auto max-w-5xl px-6 sm:px-8">
           <div className="mb-10">
             <Link
@@ -68,7 +66,7 @@ export function LegalLayout({
               Questions about this page?
             </h2>
             <p className="mb-3 font-sans text-sm leading-relaxed text-[#555555]">
-              Contact the site operator directly. Emailing is voluntary — your
+              Contact the site operator directly. Emailing is voluntary; your
               email client will open and you choose what personal information to
               include.
             </p>

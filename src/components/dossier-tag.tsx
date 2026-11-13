@@ -4,7 +4,7 @@ export type DossierTagTone = "green" | "blue" | "amber" | "red" | "neutral" | "c
 
 interface DossierTagProps {
   tone?: DossierTagTone;
-  /** Base hex (e.g. "#7C3AED") — used when tone is "custom". */
+  /** Base hex (e.g. "#7C3AED"), used when tone is "custom". */
   customColor?: string;
   code?: string;
   pulse?: boolean;

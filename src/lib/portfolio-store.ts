@@ -8,6 +8,7 @@ import {
   TECH_CATEGORIES,
   WORKSPACE_SETUP,
   type EducationItem,
+  type ExperienceGalleryItem,
   type ExperienceItem,
   type GalleryPlate,
   type PrincipleItem,
@@ -16,7 +17,16 @@ import {
   type TechCategory,
 } from "@/data/portfolio";
 
-export type { ProjectItem, ExperienceItem, EducationItem, TechCategory, PrincipleItem, SetupItem, GalleryPlate };
+export type {
+  ProjectItem,
+  ExperienceGalleryItem,
+  ExperienceItem,
+  EducationItem,
+  TechCategory,
+  PrincipleItem,
+  SetupItem,
+  GalleryPlate,
+};
 
 export interface PersonalInfoData {
   name: string;
@@ -38,7 +48,7 @@ export interface PersonalInfoData {
   quickFacts: { label: string; value: string }[];
   email: string;
   github: string;
-  linkedin: string;
+  instagram: string;
 }
 
 export interface ColophonData {
@@ -83,8 +93,8 @@ function isObject(v: unknown): v is Record<string, unknown> {
 
 /**
  * Bundled gallery images removed from the codebase (gallery is now 100%
- * database-driven via the admin studio). Plates still referencing them —
- * e.g. from an older localStorage copy or an early Redis seed — are dropped
+ * database-driven via the admin studio). Plates still referencing them
+ * (e.g. from an older localStorage copy or an early Redis seed) are dropped
  * on load so no hardcoded picture can resurface.
  */
 const RETIRED_BUNDLED_GALLERY_SRC = new Set([
@@ -140,27 +150,52 @@ export function sanitizePortfolio(raw: unknown): PortfolioData | null {
       }
       return next;
     });
+    const experiences = Array.isArray(data.experiences)
+      ? (data.experiences as ExperienceItem[]).map((exp) => {
+          const validGallery = Array.isArray(exp.gallery)
+            ? exp.gallery.filter(
+                (item): item is ExperienceGalleryItem =>
+                  isObject(item) &&
+                  typeof item.src === "string" &&
+                  (item.src.trim().startsWith("/") ||
+                    item.src.trim().startsWith("https://") ||
+                    item.src.trim().startsWith("http://"))
+              )
+            : [];
+          if (validGallery.length > 0) {
+            return { ...exp, gallery: validGallery };
+          }
+          if (exp.company.trim().toLowerCase() === "carbonethics" && EXPERIENCES[0]?.gallery) {
+            return { ...exp, gallery: EXPERIENCES[0].gallery };
+          }
+          return exp;
+        })
+      : DEFAULT_PORTFOLIO.experiences;
+    const rawPersonalInfo: Record<string, unknown> = { ...(data.personalInfo as Record<string, unknown>) };
+    // Drop retired LinkedIn key so legacy Redis/localStorage copies migrate cleanly to Instagram.
+    delete rawPersonalInfo.linkedin;
+    const rawInstagram =
+      typeof rawPersonalInfo.instagram === "string" ? rawPersonalInfo.instagram.trim() : "";
+
     return {
       personalInfo: {
         ...DEFAULT_PORTFOLIO.personalInfo,
-        ...(data.personalInfo as object),
+        ...rawPersonalInfo,
         // Contact fields are deep-cleaned on load (see cleanEmail) because
         // invisible characters silently break mailto: links.
-        email: typeof (data.personalInfo as Partial<PersonalInfoData>).email === "string"
-          ? cleanEmail(((data.personalInfo as Partial<PersonalInfoData>).email as string))
+        email: typeof rawPersonalInfo.email === "string"
+          ? cleanEmail(rawPersonalInfo.email)
           : DEFAULT_PORTFOLIO.personalInfo.email,
-        github: typeof (data.personalInfo as Partial<PersonalInfoData>).github === "string"
-          ? ((data.personalInfo as Partial<PersonalInfoData>).github as string).trim()
+        github: typeof rawPersonalInfo.github === "string"
+          ? rawPersonalInfo.github.trim()
           : DEFAULT_PORTFOLIO.personalInfo.github,
-        linkedin: typeof (data.personalInfo as Partial<PersonalInfoData>).linkedin === "string"
-          ? ((data.personalInfo as Partial<PersonalInfoData>).linkedin as string).trim()
-          : DEFAULT_PORTFOLIO.personalInfo.linkedin,
+        instagram: rawInstagram || DEFAULT_PORTFOLIO.personalInfo.instagram,
       },
       projects,
       workspaceSetup: Array.isArray(data.workspaceSetup) ? (data.workspaceSetup as SetupItem[]) : DEFAULT_PORTFOLIO.workspaceSetup,
       techCategories: data.techCategories as TechCategory[],
       principles: Array.isArray(data.principles) ? (data.principles as PrincipleItem[]) : DEFAULT_PORTFOLIO.principles,
-      experiences: Array.isArray(data.experiences) ? (data.experiences as ExperienceItem[]) : DEFAULT_PORTFOLIO.experiences,
+      experiences,
       education: Array.isArray(data.education) ? (data.education as EducationItem[]) : DEFAULT_PORTFOLIO.education,
       gallery: Array.isArray(data.gallery)
         ? (data.gallery as GalleryPlate[])
@@ -207,7 +242,7 @@ export function savePortfolioData(data: PortfolioData): void {
   try {
     window.localStorage.setItem(PORTFOLIO_STORAGE_KEY, JSON.stringify(data));
   } catch {
-    // Quota exceeded or private mode — edits stay in memory for the session.
+    // Quota exceeded or private mode; edits stay in memory for the session.
   }
 }
 
@@ -325,7 +360,7 @@ export function exportPortfolioTS(data: PortfolioData): string {
   const expTs = data.experiences
     .map(
       (e) =>
-        `  {\n    period: ${tsString(e.period)},\n    role: ${tsString(e.role)},\n    company: ${tsString(e.company)},\n    location: ${tsString(e.location)},\n    type: ${tsString(e.type)},\n    impact: ${tsString(e.impact)},\n    technologies: ${tsStringArray(e.technologies, "    ")},${e.image ? `\n    image: ${tsString(e.image)},` : ""}${e.imageLink ? `\n    imageLink: ${tsString(e.imageLink)},` : ""}${e.imageAlt ? `\n    imageAlt: ${tsString(e.imageAlt)},` : ""}\n  },`
+        `  {\n    period: ${tsString(e.period)},\n    role: ${tsString(e.role)},\n    company: ${tsString(e.company)},\n    location: ${tsString(e.location)},\n    type: ${tsString(e.type)},\n    impact: ${tsString(e.impact)},\n    technologies: ${tsStringArray(e.technologies, "    ")},${e.image ? `\n    image: ${tsString(e.image)},` : ""}${e.imageLink ? `\n    imageLink: ${tsString(e.imageLink)},` : ""}${e.imageAlt ? `\n    imageAlt: ${tsString(e.imageAlt)},` : ""}${e.gallery && e.gallery.length > 0 ? `\n    gallery: [\n${e.gallery.map((g) => `      { src: ${tsString(g.src)}, alt: ${tsString(g.alt)}${g.caption ? `, caption: ${tsString(g.caption)}` : ""} },`).join("\n")}\n    ],` : ""}\n  },`
     )
     .join("\n");
   const eduTs = data.education
@@ -373,6 +408,12 @@ export function exportPortfolioTS(data: PortfolioData): string {
   };
 }
 
+export interface ExperienceGalleryItem {
+  src: string;
+  alt: string;
+  caption?: string;
+}
+
 export interface ExperienceItem {
   period: string;
   role: string;
@@ -384,6 +425,7 @@ export interface ExperienceItem {
   image?: string;
   imageLink?: string;
   imageAlt?: string;
+  gallery?: ExperienceGalleryItem[];
 }
 
 export interface EducationItem {
@@ -447,7 +489,7 @@ ${pi.quickFacts.map((f) => `    { label: ${tsString(f.label)}, value: ${tsString
   ],
   email: ${tsString(pi.email)},
   github: ${tsString(pi.github)},
-  linkedin: ${tsString(pi.linkedin)},
+  instagram: ${tsString(pi.instagram)},
 };
 
 export const PROJECTS: ProjectItem[] = [

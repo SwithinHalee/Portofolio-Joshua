@@ -1,280 +1,139 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { motion, AnimatePresence } from "framer-motion";
-import { ArrowUpRight, List, X } from "@phosphor-icons/react";
+import { ArrowUpRight } from "@phosphor-icons/react";
 import { PERSONAL_INFO } from "@/data/portfolio";
-import { cleanEmail } from "@/lib/portfolio-store";
 import { usePortfolio } from "@/components/portfolio-provider";
+import { useSplash } from "@/components/splash-intro";
+import { scrollWithWeight } from "@/components/weighted-scroll";
 
 export function Navbar() {
   const { data } = usePortfolio();
+  const { isBrandVisible, isChromeVisible } = useSplash();
   const personalInfo = data.personalInfo ?? PERSONAL_INFO;
-  const email = cleanEmail(personalInfo.email);
   const pathname = usePathname();
   const router = useRouter();
+  const isAdmin = pathname?.startsWith("/admin") ?? false;
   const isHome = pathname === "/";
-  const [timeString, setTimeString] = useState<string>("");
-  const [activeSection, setActiveSection] = useState<string>("");
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
+  const [contactActive, setContactActive] = useState(false);
 
-  // Stable document top of the Dossier section. Dossier is sticky-pinned
-  // (md+) while Principles overlaps it, so its bounding rect drifts with
-  // scroll — the wrapper never sticks, hence its offsetTop stays exact.
-  function dossierDocTop() {
-    const wrap = document.getElementById("dossier-stack");
-    if (wrap) return wrap.offsetTop;
-    const el = document.getElementById("dossier");
-    return el ? el.getBoundingClientRect().top + window.scrollY : 0;
-  }
+  const scrollToContact = useCallback(() => {
+    scrollWithWeight(() => {
+      const el = document.getElementById("contact");
+      if (!el) return window.scrollY;
+      const isXl = window.matchMedia("(min-width: 1280px)").matches;
+      const offset = isXl ? 32 : 76;
+      return Math.max(0, el.getBoundingClientRect().top + window.scrollY - offset);
+    });
+  }, []);
 
-  function scrollToSection(id: string) {
-    window.dispatchEvent(new Event("portfolio:programmatic-scroll"));
-    const header = document.querySelector("header");
-    const headerH = header ? header.getBoundingClientRect().height : 59;
-    if (id === "dossier") {
-      window.scrollTo({ top: Math.max(0, dossierDocTop() - headerH + 1), behavior: "smooth" });
-      return;
-    }
-    const el = document.getElementById(id);
-    if (!el) return;
-    const top = el.getBoundingClientRect().top + window.scrollY - headerH + 1;
-    window.scrollTo({ top: Math.max(0, top), behavior: "smooth" });
-  }
-
-  function handleAnchorClick(e: React.MouseEvent, id: string) {
+  function handleContactClick(e: React.MouseEvent) {
     e.preventDefault();
-    setMobileMenuOpen(false);
     if (isHome) {
-      window.history.replaceState(null, "", `/#${id}`);
-      scrollToSection(id);
+      window.history.replaceState(null, "", "/#contact");
+      scrollToContact();
     } else {
-      // Navigate home first; the effect below scrolls once the section exists
-      router.push(`/#${id}`);
+      router.push("/#contact");
     }
   }
 
-  // After cross-page navigation (e.g. Archive -> About/Work/Dossier/Contact),
-  // wait for the home section to mount then scroll with header offset.
-  // Also covers direct loads like /#dossier and hash back/forward.
+  // Handle cross-page navigation or direct load with #contact hash
   useEffect(() => {
     if (pathname !== "/") return;
-    const hash = window.location.hash.replace("#", "");
-    if (!hash) return;
-    if (!["about", "projects", "dossier", "contact"].includes(hash)) return;
+    if (window.location.hash !== "#contact") return;
 
     let attempts = 0;
     const maxAttempts = 40;
-    const timer = setInterval(() => {
+    const timer = window.setInterval(() => {
       attempts += 1;
-      if (document.getElementById(hash)) {
-        clearInterval(timer);
-        scrollToSection(hash);
+      if (document.getElementById("contact")) {
+        window.clearInterval(timer);
+        scrollToContact();
       } else if (attempts >= maxAttempts) {
-        clearInterval(timer);
+        window.clearInterval(timer);
       }
     }, 50);
-    return () => clearInterval(timer);
-  }, [pathname]);
+    return () => window.clearInterval(timer);
+  }, [pathname, scrollToContact]);
 
   useEffect(() => {
-    function updateClock() {
-      const now = new Date();
-      const options: Intl.DateTimeFormatOptions = {
-        timeZone: "Asia/Jakarta",
-        hour: "2-digit",
-        minute: "2-digit",
-        hour12: false,
-      };
-      setTimeString(new Intl.DateTimeFormat("en-GB", options).format(now));
-    }
+    if (!isHome) return;
 
-    updateClock();
-    const interval = setInterval(updateClock, 1000);
-    return () => clearInterval(interval);
-  }, []);
-
-  useEffect(() => {
     function handleScroll() {
-      setScrolled(window.scrollY > 15);
-
-      if (!isHome) return;
-
-      // Contact locks to the black 08/INITIATION container (same rule as dossier rail)
       const contactEl = document.getElementById("contact");
-      if (contactEl) {
-        const cRect = contactEl.getBoundingClientRect();
-        if (cRect.top <= window.innerHeight * 0.65 && cRect.bottom >= 120) {
-          setActiveSection("contact");
-          return;
-        }
+      if (!contactEl) {
+        setContactActive(false);
+        return;
       }
-
-      const probe = window.scrollY + 100;
-      const topOf = (id: string) => {
-        const el = document.getElementById(id);
-        return el ? el.getBoundingClientRect().top + window.scrollY : Number.POSITIVE_INFINITY;
-      };
-
-      const aboutTop = topOf("about");
-      const projectsTop = topOf("projects");
-      const dossierTop = dossierDocTop();
-
-      if (probe >= dossierTop) {
-        // Dossier stays active through stacking / principles / studio / chrono
-        setActiveSection("dossier");
-      } else if (probe >= projectsTop) {
-        setActiveSection("projects");
-      } else if (probe >= aboutTop - 80) {
-        setActiveSection("about");
-      } else {
-        setActiveSection("");
-      }
+      const cRect = contactEl.getBoundingClientRect();
+      setContactActive(cRect.top <= window.innerHeight * 0.65 && cRect.bottom >= 120);
     }
 
+    handleScroll();
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, [isHome]);
 
-  const navLinks = [
-    { label: "About", href: "/#about", id: "about" },
-    { label: "Work", href: "/#projects", id: "projects" },
-    { label: "Dossier", href: "/#dossier", id: "dossier" },
-    { label: "Archive", href: "/archive", id: "archive" },
-    { label: "Contact", href: "/#contact", id: "contact" },
-  ];
+  if (isAdmin) return null;
+
+  const isArchiveActive = pathname === "/archive";
+  const isContactHighlighted = isHome && contactActive;
 
   return (
-    <header
-      className={`sticky top-0 z-50 w-full transition-all duration-200 border-b ${
-        scrolled
-          ? "border-[#EAEAEA] bg-white/95 backdrop-blur-md"
-          : "border-[#EAEAEA]/80 bg-white/80 backdrop-blur-sm"
-      }`}
-    >
-      <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-4 sm:px-8">
-        {/* Brand & Clean Muted Location */}
-        <div className="flex items-center gap-3">
-          <Link
-            href="/"
-            className="font-medium tracking-tight text-[#111111] hover:text-[#444444] transition-colors text-sm font-sans"
-          >
-            {personalInfo.name}
-          </Link>
-
-          <span className="hidden sm:inline-block text-[#D5D5D5]">/</span>
-
-          <span className="hidden sm:inline-block font-mono text-xs text-[#616161]">
-            Tangerang, ID {timeString && `· ${timeString} WIB`}
-          </span>
-        </div>
-
-        {/* Minimalist Desktop Navigation */}
-        <nav className="hidden md:flex items-center gap-7 text-[13px] font-sans">
-          {navLinks.map((link) => {
-            const isPage = link.id === "archive";
-            const isActive = isPage
-              ? pathname === "/archive"
-              : isHome && activeSection === link.id;
-            const isContact = link.id === "contact";
-
-            if (isPage) {
-              return (
-                <Link
-                  key={link.label}
-                  href={link.href}
-                  className={`transition-colors ${
-                    isActive ? "text-[#111111] font-medium" : "text-[#616161] hover:text-[#111111]"
-                  }`}
-                >
-                  {link.label}
-                </Link>
-              );
-            }
-
-            return (
-              <Link
-                key={link.label}
-                href={link.href}
-                onClick={(e) => handleAnchorClick(e, link.id)}
-                className={`inline-flex items-center gap-1 transition-colors ${
-                  isContact
-                    ? isActive
-                      ? "text-[#111111] font-medium"
-                      : "text-[#111111] hover:text-[#555555] font-medium"
-                    : isActive
-                    ? "text-[#111111] font-medium"
-                    : "text-[#616161] hover:text-[#111111]"
-                }`}
-              >
-                <span>{link.label}</span>
-                {isContact && <ArrowUpRight size={11} weight="bold" />}
-              </Link>
-            );
-          })}
-        </nav>
-
-        {/* Mobile Toggle Button */}
-        <button
-          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          aria-expanded={mobileMenuOpen}
-          aria-controls="mobile-navigation"
-          aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
-          className="md:hidden p-1 text-[#111111] hover:text-[#555555] transition-colors"
+    <>
+      {/* Top-Left Brand: crowns the desktop side panel column on xl+, containerless across viewports */}
+      <Link
+        href="/"
+        data-navbar-brand-link
+        aria-label={`${personalInfo.name} Home`}
+        className={`fixed left-4 sm:left-6 xl:left-4 2xl:left-8 top-4 sm:top-5 xl:top-6 z-40 inline-flex items-center p-0 border-0 bg-transparent mix-blend-difference antialiased shadow-none font-sans font-medium tracking-[-0.025em] text-[#FFFFFF] transition-colors duration-200 hover:text-[#FFFFFF]/70 ${
+          isBrandVisible ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+        }`}
+      >
+        <span
+          data-navbar-brand
+          className="text-[15px] sm:text-[16px] xl:text-[19px] 2xl:text-[22px] leading-[1.15] whitespace-nowrap"
         >
-          {mobileMenuOpen ? <X size={18} weight="bold" /> : <List size={18} weight="bold" />}
-        </button>
-      </div>
+          {personalInfo.name}
+        </span>
+      </Link>
 
-      {/* Mobile Dropdown */}
-      <AnimatePresence>
-        {mobileMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
-            className="md:hidden border-t border-[#EAEAEA] bg-[#FFFFFF] px-6 py-4 overflow-hidden"
-          >
-            <div id="mobile-navigation" className="flex flex-col gap-3 font-sans text-sm text-[#555555]">
-              {navLinks.map((link) =>
-                link.id === "archive" ? (
-                  <Link
-                    key={link.label}
-                    href={link.href}
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="py-1 hover:text-[#111111] transition-colors"
-                  >
-                    {link.label}
-                  </Link>
-                ) : (
-                  <Link
-                    key={link.label}
-                    href={link.href}
-                    onClick={(e) => handleAnchorClick(e, link.id)}
-                    className="py-1 hover:text-[#111111] transition-colors"
-                  >
-                    {link.label}
-                  </Link>
-                )
-              )}
-              <div className="border-t border-[#EAEAEA] pt-2 mt-1">
-                <a
-                  href={`mailto:${email}`}
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="py-1 text-[#111111] font-medium flex items-center justify-between"
-                >
-                  <span>{email}</span>
-                  <ArrowUpRight size={12} weight="bold" />
-                </a>
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </header>
+      {/* Top-Right Borderless Typographic Controls (Archive & Contact) with pixel-per-pixel blend */}
+      <nav
+        aria-label="Primary actions"
+        data-navbar-chrome
+        className={`fixed right-4 sm:right-6 2xl:right-8 top-4 sm:top-5 xl:top-[27px] z-50 flex items-center gap-5 sm:gap-6 bg-transparent mix-blend-difference antialiased transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+          isChromeVisible
+            ? "opacity-100 translate-y-0 pointer-events-auto"
+            : "opacity-0 -translate-y-1 pointer-events-none"
+        }`}
+      >
+        <Link
+          href="/archive"
+          className={`inline-flex items-center p-0 border-0 bg-transparent shadow-none font-sans text-[13px] leading-[1.15] tracking-[-0.01em] transition-colors duration-200 active:scale-[0.98] ${
+            isArchiveActive
+              ? "text-[#FFFFFF] font-medium underline underline-offset-4 decoration-[1.5px]"
+              : "text-[#FFFFFF]/65 hover:text-[#FFFFFF] font-normal"
+          }`}
+        >
+          Archive
+        </Link>
+
+        <Link
+          href="/#contact"
+          onClick={handleContactClick}
+          className={`inline-flex items-center gap-1 p-0 border-0 bg-transparent shadow-none font-sans text-[13px] leading-[1.15] tracking-[-0.01em] transition-colors duration-200 active:scale-[0.98] ${
+            isContactHighlighted
+              ? "text-[#FFFFFF] font-medium underline underline-offset-4 decoration-[1.5px]"
+              : "text-[#FFFFFF]/65 hover:text-[#FFFFFF] font-normal"
+          }`}
+        >
+          <span>Contact</span>
+          <ArrowUpRight size={11} weight="bold" aria-hidden="true" />
+        </Link>
+      </nav>
+    </>
   );
 }

@@ -21,7 +21,7 @@ export function Experience() {
     <motion.section
       id="experience"
       style={slideWide ? { x: slideX } : undefined}
-      className="relative z-10 bg-white rounded-tr-[16px] shadow-[0_-8px_24px_rgba(0,0,0,0.06)] pt-8 md:pt-12 pb-24 md:pb-28 border-b border-[#EAEAEA] overflow-x-clip md:sticky md:top-[59px]"
+      className="relative z-10 bg-white rounded-tr-[16px] md:rounded-none shadow-[0_-8px_24px_rgba(0,0,0,0.06)] pt-12 md:pt-[108px] pb-24 md:pb-28 border-b border-[#EAEAEA] overflow-x-clip md:sticky md:top-0"
     >
       <div className="mx-auto max-w-5xl px-6 sm:px-8">
         {/* Section Header */}
@@ -50,82 +50,130 @@ export function Experience() {
           </Reveal>
 
           <StaggerContainer className="border-t border-[#EAEAEA] divide-y divide-[#EAEAEA]">
-            {experiences.map((exp) => (
-              <StaggerItem key={exp.company}>
-                <div className="py-8 grid grid-cols-1 md:grid-cols-12 gap-6 items-start group">
-                  <div className="md:col-span-3 font-mono text-xs text-[#616161]">
-                    <span className="font-medium text-[#111111]">{exp.period}</span>
-                    <div className="mt-1 font-sans text-xs text-[#555555]">{exp.location}</div>
-                  </div>
+            {experiences.map((exp) => {
+              const galleryFrames = (exp.gallery ?? []).filter((frame) => validImage(frame.src));
+              return (
+                <StaggerItem key={exp.company}>
+                  <div className="py-8">
+                    <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-start group">
+                      <div className="md:col-span-3 font-mono text-xs text-[#616161]">
+                        <span className="font-medium text-[#111111]">{exp.period}</span>
+                        <div className="mt-1 font-sans text-xs text-[#555555]">{exp.location}</div>
+                      </div>
 
-                  <div className="md:col-span-9">
-                    <div className="flex flex-wrap items-baseline gap-2 mb-2.5">
-                      <span className="text-lg sm:text-xl font-serif font-medium text-[#111111]">
-                        {exp.role}
-                      </span>
-                      <span className="text-sm text-[#616161]">@</span>
-                      <span className="text-sm font-semibold text-[#111111] font-sans">{exp.company}</span>
-                    </div>
-
-                    <p className="text-sm text-[#555555] leading-relaxed mb-4 font-sans">
-                      {exp.impact}
-                    </p>
-
-                    {validImage(exp.image) && (
-                      <figure className="mb-4 sm:max-w-md">
-                        {exp.imageLink?.trim() ? (
-                          <a
-                            href={exp.imageLink}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            data-cursor-label="Open link"
-                            aria-label={`Open link for ${exp.company}`}
-                            className="group/fig relative block overflow-hidden rounded-[8px] border border-[#EAEAEA] bg-[#F7F6F3] transition-colors hover:border-[#CCCCCC]"
-                          >
-                            <span className="block aspect-[16/10] w-full overflow-hidden">
-                              <img
-                                src={exp.image}
-                                alt={exp.imageAlt?.trim() || `${exp.company} visual`}
-                                loading="lazy"
-                                className="h-full w-full object-cover grayscale transition-all duration-500 group-hover/fig:scale-[1.02] group-hover/fig:grayscale-0"
-                              />
-                            </span>
-                            <span className="absolute right-2 top-2 inline-flex h-7 w-7 items-center justify-center rounded-[4px] border border-[#EAEAEA] bg-white/90 text-[#111111]">
-                              <ArrowSquareOut size={13} weight="regular" />
-                            </span>
-                          </a>
-                        ) : (
-                          <span className="block overflow-hidden rounded-[8px] border border-[#EAEAEA] bg-[#F7F6F3]">
-                            <span className="block aspect-[16/10] w-full overflow-hidden">
-                              <img
-                                src={exp.image}
-                                alt={exp.imageAlt?.trim() || `${exp.company} visual`}
-                                loading="lazy"
-                                className="h-full w-full object-cover"
-                              />
-                            </span>
+                      <div className="md:col-span-9">
+                        <div className="flex flex-wrap items-baseline gap-2 mb-2.5">
+                          <span className="text-lg sm:text-xl font-serif font-medium text-[#111111]">
+                            {exp.role}
                           </span>
-                        )}
-                        <figcaption className="pt-1.5 font-sans text-[11px] uppercase tracking-wider text-[#555555]">
-                          Fig · {exp.company}
-                        </figcaption>
-                      </figure>
-                    )}
+                          <span className="text-sm text-[#616161]">@</span>
+                          <span className="text-sm font-semibold text-[#111111] font-sans">
+                            {exp.company}
+                          </span>
+                        </div>
 
-                    <div className="flex flex-wrap gap-1.5 font-sans text-xs text-[#4A4A4A]">
-                      {exp.technologies.map((tech) => (
-                        <span
-                          key={tech}
-                          className="rounded bg-[#F7F6F3] border border-[#EAEAEA] px-2.5 py-1"
-                        >
-                          {tech}
-                        </span>
-                      ))}
+                        <p className="text-sm text-[#555555] leading-relaxed mb-4 font-sans">
+                          {exp.impact}
+                        </p>
+
+                        {validImage(exp.image) && (
+                          <figure className="mb-4 sm:max-w-md">
+                            {exp.imageLink?.trim() ? (
+                              <a
+                                href={exp.imageLink}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                data-cursor-label="Open link"
+                                aria-label={`Open link for ${exp.company}`}
+                                className="group/fig relative block overflow-hidden rounded-[8px] border border-[#EAEAEA] bg-[#F7F6F3] transition-colors hover:border-[#CCCCCC]"
+                              >
+                                <span className="block aspect-[16/10] w-full overflow-hidden">
+                                  <img
+                                    src={exp.image}
+                                    alt={exp.imageAlt?.trim() || `${exp.company} visual`}
+                                    loading="lazy"
+                                    className="h-full w-full object-cover grayscale transition-all duration-500 group-hover/fig:scale-[1.02] group-hover/fig:grayscale-0"
+                                  />
+                                </span>
+                                <span className="absolute right-2 top-2 inline-flex h-7 w-7 items-center justify-center rounded-[4px] border border-[#EAEAEA] bg-white/90 text-[#111111]">
+                                  <ArrowSquareOut size={13} weight="regular" />
+                                </span>
+                              </a>
+                            ) : (
+                              <span className="block overflow-hidden rounded-[8px] border border-[#EAEAEA] bg-[#F7F6F3]">
+                                <span className="block aspect-[16/10] w-full overflow-hidden">
+                                  <img
+                                    src={exp.image}
+                                    alt={exp.imageAlt?.trim() || `${exp.company} visual`}
+                                    loading="lazy"
+                                    className="h-full w-full object-cover"
+                                  />
+                                </span>
+                              </span>
+                            )}
+                            <figcaption className="pt-1.5 font-sans text-[11px] uppercase tracking-wider text-[#555555]">
+                              Fig · {exp.company}
+                            </figcaption>
+                          </figure>
+                        )}
+
+                        <div className="flex flex-wrap gap-1.5 font-sans text-xs text-[#4A4A4A]">
+                          {exp.technologies.map((tech) => (
+                            <span
+                              key={tech}
+                              className="rounded bg-[#F7F6F3] border border-[#EAEAEA] px-2.5 py-1"
+                            >
+                              {tech}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
                     </div>
+
+                    {galleryFrames.length > 0 && (
+                      <div className="mt-8">
+                        <div className="mb-3 flex items-center justify-between font-mono text-[11px] uppercase tracking-[0.06em] text-[#787774]">
+                          <span>Field Documentation · {exp.company}</span>
+                          <span>{String(galleryFrames.length).padStart(2, "0")} Frames</span>
+                        </div>
+
+                        <div
+                          className={`grid grid-cols-2 gap-3 md:gap-3.5 ${
+                            galleryFrames.length >= 5 ? "md:grid-cols-5" : "md:grid-cols-4"
+                          }`}
+                        >
+                          {galleryFrames.map((frame, index) => (
+                            <figure
+                              key={`${exp.company}-gallery-${index}`}
+                              className="overflow-hidden rounded-[6px] border border-[#EAEAEA] bg-[#F7F6F3]"
+                            >
+                              <div className="aspect-[16/10] w-full overflow-hidden bg-[#EAEAEA]">
+                                <img
+                                  src={frame.src}
+                                  alt={frame.alt}
+                                  loading="lazy"
+                                  className="h-full w-full object-cover"
+                                />
+                              </div>
+                              <figcaption className="flex items-center justify-between gap-2 border-t border-[#EAEAEA] bg-white px-2.5 py-2 font-mono text-[10px] uppercase tracking-[0.05em] text-[#616161]">
+                                <span className="shrink-0 whitespace-nowrap font-semibold text-[#111111]">
+                                  Fig. {String(index + 1).padStart(2, "0")}
+                                </span>
+                                {frame.caption && (
+                                  <span className="whitespace-nowrap truncate text-[#787774]">
+                                    {frame.caption}
+                                  </span>
+                                )}
+                              </figcaption>
+                            </figure>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                   </div>
-                </div>
-              </StaggerItem>
-            ))}
+                </StaggerItem>
+              );
+            })}
           </StaggerContainer>
         </div>
 

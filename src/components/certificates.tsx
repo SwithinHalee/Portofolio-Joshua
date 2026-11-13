@@ -27,7 +27,7 @@ const CERTIFICATES: CertificateItem[] = [
     course: "RH124 · Red Hat Academy",
     version: "RHA ver 8.2",
     badgeSrc: "/images/stacking-mechanics/red-hat-system-administration-i-rh124-rha-ver-8-2.png",
-    badgeAlt: "Red Hat Academy course attendance badge — System Administration I",
+    badgeAlt: "Red Hat Academy course attendance badge: System Administration I",
     pdfHref: "/images/stacking-mechanics/CourseAttendance20260911-20-3k7ht9.pdf",
     focus: ["Command line essentials", "Users, groups & file permissions", "Services & process control"],
   },
@@ -37,7 +37,7 @@ const CERTIFICATES: CertificateItem[] = [
     course: "RH124 · Red Hat Academy",
     version: "RHA ver 9.3",
     badgeSrc: "/images/stacking-mechanics/red-hat-system-administration-i-rh124-rha-ver-9-3.png",
-    badgeAlt: "Red Hat Academy course attendance badge — System Administration I",
+    badgeAlt: "Red Hat Academy course attendance badge: System Administration I",
     pdfHref: "/images/stacking-mechanics/CourseAttendance20260911-20-9kuzav.pdf",
     focus: ["Core administration on RHEL 9", "Storage & network basics", "System monitoring"],
   },
@@ -47,7 +47,7 @@ const CERTIFICATES: CertificateItem[] = [
     course: "RH134 · Red Hat Academy",
     version: "RHA ver 9.3",
     badgeSrc: "/images/stacking-mechanics/red-hat-system-administration-ii-rh134-rha-ver-9-3.png",
-    badgeAlt: "Red Hat Academy course attendance badge — System Administration II",
+    badgeAlt: "Red Hat Academy course attendance badge: System Administration II",
     pdfHref: "/images/stacking-mechanics/CourseAttendance20260911-20-hvb735.pdf",
     focus: ["Automation & scheduling", "Advanced storage & networking", "Security hardening"],
   },
@@ -71,7 +71,7 @@ export function CertificatesSection() {
             <p className="text-sm sm:text-base text-[#555555] leading-relaxed font-sans">
               Red Hat Academy course-attendance record for systems administration.
               Each entry pairs its Credly-style badge with the matching attendance
-              PDF — labelled as attendance, not professional certification.
+              PDF, labelled as attendance, not professional certification.
             </p>
           </div>
         </Reveal>

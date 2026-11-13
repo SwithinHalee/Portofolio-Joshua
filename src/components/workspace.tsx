@@ -67,7 +67,7 @@ export function Workspace() {
                 <span className="h-2.5 w-2.5 rounded-full bg-[#E5E5E5] inline-block"></span>
               </div>
               <span className="font-mono text-xs text-[#555555]">
-                workspace-environment.raw — studio-interior [calm focus]
+                workspace-environment.raw · studio-interior [calm focus]
               </span>
               <button
                 type="button"
@@ -152,7 +152,7 @@ export function Workspace() {
             >
               <div className="flex items-center justify-between border-b border-[#EAEAEA] bg-[#FFFFFF] px-4 py-3">
                 <span className="font-mono text-xs text-[#111111]">
-                  Joshua Abdiel — Physical Workspace Environment
+                  Joshua Abdiel | Physical Workspace Environment
                 </span>
                 <button
                   ref={closeButtonRef}

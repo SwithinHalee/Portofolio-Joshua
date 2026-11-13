@@ -8,7 +8,7 @@ import {
   Copy,
   EnvelopeSimple,
   GithubLogo,
-  LinkedinLogo,
+  InstagramLogo,
 } from "@phosphor-icons/react";
 import { COLOPHON_SPECS, PERSONAL_INFO } from "@/data/portfolio";
 import { cleanEmail } from "@/lib/portfolio-store";
@@ -90,13 +90,13 @@ export function Colophon() {
               </a>
 
               <a
-                href={personalInfo.linkedin}
+                href={personalInfo.instagram}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-1.5 rounded-[4px] border border-[#282828] bg-[#171717] px-4 py-3 text-xs font-sans font-medium text-[#E5E5E5] hover:bg-[#222222] hover:border-[#3E3E3E] hover:text-white active:scale-[0.98] transition-all"
               >
-                <LinkedinLogo size={15} weight="regular" />
-                <span>LinkedIn</span>
+                <InstagramLogo size={15} weight="regular" />
+                <span>Instagram</span>
                 <ArrowUpRight size={11} weight="bold" />
               </a>
             </div>
@@ -123,7 +123,7 @@ export function Colophon() {
         </nav>
 
         <p className="mt-4 text-center font-sans text-xs leading-relaxed text-[#555555]">
-          Personal portfolio of {personalInfo.name} — {personalInfo.location}.
+          Personal portfolio of {personalInfo.name}, {personalInfo.location}.
           No tracking cookies. No analytics. Contact: {email}
         </p>
 

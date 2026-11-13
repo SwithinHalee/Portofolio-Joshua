@@ -3,6 +3,7 @@
 import { useEffect, useState, useRef, useCallback } from "react";
 import { getStackRange } from "@/components/motion-wrapper";
 import { scrollWithWeight } from "@/components/weighted-scroll";
+import { useSplash } from "@/components/splash-intro";
 
 interface MilestoneItem {
   id: string;
@@ -41,8 +42,8 @@ function measureSectionGeometry(
   viewportH: number,
   navOffset = 85
 ): SectionGeometry | null {
-  const header = document.querySelector("header");
-  const headerH = header ? header.getBoundingClientRect().height : 59;
+  const header = document.querySelector<HTMLElement>("header[data-navbar-header]");
+  const headerH = header ? header.getBoundingClientRect().height : 0;
   const wide = window.matchMedia("(min-width: 768px)").matches;
 
   if (id === "hero") {
@@ -97,6 +98,7 @@ function measureSectionGeometry(
 }
 
 export function ScrollMilestone() {
+  const { isChromeVisible } = useSplash();
   const [activeId, setActiveId] = useState<string>("hero");
   const [milestoneProgress, setMilestoneProgress] = useState<number>(0);
 
@@ -266,7 +268,10 @@ export function ScrollMilestone() {
       {/* 1. Desktop & Widescreen Milestone Rail (Native Real-Time Pixel-Level Difference Blending) */}
       <nav
         aria-label="Document Section Milestones"
-        className="fixed left-4 2xl:left-8 top-1/2 -translate-y-1/2 z-40 hidden xl:flex flex-col items-start select-none py-2 bg-transparent mix-blend-difference pointer-events-auto"
+        data-navbar-chrome
+        className={`fixed left-4 2xl:left-8 top-1/2 -translate-y-1/2 z-40 hidden xl:flex flex-col items-start select-none py-2 bg-transparent mix-blend-difference transition-opacity duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+          isChromeVisible ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+        }`}
       >
         <div className="flex flex-col items-start group">
           {/* Milestone Nodes Track & Continuous Fill Line */}
@@ -367,7 +372,10 @@ export function ScrollMilestone() {
       {/* 2. Mobile & Tablet Minimal Floating Status */}
       <aside
         aria-label="Mobile reading progress"
-        className="fixed bottom-4 left-4 z-40 xl:hidden select-none"
+        data-navbar-chrome
+        className={`fixed bottom-4 left-4 z-40 xl:hidden select-none transition-opacity duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+          isChromeVisible ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+        }`}
       >
         <button
           type="button"

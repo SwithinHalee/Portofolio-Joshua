@@ -31,6 +31,12 @@ export interface ProjectItem {
   };
 }
 
+export interface ExperienceGalleryItem {
+  src: string;
+  alt: string;
+  caption?: string;
+}
+
 export interface ExperienceItem {
   period: string;
   role: string;
@@ -44,6 +50,8 @@ export interface ExperienceItem {
   /** Destination opened when the image is clicked. */
   imageLink?: string;
   imageAlt?: string;
+  /** Optional spanning gallery frames rendered beneath this experience entry. */
+  gallery?: ExperienceGalleryItem[];
 }
 
 export interface EducationItem {
@@ -81,7 +89,7 @@ export interface GalleryPlate {
   title: string;
   detail: string;
   /**
-   * Layout template — tiles in a 12-col grid, rendered top-to-bottom in order:
+   * Layout template: tiles in a 12-col grid, rendered top-to-bottom in order:
    * wide = full row (21:9), half = half row (4:3), tall = half row portrait (3:4),
    * trio = third row square (1:1, groups of three fill a row).
    */
@@ -117,7 +125,7 @@ export const PERSONAL_INFO = {
   ],
   email: "joshuaabdiel365@gmail.com",
   github: "https://github.com/SwithinHalee",
-  linkedin: "https://www.linkedin.com/in/joshua-abdiel-773965282/",
+  instagram: "https://www.instagram.com/abd.joshua?dlrf=MmlsaGp4NmJydHlp",
 };
 
 export const PROJECTS: ProjectItem[] = [
@@ -151,7 +159,7 @@ export const PROJECTS: ProjectItem[] = [
     },
     caseStudy: {
       clientOrContext: "CarbonEthics (Climate Tech Organization)",
-      timeline: "Feb 2026 — Present",
+      timeline: "Feb 2026 - Present",
       role: "Frontend Engineering Intern",
       challenge:
         "Carbon footprint calculations require complex input trees (flight distances, vehicle fuel metrics, enterprise consumption) that historically produced heavy client bundle overhead and slow interactive responses.",
@@ -205,10 +213,10 @@ export const PROJECTS: ProjectItem[] = [
     },
     caseStudy: {
       clientOrContext: "Personal Engineering Project",
-      timeline: "2025 — 2026",
+      timeline: "2025 - 2026",
       role: "Sole Mobile Engineer (Flutter)",
       challenge:
-        "Most budgeting apps assume one user, one currency, and an always-online connection — plus complex setup, ads, and slow sync on top. Xpense had to work the opposite way: offline-first on a single shared device, with multiple users isolated by userId, each holding several accounts across ISO 4217 currencies. Balances live as REAL values tied to UUID account keys, transactions carry income/expense types with ISO8601 dates and category icon codepoints, and every delete must cascade cleanly through users to accounts to transactions. On top of that ledger core, the app must convert all balances into one base currency with presisi FX math, cache rates for 24 hours to survive rate limits and dead zones, hash passwords with SHA-256 before they ever touch SQLite, generate premium PDF and CSV exports on demand, and aggregate thousands of categorized transactions into interactive pie stats without freezing the UI thread.",
+        "Most budgeting apps assume one user, one currency, and an always-online connection, with complex setup, ads, and slow sync on top. Xpense had to work the opposite way: offline-first on a single shared device, with multiple users isolated by userId, each holding several accounts across ISO 4217 currencies. Balances live as REAL values tied to UUID account keys, transactions carry income/expense types with ISO8601 dates and category icon codepoints, and every delete must cascade cleanly through users to accounts to transactions. On top of that ledger core, the app must convert all balances into one base currency with presisi FX math, cache rates for 24 hours to survive rate limits and dead zones, hash passwords with SHA-256 before they ever touch SQLite, generate premium PDF and CSV exports on demand, and aggregate thousands of categorized transactions into interactive pie stats without freezing the UI thread.",
       architectureSolution:
         "MVVM with Provider: models (Account, Transaction, User) use Equatable plus toMap/fromMap, views stay reactive through Consumer, and AuthViewModel plus MainViewModel split session from ledger logic. ProxyProvider injects auth into MainViewModel so every query stays scoped to the logged-in user. SqliteService is a singleton holding one connection to xpense.db with PRAGMA foreign_keys = ON.",
       deliverables: [
@@ -321,7 +329,7 @@ export const PROJECTS: ProjectItem[] = [
     },
     caseStudy: {
       clientOrContext: "UNTAR Systems & Networking Lab",
-      timeline: "2024 — 2025",
+      timeline: "2024 - 2025",
       role: "Network Systems Architect",
       challenge:
         "Simulating enterprise-grade peer-to-peer data sharing while strictly maintaining VLAN boundary security and preventing broadcast packet flooding.",
@@ -439,7 +447,7 @@ export const ENGINEERING_PRINCIPLES: PrincipleItem[] = [
 
 export const EXPERIENCES: ExperienceItem[] = [
   {
-    period: "Feb 2026 — Oct 2026",
+    period: "Feb 2026 - Oct 2026",
     role: "Frontend Engineering Intern",
     company: "CarbonEthics",
     location: "Jakarta / Hybrid",
@@ -447,12 +455,34 @@ export const EXPERIENCES: ExperienceItem[] = [
     impact:
       "Contributed to frontend development for CarbonEthics' client-facing platform. Implemented responsive interfaces for carbon footprint and tree planting initiatives, maintained design-token consistency, and supported cross-device accessibility.",
     technologies: ["Next.js", "TypeScript", "Tailwind CSS", "REST API", "Figma"],
+    gallery: [
+      {
+        src: "/images/experience/carbonethics-team.jpg",
+        alt: "Joshua Abdiel with the CarbonEthics team at the Jakarta headquarters",
+        caption: "Jakarta HQ",
+      },
+      {
+        src: "/images/experience/carbonethics-team.jpg",
+        alt: "CarbonEthics frontend engineering internship squad portrait",
+        caption: "FE Squad",
+      },
+      {
+        src: "/images/experience/carbonethics-team.jpg",
+        alt: "CarbonEthics office lounge team snapshot during internship",
+        caption: "Office",
+      },
+      {
+        src: "/images/experience/carbonethics-team.jpg",
+        alt: "CarbonEthics internship cohort documentation frame",
+        caption: "Cohort",
+      },
+    ],
   },
 ];
 
 export const EDUCATION_HISTORY: EducationItem[] = [
   {
-    period: "2023 — Present",
+    period: "2023 - Present",
     degree: "Bachelor of Science in Information Systems (Sistem Informasi)",
     institution: "Universitas Tarumanagara (UNTAR)",
     details:
@@ -468,7 +498,7 @@ export const EDUCATION_HISTORY: EducationItem[] = [
 ];
 
 // Gallery plates are fully managed from the admin studio (/admin → Gallery)
-// and persisted in the database (Upstash Redis). No bundled images here —
+// and persisted in the database (Upstash Redis). No bundled images here;
 // add exposures via Upload instead of hardcoding paths.
 export const GALLERY_PLATES: GalleryPlate[] = [];
 

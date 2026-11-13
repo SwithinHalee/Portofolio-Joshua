@@ -30,7 +30,7 @@ const VIEW_MODES: { id: ViewMode; label: string; icon: PhosphorIcon }[] = [
 ];
 
 function projectYear(project: ProjectItem): string {
-  return project.caseStudy.timeline.match(/\d{4}/)?.[0] ?? "—";
+  return project.caseStudy.timeline.match(/\d{4}/)?.[0] ?? "-";
 }
 
 export function Projects() {

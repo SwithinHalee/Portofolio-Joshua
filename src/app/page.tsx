@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { Navbar } from "@/components/navbar";
 import { Hero } from "@/components/hero";
 import { AboutMe } from "@/components/about-me";
 import { Projects } from "@/components/projects";
@@ -19,7 +18,6 @@ export const metadata: Metadata = {
 export default function Home() {
   return (
     <div className="flex min-h-screen flex-col text-[#111111]">
-      <Navbar />
       <ScrollMilestone />
       <main id="main-content" className="flex-1">
         <Hero />
