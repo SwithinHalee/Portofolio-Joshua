@@ -468,7 +468,7 @@ export function CustomCursor() {
         </div>
 
         {variant === "label" && label && !showAuto && (
-          <span className="absolute left-[24px] top-[12px] whitespace-nowrap rounded-[4px] border border-white/25 bg-[#111111] px-2 py-1 font-mono text-[9px] font-medium uppercase leading-none tracking-wider text-white">
+          <span className="absolute left-[24px] top-[12px] whitespace-nowrap rounded-[4px] border border-white/25 bg-[#111111] px-2 py-1 font-sans text-[11px] font-medium uppercase leading-none tracking-wider text-white">
             {label}
           </span>
         )}

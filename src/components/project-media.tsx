@@ -84,7 +84,7 @@ export function ProjectMedia({ src, alt, sizes, priority }: ProjectMediaProps) {
           onClick={openFullscreen}
           aria-label={isFs ? `Exit ${alt} fullscreen` : `View ${alt} fullscreen`}
           title={isFs ? "Exit fullscreen" : "View fullscreen"}
-          className="absolute bottom-2.5 right-2.5 z-10 inline-flex items-center gap-1.5 rounded-[4px] border border-white/20 bg-black/60 px-2 py-1 font-mono text-[10px] uppercase tracking-wider text-white backdrop-blur-md transition-colors hover:bg-black/80"
+          className="absolute bottom-2.5 right-2.5 z-10 inline-flex items-center gap-1.5 rounded-[4px] border border-white/20 bg-black/70 px-2.5 py-1 font-sans text-[11px] font-medium uppercase tracking-wider text-white backdrop-blur-md transition-colors hover:bg-black/85"
         >
           <ArrowsOut size={12} weight="bold" />
           <span>{isFs ? "Exit" : "Fullscreen"}</span>

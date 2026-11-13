@@ -52,23 +52,25 @@ export default function AdminLoginPage() {
           </div>
         </div>
 
-        <p className="mb-1 font-mono text-[11px] uppercase tracking-wider text-[#616161]">
-          System Dossier · Admin
-        </p>
-        <h1
-          className="mb-2 font-serif text-2xl tracking-tight"
-          style={{ fontFamily: "var(--font-newsreader), Georgia, serif" }}
-        >
-          Studio Access
-        </h1>
-        <p className="mb-6 font-mono text-xs leading-relaxed text-[#616161]">
+        <div className="mb-4 flex items-center justify-between border-b border-[#EAEAEA] pb-4">
+          <h1
+            className="font-serif text-2xl tracking-tight"
+            style={{ fontFamily: "var(--font-newsreader), Georgia, serif" }}
+          >
+            Studio Access
+          </h1>
+          <span className="rounded border border-[#EAEAEA] bg-[#F7F6F3] px-2 py-1 font-mono text-[11px] uppercase tracking-wider text-[#525252]">
+            Admin
+          </span>
+        </div>
+        <p className="mb-6 font-sans text-[13px] leading-relaxed text-[#525252]">
           Enter the master password to edit portfolio records across all devices.
         </p>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block">
-              <span className="mb-1.5 block font-mono text-[11px] uppercase tracking-wider text-[#616161]">
+              <span className="mb-1.5 block font-sans text-xs font-medium uppercase tracking-wider text-[#525252]">
                 Master password
               </span>
               <input
@@ -84,7 +86,7 @@ export default function AdminLoginPage() {
           </div>
 
           {error && (
-            <div className="rounded-[4px] border border-[#F3C2C4] bg-[#FDEBEC] px-3 py-2 font-mono text-xs text-[#9F2F2D]">
+            <div className="rounded-[4px] border border-[#F3C2C4] bg-[#FDEBEC] px-3 py-2 font-sans text-xs text-[#9F2F2D]">
               {error}
             </div>
           )}
@@ -92,7 +94,7 @@ export default function AdminLoginPage() {
           <button
             type="submit"
             disabled={loading}
-            className="inline-flex w-full items-center justify-center gap-2 rounded-[4px] bg-[#111111] px-4 py-2.5 font-mono text-xs text-white transition-all hover:bg-[#2A2A2A] disabled:opacity-50"
+            className="inline-flex w-full items-center justify-center gap-2 rounded-[4px] bg-[#111111] px-4 py-2.5 font-sans text-xs font-medium text-white transition-all hover:bg-[#2A2A2A] disabled:opacity-50"
           >
             <SignIn size={14} weight="bold" />
             <span>{loading ? "Authenticating..." : "Unlock Studio"}</span>

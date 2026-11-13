@@ -29,7 +29,7 @@ export function LegalLayout({
           <div className="mb-10">
             <Link
               href="/"
-              className="inline-flex items-center gap-2 font-mono text-xs text-[#616161] transition-colors hover:text-[#111111]"
+              className="inline-flex items-center gap-2 font-sans text-xs font-medium text-[#525252] transition-colors hover:text-[#111111]"
             >
               <ArrowLeft size={13} weight="bold" aria-hidden="true" />
               <span>Return to Portfolio Home</span>
@@ -37,34 +37,34 @@ export function LegalLayout({
           </div>
 
           <div className="border-b border-[#EAEAEA] pb-10 mb-10">
-            <div className="mb-3 flex items-center gap-2 font-mono text-xs uppercase tracking-wider text-[#616161]">
-              <span>{eyebrow}</span>
-            </div>
             <h1
               className="mb-4 text-4xl font-serif tracking-[-0.03em] text-[#111111] sm:text-5xl"
               style={{ fontFamily: "var(--font-newsreader), Georgia, serif" }}
             >
               {title}
             </h1>
-            <p className="mb-6 max-w-2xl font-sans text-base leading-relaxed text-[#444444]">
+            <p className="mb-6 max-w-[34rem] font-sans text-base leading-relaxed text-[#444444]">
               {description}
             </p>
-            <div className="flex flex-wrap items-center gap-2 font-mono text-[11px] text-[#616161]">
-              <span className="rounded border border-[#EAEAEA] bg-[#F7F6F3] px-2 py-0.5">
+            <div className="flex flex-wrap items-center gap-2 font-sans text-xs text-[#525252]">
+              <span className="rounded border border-[#EAEAEA] bg-[#F7F6F3] px-2.5 py-1 uppercase tracking-wider">
+                {eyebrow}
+              </span>
+              <span className="rounded border border-[#EAEAEA] bg-[#F7F6F3] px-2.5 py-1">
                 Last updated: {lastUpdated}
               </span>
-              <span className="rounded border border-[#EAEAEA] bg-[#F7F6F3] px-2 py-0.5">
+              <span className="rounded border border-[#EAEAEA] bg-[#F7F6F3] px-2.5 py-1">
                 Operator: {PERSONAL_INFO.name}
               </span>
             </div>
           </div>
 
-          <article className="space-y-10 font-sans text-[15px] leading-relaxed text-[#333333]">
+          <article className="max-w-[31rem] space-y-10 font-sans text-[15px] leading-relaxed text-[#333333]">
             {children}
           </article>
 
-          <div className="mt-14 rounded-[6px] border border-[#EAEAEA] bg-[#FBFBFA] p-5">
-            <h2 className="mb-2 font-mono text-xs font-semibold uppercase tracking-wider text-[#111111]">
+          <div className="mt-14 max-w-[31rem] rounded-[6px] border border-[#EAEAEA] bg-[#FBFBFA] p-5">
+            <h2 className="mb-2 font-sans text-xs font-semibold uppercase tracking-wider text-[#111111]">
               Questions about this page?
             </h2>
             <p className="mb-3 font-sans text-sm leading-relaxed text-[#555555]">
@@ -74,7 +74,7 @@ export function LegalLayout({
             </p>
             <a
               href={`mailto:${PERSONAL_INFO.email}?subject=Question%20about%20site%20policy`}
-              className="inline-flex items-center gap-2 rounded-[4px] bg-[#111111] px-4 py-2.5 font-mono text-xs font-medium text-white transition-all hover:bg-[#2A2A2A] active:scale-[0.98]"
+              className="inline-flex items-center gap-2 rounded-[4px] bg-[#111111] px-4 py-2.5 font-sans text-xs font-medium text-white transition-all hover:bg-[#2A2A2A] active:scale-[0.98]"
             >
               <span>Email: {PERSONAL_INFO.email}</span>
             </a>
@@ -101,9 +101,9 @@ export function LegalSection({
     <section aria-labelledby={id} className="border-b border-[#EAEAEA] pb-10">
       <h2
         id={id}
-        className="mb-3 font-mono text-xs uppercase tracking-wider text-[#616161]"
+        className="mb-3 font-sans text-xs font-semibold uppercase tracking-wider text-[#525252]"
       >
-        {index}. {title}
+        <span className="font-mono">{index}.</span> {title}
       </h2>
       <div className="space-y-3">{children}</div>
     </section>

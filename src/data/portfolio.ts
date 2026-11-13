@@ -360,7 +360,7 @@ export const WORKSPACE_SETUP: SetupItem[] = [
     category: "Software Environment & Editor",
     items: [
       { name: "Code Editor", spec: "VS Code with Minimal Monokai / Clean Hairline Theme" },
-      { name: "Font", spec: "Geist Mono & JetBrains Mono (Ligatures active)" },
+      { name: "Font", spec: "JetBrains Mono (Ligatures active) & Hanken Grotesk" },
       { name: "Shell & Terminal", spec: "PowerShell & Unix Terminal with Starship prompt" },
       { name: "AI Pair Engine", spec: "Google Antigravity CLI & Gemini 3.8 Advanced Suite" },
     ],
@@ -472,8 +472,9 @@ export const EDUCATION_HISTORY: EducationItem[] = [
 // add exposures via Upload instead of hardcoding paths.
 export const GALLERY_PLATES: GalleryPlate[] = [];
 
-export const COLOPHON_SPECS = {  designerDeveloper: "Joshua Abdiel",
-  typography: ["Newsreader (Display Editorial Serif)", "Geist Sans (Clean Grotesk)", "Geist Mono (Technical Monospace)"],
+export const COLOPHON_SPECS = {
+  designerDeveloper: "Joshua Abdiel",
+  typography: ["Newsreader (Display Editorial Serif)", "Hanken Grotesk (Clean Grotesk)", "JetBrains Mono (Technical Monospace)"],
   framework: "Next.js 16 (App Router) + React 19",
   styling: "Tailwind CSS v4 + Custom Micro-Border Tokens",
   icons: "Phosphor Icons (Uniform Stroke Weight)",

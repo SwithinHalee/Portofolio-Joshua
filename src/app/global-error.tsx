@@ -14,7 +14,7 @@ export default function GlobalError({ reset }: GlobalErrorProps) {
           minHeight: "100vh",
           backgroundColor: "#FFFFFF",
           color: "#111111",
-          fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace",
+          fontFamily: "system-ui, -apple-system, BlinkMacSystemFont, sans-serif",
           display: "flex",
           flexDirection: "column",
         }}
@@ -42,7 +42,7 @@ export default function GlobalError({ reset }: GlobalErrorProps) {
           >
             Joshua Abdiel
           </button>
-          <span style={{ fontSize: 12, color: "#616161" }}>INDEX / CRITICAL</span>
+          <span style={{ fontSize: 12, color: "#525252" }}>INDEX / CRITICAL</span>
         </header>
         <main
           style={{
@@ -53,9 +53,6 @@ export default function GlobalError({ reset }: GlobalErrorProps) {
           }}
         >
           <div style={{ maxWidth: 640, margin: "0 auto", width: "100%" }}>
-            <p style={{ fontSize: 12, letterSpacing: "0.08em", color: "#9F2F2D", marginBottom: 12 }}>
-              CRITICAL FAULT · APPLICATION SHELL
-            </p>
             <h1
               style={{
                 fontFamily: "Georgia, serif",
@@ -66,6 +63,9 @@ export default function GlobalError({ reset }: GlobalErrorProps) {
             >
               The archive failed to boot.
             </h1>
+            <p style={{ fontSize: 12, letterSpacing: "0.08em", color: "#9F2F2D", marginBottom: 12 }}>
+              CRITICAL FAULT · APPLICATION SHELL
+            </p>
             <p style={{ fontSize: 14, lineHeight: 1.6, color: "#555555", marginBottom: 24 }}>
               A fault escaped the section boundary and reached the application shell. Reloading
               usually restores the index.

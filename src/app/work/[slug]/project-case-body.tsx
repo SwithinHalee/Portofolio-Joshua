@@ -5,7 +5,6 @@ import Link from "next/link";
 import { ArrowLeft, ArrowUpRight, DownloadSimple, GithubLogo, Globe } from "@phosphor-icons/react";
 import type { ProjectItem } from "@/data/portfolio";
 import { usePortfolio } from "@/components/portfolio-provider";
-import { DossierTag } from "@/components/dossier-tag";
 import { ProjectMedia } from "@/components/project-media";
 
 interface Props {
@@ -92,7 +91,7 @@ export function ProjectCaseBody({ slug, initialProject, initialIndex, initialPre
         <div className="mb-10">
           <Link
             href="/#projects"
-            className="inline-flex items-center gap-2 font-mono text-xs text-[#616161] hover:text-[#111111] transition-colors"
+            className="inline-flex items-center gap-2 font-sans text-xs font-medium text-[#525252] hover:text-[#111111] transition-colors"
           >
             <ArrowLeft size={13} weight="bold" />
             <span>Return to Selected Works Index</span>
@@ -100,13 +99,8 @@ export function ProjectCaseBody({ slug, initialProject, initialIndex, initialPre
         </div>
 
         <div className="border-b border-[#EAEAEA] pb-10 mb-12">
-          <div className="flex flex-wrap items-center gap-2.5 font-mono text-xs text-[#616161] uppercase tracking-wider mb-4">
+          <div className="font-sans text-xs font-medium text-[#525252] uppercase tracking-wider mb-4">
             <span>{project.category}</span>
-            {project.badge && (
-              <DossierTag tone={project.badge.variant} customColor={project.badge.customColor} code={`REF·0${safeIndex + 1}`}>
-                {project.badge.text}
-              </DossierTag>
-            )}
           </div>
 
           <h1
@@ -116,21 +110,21 @@ export function ProjectCaseBody({ slug, initialProject, initialIndex, initialPre
             {project.title}
           </h1>
 
-          <p className="text-lg text-[#444444] font-sans leading-relaxed max-w-3xl mb-8">
+          <p className="text-lg text-[#444444] font-sans leading-relaxed max-w-[35rem] mb-8">
             {project.description}
           </p>
 
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 rounded-[6px] border border-[#EAEAEA] bg-[#FBFBFA] p-4 font-mono text-xs">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 rounded-[6px] border border-[#EAEAEA] bg-[#FBFBFA] p-4 font-sans text-xs">
             <div>
-              <span className="text-[#616161] block text-[10px] uppercase">Context</span>
+              <span className="text-[#525252] block text-[11px] font-medium uppercase tracking-wider">Context</span>
               <span className="text-[#111111] font-medium">{project.caseStudy.clientOrContext}</span>
             </div>
             <div>
-              <span className="text-[#616161] block text-[10px] uppercase">Timeline</span>
-              <span className="text-[#111111] font-medium">{project.caseStudy.timeline}</span>
+              <span className="text-[#525252] block text-[11px] font-medium uppercase tracking-wider">Timeline</span>
+              <span className="font-mono text-[#111111] font-medium">{project.caseStudy.timeline}</span>
             </div>
             <div>
-              <span className="text-[#616161] block text-[10px] uppercase">Role</span>
+              <span className="text-[#525252] block text-[11px] font-medium uppercase tracking-wider">Role</span>
               <span className="text-[#111111] font-medium">{project.caseStudy.role}</span>
             </div>
             <div className="flex items-center gap-3 self-end sm:justify-end">
@@ -139,7 +133,7 @@ export function ProjectCaseBody({ slug, initialProject, initialIndex, initialPre
                   href={project.githubUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 text-[#111111] hover:underline"
+                  className="inline-flex items-center gap-1 text-[#111111] font-medium hover:underline"
                 >
                   <GithubLogo size={13} weight="bold" />
                   <span>Repo</span>
@@ -150,7 +144,7 @@ export function ProjectCaseBody({ slug, initialProject, initialIndex, initialPre
                   href={project.liveUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 text-[#111111] hover:underline"
+                  className="inline-flex items-center gap-1 text-[#111111] font-medium hover:underline"
                 >
                   <Globe size={13} weight="bold" />
                   <span>Live</span>
@@ -162,7 +156,7 @@ export function ProjectCaseBody({ slug, initialProject, initialIndex, initialPre
                   href={project.downloadUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 rounded-[4px] bg-[#111111] px-2.5 py-1.5 text-white transition-colors hover:bg-[#2A2A2A] hover:no-underline"
+                  className="inline-flex items-center gap-1.5 rounded-[4px] bg-[#111111] px-2.5 py-1.5 text-white font-medium transition-colors hover:bg-[#2A2A2A] hover:no-underline"
                 >
                   <DownloadSimple size={13} weight="bold" />
                   <span>Download APK</span>
@@ -179,7 +173,7 @@ export function ProjectCaseBody({ slug, initialProject, initialIndex, initialPre
               <span className="h-2.5 w-2.5 rounded-full bg-[#E5E5E5] inline-block"></span>
               <span className="h-2.5 w-2.5 rounded-full bg-[#E5E5E5] inline-block"></span>
             </div>
-            <span className="font-mono text-[11px] text-[#616161]">
+            <span className="font-mono text-xs text-[#525252]">
               {project.slug} — architectural-preview [16:9 verified]
             </span>
             <div className="w-8"></div>
@@ -197,26 +191,26 @@ export function ProjectCaseBody({ slug, initialProject, initialIndex, initialPre
 
         <div className="space-y-14">
           <section className="border-b border-[#EAEAEA] pb-12">
-            <h2 className="font-mono text-xs uppercase tracking-wider text-[#616161] mb-3">
+            <h2 className="font-sans text-xs font-semibold uppercase tracking-wider text-[#525252] mb-3">
               01. The Problem & Engineering Challenge
             </h2>
-            <p className="text-base text-[#333333] leading-relaxed">{project.caseStudy.challenge}</p>
+            <p className="text-base text-[#333333] leading-relaxed max-w-[32rem]">{project.caseStudy.challenge}</p>
           </section>
 
           <section className="border-b border-[#EAEAEA] pb-12">
-            <h2 className="font-mono text-xs uppercase tracking-wider text-[#616161] mb-3">
+            <h2 className="font-sans text-xs font-semibold uppercase tracking-wider text-[#525252] mb-3">
               02. Architectural Solution
             </h2>
-            <p className="text-base text-[#333333] leading-relaxed mb-6">{project.caseStudy.architectureSolution}</p>
+            <p className="text-base text-[#333333] leading-relaxed max-w-[32rem] mb-6">{project.caseStudy.architectureSolution}</p>
 
-            <div className="rounded-[6px] border border-[#EAEAEA] bg-[#FBFBFA] p-5">
-              <h3 className="font-mono text-xs uppercase tracking-wider text-[#111111] mb-3 font-semibold">
+            <div className="rounded-[6px] border border-[#EAEAEA] bg-[#FBFBFA] p-5 max-w-3xl">
+              <h3 className="font-sans text-xs uppercase tracking-wider text-[#111111] mb-3 font-semibold">
                 Key Deliverables
               </h3>
-              <ul className="space-y-2 font-mono text-xs text-[#555555]">
+              <ul className="space-y-2 font-sans text-sm text-[#4A4A4A]">
                 {project.caseStudy.deliverables.map((deliv, idx) => (
                   <li key={idx} className="flex items-start gap-2">
-                    <span className="text-[#346538] font-bold">›</span>
+                    <span className="text-[#346538] font-bold font-mono">›</span>
                     <span>{deliv}</span>
                   </li>
                 ))}
@@ -225,7 +219,7 @@ export function ProjectCaseBody({ slug, initialProject, initialIndex, initialPre
           </section>
 
           <section className="border-b border-[#EAEAEA] pb-12">
-            <h2 className="font-mono text-xs uppercase tracking-wider text-[#616161] mb-6">
+            <h2 className="font-sans text-xs font-semibold uppercase tracking-wider text-[#525252] mb-6">
               03. Technical Decisions & Tradeoffs
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -235,8 +229,8 @@ export function ProjectCaseBody({ slug, initialProject, initialIndex, initialPre
                   className="rounded-[6px] border border-[#EAEAEA] bg-[#FFFFFF] p-5 flex flex-col justify-between"
                 >
                   <div>
-                    <h4 className="font-sans font-medium text-sm text-[#111111] mb-2">{dec.title}</h4>
-                    <p className="font-mono text-xs text-[#666666] leading-relaxed">{dec.rationale}</p>
+                    <h3 className="font-sans font-semibold text-sm text-[#111111] mb-2">{dec.title}</h3>
+                    <p className="font-sans text-[13px] text-[#4A4A4A] leading-relaxed">{dec.rationale}</p>
                   </div>
                 </div>
               ))}
@@ -244,12 +238,12 @@ export function ProjectCaseBody({ slug, initialProject, initialIndex, initialPre
           </section>
 
           <section className="border-b border-[#EAEAEA] pb-12">
-            <h2 className="font-mono text-xs uppercase tracking-wider text-[#616161] mb-4">
+            <h2 className="font-sans text-xs font-semibold uppercase tracking-wider text-[#525252] mb-4">
               04. Technologies Leveraged
             </h2>
-            <div className="flex flex-wrap gap-2 font-mono text-xs">
+            <div className="flex flex-wrap gap-2 font-sans text-xs font-medium">
               {project.tags.map((t) => (
-                <span key={t} className="rounded bg-[#F7F6F3] border border-[#EAEAEA] px-3 py-1 text-[#111111]">
+                <span key={t} className="rounded bg-[#F7F6F3] border border-[#EAEAEA] px-3 py-1.5 text-[#111111]">
                   {t}
                 </span>
               ))}
@@ -258,21 +252,21 @@ export function ProjectCaseBody({ slug, initialProject, initialIndex, initialPre
         </div>
 
         {count > 1 && prevProject && nextProject && (
-          <div className="pt-12 grid grid-cols-2 gap-4 font-mono text-xs">
+          <div className="pt-12 grid grid-cols-2 gap-4 font-sans text-xs">
             <Link
               href={`/work/${prevProject.slug}`}
               className="rounded-[6px] border border-[#EAEAEA] p-4 hover:bg-[#FBFBFA] transition-colors"
             >
-              <span className="text-[#616161] block text-[10px]">PREVIOUS WORK</span>
-              <span className="font-serif text-sm font-medium text-[#111111] truncate block">{prevProject.title}</span>
+              <span className="text-[#525252] block text-[11px] font-medium tracking-wider uppercase mb-1">PREVIOUS WORK</span>
+              <span className="font-serif text-base font-medium text-[#111111] truncate block">{prevProject.title}</span>
             </Link>
 
             <Link
               href={`/work/${nextProject.slug}`}
               className="rounded-[6px] border border-[#EAEAEA] p-4 hover:bg-[#FBFBFA] transition-colors text-right"
             >
-              <span className="text-[#616161] block text-[10px]">NEXT WORK</span>
-              <span className="font-serif text-sm font-medium text-[#111111] truncate block">{nextProject.title}</span>
+              <span className="text-[#525252] block text-[11px] font-medium tracking-wider uppercase mb-1">NEXT WORK</span>
+              <span className="font-serif text-base font-medium text-[#111111] truncate block">{nextProject.title}</span>
             </Link>
           </div>
         )}

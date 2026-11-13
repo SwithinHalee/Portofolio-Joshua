@@ -32,6 +32,7 @@ function savePosition(pathname: string, y: number): void {
 
 // Instantly jumps without triggering the site's smooth-scroll behavior.
 function jumpTo(y: number): number {
+  window.dispatchEvent(new Event("portfolio:programmatic-scroll"));
   const root = document.documentElement;
   const prevBehavior = root.style.scrollBehavior;
   root.style.scrollBehavior = "auto";

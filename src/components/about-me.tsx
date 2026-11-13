@@ -171,12 +171,6 @@ echo "Location: Tangerang / Jakarta / Remote"`,
           {/* Left Column (5 Cols): Headline, Bio, and Lens Navigation */}
           <div className="lg:col-span-5 space-y-6">
             <Reveal>
-              <div className="flex items-center gap-2 font-mono text-xs text-[#888888] uppercase tracking-wider mb-3">
-                <span>01 / BIOGRAPHIC DOSSIER</span>
-                <span className="text-[#333333]">•</span>
-                <span>PROFILE</span>
-              </div>
-
               <h2
                 className="text-3xl sm:text-4xl lg:text-[40px] font-serif text-[#FFFFFF] tracking-[-0.03em] leading-[1.12] mb-5"
                 style={{ fontFamily: "var(--font-newsreader), Georgia, serif" }}
@@ -185,7 +179,7 @@ echo "Location: Tangerang / Jakarta / Remote"`,
                 the ability to defeat me. But this is reality. Nothing so perfect would happen.
               </h2>
 
-              <p className="text-sm sm:text-base text-[#AAAAAA] leading-relaxed font-sans mb-6">
+              <p className="text-sm sm:text-base text-[#B3B3B3] leading-relaxed font-sans mb-6">
                 - Ainz Ooal Gown
               </p>
 
@@ -193,19 +187,17 @@ echo "Location: Tangerang / Jakarta / Remote"`,
               <div
                 onMouseEnter={() => setIsLensAutoPaused(true)}
                 onMouseLeave={() => setIsLensAutoPaused(false)}
-                className="border border-[#262626] rounded-[8px] bg-[#141414] p-2 space-y-1 font-mono text-xs"
+                className="border border-[#262626] rounded-[8px] bg-[#141414] p-2 space-y-1 font-sans text-xs"
               >
-                <div className="flex items-center justify-between text-[10px] uppercase text-[#777777] px-2.5 py-1">
+                <div className="flex items-center justify-between text-[11px] font-medium uppercase tracking-wider text-[#A3A3A3] px-2.5 py-1">
                   <span>Select Inspection Lens</span>
                   <div
-                    className="flex items-center font-mono text-[9px]"
+                    className="flex items-center"
                     title={isLensAutoPaused ? "Auto-cycle paused" : "Auto-cycling lenses"}
                   >
                     <span
-                      className={`w-1.5 h-1.5 rounded-full ${
-                        isLensAutoPaused
-                          ? "bg-[#666666]"
-                          : "bg-[#4ADE80] animate-pulse"
+                      className={`w-1.5 h-1.5 rounded-[1px] ${
+                        isLensAutoPaused ? "bg-[#737373]" : "bg-[#4ADE80]"
                       }`}
                     />
                     <span className="sr-only">
@@ -220,11 +212,13 @@ echo "Location: Tangerang / Jakarta / Remote"`,
                   className={`w-full text-left px-3 py-2 rounded-[4px] transition-colors flex items-center justify-between relative overflow-hidden ${
                     activeLens === "philosophy"
                       ? "bg-[#FFFFFF] text-[#111111] font-semibold"
-                      : "text-[#888888] hover:text-white hover:bg-[#202020]"
+                      : "text-[#B3B3B3] hover:text-white hover:bg-[#202020]"
                   }`}
                 >
-                  <span>[01] Personal Loadout</span>
-                  <span className={`text-[10px] ${activeLens === "philosophy" ? "text-[#555555]" : "opacity-70"}`}>
+                  <span>
+                    <span className="font-mono">[01]</span> Personal Loadout
+                  </span>
+                  <span className={`text-[11px] ${activeLens === "philosophy" ? "text-[#4A4A4A]" : "text-[#A3A3A3]"}`}>
                     Off-duty
                   </span>
                   {activeLens === "philosophy" && (
@@ -249,11 +243,13 @@ echo "Location: Tangerang / Jakarta / Remote"`,
                   className={`w-full text-left px-3 py-2 rounded-[4px] transition-colors flex items-center justify-between relative overflow-hidden ${
                     activeLens === "trajectory"
                       ? "bg-[#FFFFFF] text-[#111111] font-semibold"
-                      : "text-[#888888] hover:text-white hover:bg-[#202020]"
+                      : "text-[#B3B3B3] hover:text-white hover:bg-[#202020]"
                   }`}
                 >
-                  <span>[02] Trajectory & Roots</span>
-                  <span className={`text-[10px] ${activeLens === "trajectory" ? "text-[#555555]" : "opacity-70"}`}>
+                  <span>
+                    <span className="font-mono">[02]</span> Trajectory & Roots
+                  </span>
+                  <span className={`text-[11px] ${activeLens === "trajectory" ? "text-[#4A4A4A]" : "text-[#A3A3A3]"}`}>
                     Timeline
                   </span>
                   {activeLens === "trajectory" && (
@@ -278,14 +274,16 @@ echo "Location: Tangerang / Jakarta / Remote"`,
                   className={`w-full text-left px-3 py-2 rounded-[4px] transition-colors flex items-center justify-between relative overflow-hidden ${
                     activeLens === "terminal"
                       ? "bg-[#FFFFFF] text-[#111111] font-semibold"
-                      : "text-[#888888] hover:text-white hover:bg-[#202020]"
+                      : "text-[#B3B3B3] hover:text-white hover:bg-[#202020]"
                   }`}
                 >
                   <div className="flex items-center gap-1.5">
                     <TerminalWindow size={13} weight="bold" />
-                    <span>[03] Live Terminal</span>
+                    <span>
+                      <span className="font-mono">[03]</span> Live Terminal
+                    </span>
                   </div>
-                  <span className={`text-[10px] ${activeLens === "terminal" ? "text-[#555555]" : "opacity-70"}`}>
+                  <span className={`text-[11px] ${activeLens === "terminal" ? "text-[#4A4A4A]" : "text-[#A3A3A3]"}`}>
                     Interactive
                   </span>
                   {activeLens === "terminal" && (
@@ -316,7 +314,7 @@ echo "Location: Tangerang / Jakarta / Remote"`,
             <Reveal delay={0.08}>
               <div>
                 {/* 1. Master Specimen Barcode & Clearance Top Bar */}
-                <div className="border-b border-[#242424] py-3 flex items-center justify-between font-mono text-[11px] text-[#888888]">
+                <div className="border-b border-[#242424] py-3 flex items-center justify-between font-mono text-xs text-[#A3A3A3]">
                   <div className="flex items-center gap-2">
                     <Fingerprint size={16} weight="bold" className="text-white" />
                     <span className="font-semibold text-white tracking-wider">
@@ -325,10 +323,10 @@ echo "Location: Tangerang / Jakarta / Remote"`,
                   </div>
 
                   <div className="flex items-center gap-2">
-                    <span className="hidden sm:inline text-[#9A9A9A] font-mono text-[10px] tracking-tighter">
+                    <span className="hidden sm:inline text-[#B3B3B3] font-mono text-xs tracking-tighter">
                       ||| | |||| | || | |||| ||
                     </span>
-                    <span className="text-[#4ADE80] bg-[#14331C] px-2 py-0.5 rounded text-[10px] font-semibold border border-[#22542B]">
+                    <span className="font-sans text-[#4ADE80] bg-[#14331C] px-2.5 py-1 rounded-[3px] text-[11px] leading-none font-semibold border border-[#22542B]">
                       ACTIVE INTERN
                     </span>
                   </div>
@@ -349,33 +347,33 @@ echo "Location: Tangerang / Jakarta / Remote"`,
                           priority={false}
                         />
                         <div className="absolute inset-0 bg-[#111111]/[0.02] pointer-events-none"></div>
-                        <div className="absolute top-2 right-2 rounded border border-white/20 bg-black/60 backdrop-blur-md px-1.5 py-0.5 font-mono text-[8px] text-white tracking-wider uppercase">
+                        <div className="absolute top-2 right-2 rounded border border-white/20 bg-black/75 backdrop-blur-md px-2 py-0.5 font-mono text-[11px] text-white tracking-wider uppercase">
                           UNTAR SI
                         </div>
                       </div>
                     </div>
 
                     {/* Integrated Identity Parameters Table */}
-                    <div className="sm:col-span-8 font-mono text-xs space-y-1.5">
+                    <div className="sm:col-span-8 font-sans text-xs space-y-1.5">
                       <div className="flex items-baseline justify-between border-b border-[#242424] pb-1">
-                        <span className="text-[#777777] text-[10px] uppercase">Subject</span>
+                        <span className="text-[#A3A3A3] text-[11px] uppercase tracking-wider">Subject</span>
                         <span className="font-semibold text-white text-xs">Joshua Abdiel [Josh]</span>
                       </div>
                       <div className="flex items-baseline justify-between border-b border-[#242424] pb-1">
-                        <span className="text-[#777777] text-[10px] uppercase">Engagement</span>
+                        <span className="text-[#A3A3A3] text-[11px] uppercase tracking-wider">Engagement</span>
                         <span className="text-white text-xs">FE Intern @ CarbonEthics</span>
                       </div>
                       <div className="flex items-baseline justify-between border-b border-[#242424] pb-1">
-                        <span className="text-[#777777] text-[10px] uppercase">Coordinates</span>
-                        <span className="text-[#CCCCCC] text-xs">6.175722° S, 106.686231° E</span>
+                        <span className="text-[#A3A3A3] text-[11px] uppercase tracking-wider">Coordinates</span>
+                        <span className="font-mono text-[#D4D4D4] text-xs">6.175722° S, 106.686231° E</span>
                       </div>
                       <div className="flex items-baseline justify-between border-b border-[#242424] pb-1">
-                        <span className="text-[#777777] text-[10px] uppercase">Homebase</span>
-                        <span className="text-[#CCCCCC] text-xs">Tangerang Kota, Banten</span>
+                        <span className="text-[#A3A3A3] text-[11px] uppercase tracking-wider">Homebase</span>
+                        <span className="text-[#D4D4D4] text-xs">Tangerang Kota, Banten</span>
                       </div>
                       <div className="flex items-baseline justify-between pt-0.5">
-                        <span className="text-[#777777] text-[10px] uppercase">Barcode Verification</span>
-                        <span className="font-mono text-[10px] tracking-tighter text-[#9A9A9A]">
+                        <span className="text-[#A3A3A3] text-[11px] uppercase tracking-wider">Barcode Verification</span>
+                        <span className="font-mono text-xs tracking-tighter text-[#B3B3B3]">
                           ||| | |||| | || | |||| ||
                         </span>
                       </div>
@@ -395,28 +393,28 @@ echo "Location: Tangerang / Jakarta / Remote"`,
                         transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
                         className="space-y-5"
                       >
-                        <div className="flex items-center justify-between border-b border-[#242424] pb-2 font-mono text-[11px] text-[#888888]">
-                          <span className="uppercase text-[10px] text-white font-semibold">
+                        <div className="flex items-center justify-between border-b border-[#242424] pb-2 font-sans text-[11px] text-[#B3B3B3]">
+                          <span className="uppercase text-[11px] text-white font-semibold tracking-wider">
                             LENS [01]: PERSONAL LOADOUT
                           </span>
-                          <span className="text-[#9A9A9A]">OFF-DUTY LOG</span>
+                          <span className="font-mono text-[#B3B3B3]">OFF-DUTY LOG</span>
                         </div>
 
-                        <p className="text-xs sm:text-sm text-[#AAAAAA] font-sans leading-relaxed">
+                        <p className="text-xs sm:text-sm text-[#CCCCCC] font-sans leading-relaxed max-w-[28rem]">
                           Off-duty rotation: games, side-quest coding, badminton, and camping.
                           Baseline fuel is noodles in any form, with PC hardware and alutsista talk on the side.
                         </p>
 
                         {/* Personal Loadout */}
-                        <div className="divide-y divide-[#242424] font-mono text-xs">
+                        <div className="divide-y divide-[#242424] font-sans text-xs">
                           <div className="py-3">
                             <div className="flex items-center gap-2 mb-1">
-                              <span className="text-[#4ADE80] font-bold">01</span>
+                              <span className="font-mono text-[#4ADE80] font-bold">01</span>
                               <span className="font-semibold text-white">
                                 Off-Duty Rotation
                               </span>
                             </div>
-                            <p className="text-[11px] text-[#999999] font-sans leading-relaxed">
+                            <p className="text-xs sm:text-[13px] text-[#B3B3B3] font-sans leading-relaxed max-w-[28rem]">
                               Gaming, coding side quests, badminton rallies, and camping trips.
                               Movement and fresh air balance the screen hours.
                             </p>
@@ -424,25 +422,25 @@ echo "Location: Tangerang / Jakarta / Remote"`,
 
                           <div className="py-3">
                             <div className="flex items-center gap-2 mb-1">
-                              <span className="text-[#4ADE80] font-bold">02</span>
+                              <span className="font-mono text-[#4ADE80] font-bold">02</span>
                               <span className="font-semibold text-white">
                                 Active Barracks
                               </span>
                             </div>
-                            <p className="text-[11px] text-[#999999] font-sans leading-relaxed">
+                            <p className="text-xs sm:text-[13px] text-[#B3B3B3] font-sans leading-relaxed max-w-[28rem]">
                               RimWorld, War Thunder, Minecraft, Delta Force, and Clash of Clans.
-                              Colony sims, armor doctrine, sandbox builds, tactical FPS, and clan raids.
+                              Colony sims, armor doctrine, sandbox builds, tactical FPS, and clan&nbsp;raids.
                             </p>
                           </div>
 
                           <div className="py-3">
                             <div className="flex items-center gap-2 mb-1">
-                              <span className="text-[#4ADE80] font-bold">03</span>
+                              <span className="font-mono text-[#4ADE80] font-bold">03</span>
                               <span className="font-semibold text-white">
                                 AI Toolchain & Mess Hall
                               </span>
                             </div>
-                            <p className="text-[11px] text-[#999999] font-sans leading-relaxed">
+                            <p className="text-xs sm:text-[13px] text-[#B3B3B3] font-sans leading-relaxed max-w-[28rem]">
                               Daily drivers: Gemini (Antigravity), Muse Spark, DeepSeek, and 9Router.
                               Routed by task across drafting, debugging, and model comparison.
                               Off-screen topics: noodle variants, PC specs, and alutsista deep dives.
@@ -461,57 +459,57 @@ echo "Location: Tangerang / Jakarta / Remote"`,
                         transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
                         className="space-y-5"
                       >
-                        <div className="flex items-center justify-between border-b border-[#242424] pb-2 font-mono text-[11px] text-[#888888]">
-                          <span className="uppercase text-[10px] text-white font-semibold">
+                        <div className="flex items-center justify-between border-b border-[#242424] pb-2 font-sans text-[11px] text-[#B3B3B3]">
+                          <span className="uppercase text-[11px] text-white font-semibold tracking-wider">
                             LENS [02]: CHRONOLOGICAL ROOTS
                           </span>
-                          <span className="text-[#9A9A9A]">ACADEMIC & PRODUCTION</span>
+                          <span className="font-mono text-[#B3B3B3]">ACADEMIC & PRODUCTION</span>
                         </div>
 
                         {/* Trajectory Timeline in Master Card */}
-                        <div className="font-mono text-xs divide-y divide-[#242424]">
+                        <div className="font-sans text-xs divide-y divide-[#242424]">
                           <div className="pb-3">
-                            <div className="flex items-center justify-between mb-1">
-                              <span className="font-semibold text-white text-xs font-sans">
+                            <div className="flex items-center justify-between gap-2 mb-1">
+                              <span className="font-semibold text-white text-[13px] font-sans">
                                 CarbonEthics — Frontend Engineering Intern
                               </span>
-                              <span className="text-[9px] text-[#4ADE80] bg-[#14331C] px-1.5 py-0.5 rounded border border-[#22542B]">
+                              <span className="font-mono text-[11px] text-[#4ADE80] bg-[#14331C] px-2 py-0.5 rounded-[3px] border border-[#22542B] shrink-0">
                                 FEB 2026 — OCT 2026
                               </span>
                             </div>
-                            <p className="text-[11px] text-[#999999] font-sans leading-relaxed">
+                            <p className="text-xs sm:text-[13px] text-[#B3B3B3] font-sans leading-relaxed max-w-[28rem]">
                               Shipping production interfaces for Indonesia&apos;s carbon and mangrove restoration
                               platform with responsive calculators and modular design tokens.
                             </p>
                           </div>
 
                           <div className="py-3">
-                            <div className="flex items-center justify-between mb-1">
-                              <span className="font-semibold text-white text-xs font-sans">
+                            <div className="flex items-center justify-between gap-2 mb-1">
+                              <span className="font-semibold text-white text-[13px] font-sans">
                                 Universitas Tarumanagara (UNTAR)
                               </span>
-                              <span className="text-[9px] text-[#888888]">2023 — PRESENT</span>
+                              <span className="font-mono text-[11px] text-[#B3B3B3] shrink-0">2023 — PRESENT</span>
                             </div>
-                            <p className="text-[11px] text-[#999999] font-sans leading-relaxed">
+                            <p className="text-xs sm:text-[13px] text-[#B3B3B3] font-sans leading-relaxed max-w-[28rem]">
                               Information Systems (Sistem Informasi). Enterprise ERP, database modeling,
                               systems analysis, and distributed networking.
                             </p>
                           </div>
 
                           <div className="pt-3">
-                            <div className="flex items-center justify-between mb-1">
-                              <span className="font-semibold text-white text-xs font-sans">
+                            <div className="flex items-center justify-between gap-2 mb-1">
+                              <span className="font-semibold text-white text-[13px] font-sans">
                                 Santo Fransiskus Asisi
                               </span>
-                              <span className="text-[9px] text-[#888888]">2020 — 2023 · SOCIAL SCIENCES (IPS)</span>
+                              <span className="font-mono text-[11px] text-[#B3B3B3] shrink-0">2020 — 2023 · IPS</span>
                             </div>
-                            <p className="text-[11px] text-[#999999] font-sans leading-relaxed">
+                            <p className="text-xs sm:text-[13px] text-[#B3B3B3] font-sans leading-relaxed max-w-[28rem]">
                               Senior high in the social sciences (IPS) track — economics, sociology, and geography grounding before moving into information systems.
                             </p>
                           </div>
                         </div>
 
-                        <div className="flex items-center gap-2 text-xs font-mono text-[#888888]">
+                        <div className="flex items-center gap-2 text-xs font-sans text-[#B3B3B3]">
                           <MapPin size={13} weight="bold" className="text-white" />
                           <span>Poris, Cipondoh Indah, Tangerang Kota, Banten, Indonesia</span>
                         </div>
@@ -533,18 +531,18 @@ echo "Location: Tangerang / Jakarta / Remote"`,
                             <span className="h-2 w-2 rounded-full bg-[#FF5F56] inline-block"></span>
                             <span className="h-2 w-2 rounded-full bg-[#FFBD2E] inline-block"></span>
                             <span className="h-2 w-2 rounded-full bg-[#27C93F] inline-block"></span>
-                            <span className="text-[10px] text-[#888888] ml-2">
+                            <span className="text-[11px] text-[#B3B3B3] ml-2">
                               joshua@tangerang:~ (zsh)
                             </span>
                           </div>
-                          <span className="text-[9px] text-[#9A9A9A]">CLI TELEMETRY</span>
+                          <span className="text-[11px] text-[#B3B3B3]">CLI TELEMETRY</span>
                         </div>
 
                         {/* Interactive Command Tabs with Auto-Cycle and Progress Indicator */}
                         <div
                           onMouseEnter={() => setIsTerminalAutoPaused(true)}
                           onMouseLeave={() => setIsTerminalAutoPaused(false)}
-                          className="border-b border-[#222222] px-1 py-2 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-[11px]"
+                          className="border-b border-[#222222] px-1 py-2 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs"
                         >
                           {TERMINAL_COMMANDS.map((cmd) => (
                             <button
@@ -554,7 +552,7 @@ echo "Location: Tangerang / Jakarta / Remote"`,
                               className={`transition-colors ${
                                 activeTerminalCmd === cmd
                                   ? "text-white font-semibold underline underline-offset-4"
-                                  : "text-[#888888] hover:text-white"
+                                  : "text-[#B3B3B3] hover:text-white"
                               }`}
                             >
                               <span>$ {cmd}</span>
@@ -562,7 +560,7 @@ echo "Location: Tangerang / Jakarta / Remote"`,
                           ))}
 
                           <div
-                            className="flex items-center ml-auto font-mono text-[9px]"
+                            className="flex items-center ml-auto"
                             title={
                               isTerminalAutoPaused || isLensAutoPaused
                                 ? "Auto-cycle paused"
@@ -570,10 +568,10 @@ echo "Location: Tangerang / Jakarta / Remote"`,
                             }
                           >
                             <span
-                              className={`w-1 h-1 rounded-full ${
+                              className={`w-1.5 h-1.5 rounded-[1px] ${
                                 isTerminalAutoPaused || isLensAutoPaused
-                                  ? "bg-[#666666]"
-                                  : "bg-[#27C93F] animate-pulse"
+                                  ? "bg-[#737373]"
+                                  : "bg-[#27C93F]"
                               }`}
                             />
                             <span className="sr-only">
@@ -588,36 +586,36 @@ echo "Location: Tangerang / Jakarta / Remote"`,
                         <div
                           onMouseEnter={() => setIsTerminalAutoPaused(true)}
                           onMouseLeave={() => setIsTerminalAutoPaused(false)}
-                          className="px-1 py-4 font-mono text-[11px] leading-relaxed overflow-x-auto min-h-[240px]"
+                          className="px-1 py-4 font-mono text-xs leading-relaxed overflow-x-auto min-h-[240px]"
                         >
                           {/* Active Prompt & Typed Command */}
-                          <div className="flex items-center gap-1.5 text-[#27C93F] mb-2 text-[10px]">
+                          <div className="flex items-center gap-1.5 text-[#4ADE80] mb-2 text-xs">
                             <span>➜</span>
-                            <span className="text-[#888888]">~</span>
+                            <span className="text-[#B3B3B3]">~</span>
                             <span className="text-white font-semibold">
                               {typedCmd}
                               {isTyping && typedOutput.length === 0 && (
-                                <span className="inline-block w-1.5 h-3 bg-[#27C93F] ml-1 animate-pulse align-middle" />
+                                <span className="inline-block w-1.5 h-3 bg-[#4ADE80] ml-1 align-middle" />
                               )}
                             </span>
                           </div>
 
                           {/* Streaming Output Body */}
                           {typedOutput && (
-                            <pre className="text-[#CCCCCC] whitespace-pre-wrap text-[11px] font-mono leading-relaxed">
+                            <pre className="text-[#D4D4D4] whitespace-pre-wrap text-xs font-mono leading-relaxed">
                               {typedOutput}
                               {isTyping && (
-                                <span className="inline-block w-1.5 h-3 bg-[#27C93F] ml-1 animate-pulse align-middle" />
+                                <span className="inline-block w-1.5 h-3 bg-[#4ADE80] ml-1 align-middle" />
                               )}
                             </pre>
                           )}
 
-                          {/* Blinking Prompt Line When Execution Completes */}
+                          {/* Prompt Line When Execution Completes */}
                           {!isTyping && (
-                            <div className="flex items-center gap-1.5 text-[#27C93F] mt-3 text-[10px]">
+                            <div className="flex items-center gap-1.5 text-[#4ADE80] mt-3 text-xs">
                               <span>➜</span>
-                              <span className="text-[#888888]">~</span>
-                              <span className="inline-block w-1.5 h-3 bg-[#27C93F] animate-pulse" />
+                              <span className="text-[#B3B3B3]">~</span>
+                              <span className="inline-block w-1.5 h-3 bg-[#4ADE80]" />
                             </div>
                           )}
                         </div>
@@ -635,41 +633,41 @@ echo "Location: Tangerang / Jakarta / Remote"`,
         {/* Bottom Section: Three Contrarian Axioms */}
         <Reveal delay={0.15}>
           <div className="border-t border-[#222222] pt-12">
-            <div className="mb-6 font-mono text-xs uppercase tracking-wider text-[#888888] flex items-center justify-between">
-              <span>{"// CONTRARIAN AXIOMS & CONVICTIONS"}</span>
-              <span className="text-[#9A9A9A] text-[10px]">STANDARDS HELD HIGH</span>
+            <div className="mb-6 font-sans text-xs uppercase tracking-wider text-[#B3B3B3] flex items-center justify-between">
+              <span>Contrarian Axioms & Convictions</span>
+              <span className="font-mono text-[#A3A3A3] text-[11px]">STANDARDS HELD HIGH</span>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="rounded-[8px] border border-[#242424] bg-[#141414] p-6 flex flex-col justify-between transition-colors hover:border-[#383838]">
-                <Quotes size={20} weight="fill" className="text-[#444444] mb-3" />
-                <p className="text-xs sm:text-sm text-[#E0E0E0] leading-relaxed font-sans mb-4">
+                <Quotes size={20} weight="fill" className="text-[#666666] mb-3" />
+                <p className="text-sm text-[#E5E5E5] leading-relaxed font-sans mb-4">
                   &ldquo;Software is read ten times more often than it is written. Optimize for the
                   second reader, not the cleverness of the first writer.&rdquo;
                 </p>
-                <span className="font-mono text-[10px] text-[#777777] uppercase tracking-wider">
+                <span className="font-sans text-[11px] font-medium text-[#A3A3A3] uppercase tracking-wider">
                   — ON MAINTAINABILITY
                 </span>
               </div>
 
               <div className="rounded-[8px] border border-[#242424] bg-[#141414] p-6 flex flex-col justify-between transition-colors hover:border-[#383838]">
-                <Quotes size={20} weight="fill" className="text-[#444444] mb-3" />
-                <p className="text-xs sm:text-sm text-[#E0E0E0] leading-relaxed font-sans mb-4">
+                <Quotes size={20} weight="fill" className="text-[#666666] mb-3" />
+                <p className="text-sm text-[#E5E5E5] leading-relaxed font-sans mb-4">
                   &ldquo;Sub-second interfaces feel like telepathy. Respecting the user&apos;s attention
                   and device battery is the highest form of respect.&rdquo;
                 </p>
-                <span className="font-mono text-[10px] text-[#777777] uppercase tracking-wider">
+                <span className="font-sans text-[11px] font-medium text-[#A3A3A3] uppercase tracking-wider">
                   — ON SPEED & LCP
                 </span>
               </div>
 
               <div className="rounded-[8px] border border-[#242424] bg-[#141414] p-6 flex flex-col justify-between transition-colors hover:border-[#383838]">
-                <Quotes size={20} weight="fill" className="text-[#444444] mb-3" />
-                <p className="text-xs sm:text-sm text-[#E0E0E0] leading-relaxed font-sans mb-4">
+                <Quotes size={20} weight="fill" className="text-[#666666] mb-3" />
+                <p className="text-sm text-[#E5E5E5] leading-relaxed font-sans mb-4">
                   &ldquo;Understanding network routing and database indexing makes you ten times better
                   at building reliable, bulletproof client applications.&rdquo;
                 </p>
-                <span className="font-mono text-[10px] text-[#777777] uppercase tracking-wider">
+                <span className="font-sans text-[11px] font-medium text-[#A3A3A3] uppercase tracking-wider">
                   — ON SYSTEMS THINKING
                 </span>
               </div>

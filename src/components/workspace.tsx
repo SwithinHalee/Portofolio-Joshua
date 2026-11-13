@@ -6,13 +6,21 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ArrowsOut, X } from "@phosphor-icons/react";
 import { WORKSPACE_SETUP } from "@/data/portfolio";
 import { usePortfolio } from "@/components/portfolio-provider";
-import { Reveal, StaggerContainer, StaggerItem } from "@/components/motion-wrapper";
+import {
+  Reveal,
+  StaggerContainer,
+  StaggerItem,
+  useStickyBottomPin,
+} from "@/components/motion-wrapper";
 
 export function Workspace() {
   const { data } = usePortfolio();
   const setup = data.workspaceSetup ?? WORKSPACE_SETUP;
   const [modalOpen, setModalOpen] = useState(false);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const sectionRef = useRef<HTMLElement>(null);
+
+  useStickyBottomPin(sectionRef, setup);
 
   // Close the lightbox with Escape, lock background scroll, and move focus to the dialog when opened
   useEffect(() => {
@@ -31,23 +39,18 @@ export function Workspace() {
   }, [modalOpen]);
 
   return (
-    <section id="workspace" className="pt-8 md:pt-12 pb-24 md:pb-28 border-b border-[#EAEAEA] bg-[#FBFBFA] md:sticky md:top-[calc(100dvh-1260px)] lg:top-[calc(100dvh-1334px)]">
+    <section ref={sectionRef} id="workspace" className="pt-8 md:pt-12 pb-24 md:pb-28 border-b border-[#EAEAEA] bg-[#FBFBFA] md:sticky md:top-[calc(100dvh-1327px)]">
       <div className="mx-auto max-w-5xl px-6 sm:px-8">
         {/* Section Header */}
         <Reveal>
           <div className="mb-14 max-w-2xl">
-            <div className="flex items-center gap-2 font-mono text-xs text-[#616161] uppercase tracking-wider mb-2">
-              <span>06 / PHYSICAL & DIGITAL ENVIRONMENT</span>
-              <span className="text-[#EAEAEA]">•</span>
-              <span>OPERATIONAL RIGOR</span>
-            </div>
             <h2
               className="text-3xl sm:text-4xl font-serif text-[#111111] tracking-[-0.02em] mb-4"
               style={{ fontFamily: "var(--font-newsreader), Georgia, serif" }}
             >
               Engineering Studio & Operational Setup
             </h2>
-            <p className="text-sm sm:text-base text-[#555555]">
+            <p className="text-sm sm:text-base text-[#555555] font-sans">
               A deliberate workspace built for sustained focus, rapid prototyping, and architectural
               precision. Combining ergonomic hardware with strict software tooling.
             </p>
@@ -63,14 +66,14 @@ export function Workspace() {
                 <span className="h-2.5 w-2.5 rounded-full bg-[#E5E5E5] inline-block"></span>
                 <span className="h-2.5 w-2.5 rounded-full bg-[#E5E5E5] inline-block"></span>
               </div>
-              <span className="font-mono text-[11px] text-[#616161]">
+              <span className="font-mono text-xs text-[#555555]">
                 workspace-environment.raw — studio-interior [calm focus]
               </span>
               <button
                 type="button"
                 onClick={() => setModalOpen(true)}
                 data-cursor-label="Enlarge"
-                className="font-mono text-[11px] text-[#555555] hover:text-[#111111] flex items-center gap-1 transition-colors"
+                className="font-sans text-xs font-medium text-[#525252] hover:text-[#111111] flex items-center gap-1 transition-colors"
                 aria-label="Enlarge workspace photo"
               >
                 <ArrowsOut size={12} weight="bold" />
@@ -102,17 +105,17 @@ export function Workspace() {
             <StaggerItem key={group.category}>
               <div className="h-full rounded-[8px] border border-[#EAEAEA] bg-[#FFFFFF] p-6 flex flex-col justify-between transition-all duration-200 hover:border-[#CCCCCC]">
                 <div>
-                  <h3 className="font-mono text-xs uppercase tracking-wider text-[#111111] font-semibold mb-4 pb-2 border-b border-[#EAEAEA]">
+                  <h3 className="font-sans text-xs uppercase tracking-wider text-[#111111] font-semibold mb-4 pb-2 border-b border-[#EAEAEA]">
                     {group.category}
                   </h3>
 
                   <div className="space-y-4">
                     {group.items.map((item) => (
-                      <div key={item.name} className="text-xs">
-                        <span className="font-medium text-[#111111] block mb-0.5">
+                      <div key={item.name} className="text-xs sm:text-[13px]">
+                        <span className="font-medium text-[#111111] block mb-0.5 font-sans">
                           {item.name}
                         </span>
-                        <span className="font-mono text-[11px] text-[#666666] leading-relaxed block">
+                        <span className="font-sans text-xs text-[#555555] leading-relaxed block">
                           {item.spec}
                         </span>
                       </div>

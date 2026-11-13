@@ -124,7 +124,7 @@ function LogoSlugPreview({ slugs }: { slugs: string[] }) {
         failed[slug] ? (
           <span
             key={slug}
-            className="rounded-[3px] border border-[#F3C2C4] bg-[#FDEBEC] px-1.5 py-0.5 font-mono text-[10px] text-[#9F2F2D]"
+            className="rounded-[3px] border border-[#F3C2C4] bg-[#FDEBEC] px-2 py-0.5 font-sans text-[11px] font-medium text-[#9F2F2D]"
             title={`Slug "${slug}" tidak ditemukan`}
           >
             ? {slug}
@@ -340,15 +340,15 @@ export default function AdminPage() {
               <ArrowLeft size={15} weight="bold" />
             </Link>
             <div>
-              <p className="font-mono text-[10px] uppercase tracking-wider text-[#616161]">
-                Local content editor · {hydrated ? "ready" : "loading"}
-              </p>
               <h1
                 className="font-serif text-lg tracking-tight"
                 style={{ fontFamily: "var(--font-newsreader), Georgia, serif" }}
               >
                 Portfolio Studio
               </h1>
+              <p className="font-sans text-[11px] font-medium uppercase tracking-wider text-[#525252]">
+                Local content editor · {hydrated ? "ready" : "loading"}
+              </p>
             </div>
           </div>
           <div className="flex items-center gap-2">
@@ -464,8 +464,8 @@ export default function AdminPage() {
                 <span>{t.label}</span>
                 {count !== null && (
                   <span
-                    className={`rounded border px-1.5 py-0.5 text-[10px] ${
-                      active ? "border-[#333333] bg-[#1E1E1E] text-[#E5E5E5]" : "border-[#EAEAEA] bg-[#F7F6F3]"
+                    className={`rounded border px-2 py-0.5 font-sans text-[11px] font-medium ${
+                      active ? "border-[#333333] bg-[#1E1E1E] text-[#E5E5E5]" : "border-[#EAEAEA] bg-[#F7F6F3] text-[#4A4A4A]"
                     }`}
                   >
                     {count}
@@ -769,7 +769,7 @@ export default function AdminPage() {
                           active ? "border-[#111111] bg-[#111111] text-white" : "border-[#EAEAEA] bg-[#FBFBFA] hover:bg-[#F0F0EE]"
                         }`}
                       >
-                        <span className={`block font-mono text-[10px] uppercase tracking-wider ${active ? "text-[#B5B5B5]" : "text-[#616161]"}`}>
+                        <span className={`block font-sans text-[11px] font-medium uppercase tracking-wider ${active ? "text-[#B5B5B5]" : "text-[#525252]"}`}>
                           {String(idx + 1).padStart(2, "0")} · {p.slug}
                         </span>
                         <span className={`block truncate font-serif text-base ${active ? "text-white" : "text-[#111111]"}`}>
@@ -811,8 +811,8 @@ export default function AdminPage() {
                             {selectedProject.title || "Untitled"}
                           </h3>
                           {flashId === "project-editor" && (
-                            <span className="inline-flex items-center gap-1 rounded-[3px] bg-[#111111] px-1.5 py-0.5 font-mono text-[10px] font-medium uppercase tracking-wider text-white">
-                              <span aria-hidden="true" className="inline-block h-1.5 w-1.5 animate-pulse bg-white" />
+                            <span className="inline-flex items-center gap-1 rounded-[3px] bg-[#111111] px-2 py-0.5 font-sans text-[11px] font-medium uppercase tracking-wider text-white">
+                              <span aria-hidden="true" className="inline-block h-1.5 w-1.5 rounded-[1px] bg-white" />
                               <span>New</span>
                             </span>
                           )}
@@ -1313,8 +1313,8 @@ export default function AdminPage() {
                         Category {Math.min(selectedCategoryIdx, data.techCategories.length - 1) + 1}
                       </h3>
                       {flashId === "category-editor" && (
-                        <span className="inline-flex items-center gap-1 rounded-[3px] bg-[#111111] px-1.5 py-0.5 font-mono text-[10px] font-medium uppercase tracking-wider text-white">
-                          <span aria-hidden="true" className="inline-block h-1.5 w-1.5 animate-pulse bg-white" />
+                        <span className="inline-flex items-center gap-1 rounded-[3px] bg-[#111111] px-2 py-0.5 font-sans text-[11px] font-medium uppercase tracking-wider text-white">
+                          <span aria-hidden="true" className="inline-block h-1.5 w-1.5 rounded-[1px] bg-white" />
                           <span>New</span>
                         </span>
                       )}
@@ -1479,7 +1479,7 @@ export default function AdminPage() {
                             />
                             <span className="mt-2 flex flex-wrap items-center gap-2">
                               <LogoSlugPreview slugs={s.logos ?? []} />
-                              <span className="font-mono text-[10px] text-[#6B6B6B]">
+                              <span className="font-sans text-[11px] text-[#525252]">
                                 Cek slug di simpleicons.org (cari brand → slug ada di URL), atau
                                 buka cdn.simpleicons.org/nama — kalau gambar muncul berarti benar.
                               </span>
@@ -1556,8 +1556,8 @@ export default function AdminPage() {
                     <span className="flex items-center gap-2 font-mono text-[11px] uppercase tracking-wider text-[#616161]">
                       <span>Row {idx + 1}</span>
                       {flashId === `principle-${idx}` && (
-                        <span className="inline-flex items-center gap-1 rounded-[3px] bg-[#111111] px-1.5 py-0.5 font-mono text-[10px] font-medium uppercase tracking-wider text-white">
-                          <span aria-hidden="true" className="inline-block h-1.5 w-1.5 animate-pulse bg-white" />
+                        <span className="inline-flex items-center gap-1 rounded-[3px] bg-[#111111] px-2 py-0.5 font-sans text-[11px] font-medium uppercase tracking-wider text-white">
+                          <span aria-hidden="true" className="inline-block h-1.5 w-1.5 rounded-[1px] bg-white" />
                           <span>New</span>
                         </span>
                       )}
@@ -1675,8 +1675,8 @@ export default function AdminPage() {
                     <span className="flex items-center gap-2 font-mono text-[11px] uppercase tracking-wider text-[#616161]">
                       <span>Entry {idx + 1}</span>
                       {flashId === `experience-${idx}` && (
-                        <span className="inline-flex items-center gap-1 rounded-[3px] bg-[#111111] px-1.5 py-0.5 font-mono text-[10px] font-medium uppercase tracking-wider text-white">
-                          <span aria-hidden="true" className="inline-block h-1.5 w-1.5 animate-pulse bg-white" />
+                        <span className="inline-flex items-center gap-1 rounded-[3px] bg-[#111111] px-2 py-0.5 font-sans text-[11px] font-medium uppercase tracking-wider text-white">
+                          <span aria-hidden="true" className="inline-block h-1.5 w-1.5 rounded-[1px] bg-white" />
                           <span>New</span>
                         </span>
                       )}
@@ -1901,8 +1901,8 @@ export default function AdminPage() {
                     <span className="flex items-center gap-2 font-mono text-[11px] uppercase tracking-wider text-[#616161]">
                       <span>Entry {idx + 1}</span>
                       {flashId === `education-${idx}` && (
-                        <span className="inline-flex items-center gap-1 rounded-[3px] bg-[#111111] px-1.5 py-0.5 font-mono text-[10px] font-medium uppercase tracking-wider text-white">
-                          <span aria-hidden="true" className="inline-block h-1.5 w-1.5 animate-pulse bg-white" />
+                        <span className="inline-flex items-center gap-1 rounded-[3px] bg-[#111111] px-2 py-0.5 font-sans text-[11px] font-medium uppercase tracking-wider text-white">
+                          <span aria-hidden="true" className="inline-block h-1.5 w-1.5 rounded-[1px] bg-white" />
                           <span>New</span>
                         </span>
                       )}
@@ -2082,8 +2082,8 @@ export default function AdminPage() {
                 >
                   <div className="mb-3 flex items-center gap-2">
                     {flashId === `workspace-${gIdx}` && (
-                      <span className="inline-flex shrink-0 items-center gap-1 rounded-[3px] bg-[#111111] px-1.5 py-0.5 font-mono text-[10px] font-medium uppercase tracking-wider text-white">
-                        <span aria-hidden="true" className="inline-block h-1.5 w-1.5 animate-pulse bg-white" />
+                      <span className="inline-flex shrink-0 items-center gap-1 rounded-[3px] bg-[#111111] px-2 py-0.5 font-sans text-[11px] font-medium uppercase tracking-wider text-white">
+                        <span aria-hidden="true" className="inline-block h-1.5 w-1.5 rounded-[1px] bg-white" />
                         <span>New</span>
                       </span>
                     )}
@@ -2245,8 +2245,8 @@ export default function AdminPage() {
                               : "Half row"}
                       </span>
                       {flashId === `gallery-${idx}` && (
-                        <span className="inline-flex items-center gap-1 rounded-[3px] bg-[#111111] px-1.5 py-0.5 font-mono text-[10px] font-medium uppercase tracking-wider text-white">
-                          <span aria-hidden="true" className="inline-block h-1.5 w-1.5 animate-pulse bg-white" />
+                        <span className="inline-flex items-center gap-1 rounded-[3px] bg-[#111111] px-2 py-0.5 font-sans text-[11px] font-medium uppercase tracking-wider text-white">
+                          <span aria-hidden="true" className="inline-block h-1.5 w-1.5 rounded-[1px] bg-white" />
                           <span>New</span>
                         </span>
                       )}

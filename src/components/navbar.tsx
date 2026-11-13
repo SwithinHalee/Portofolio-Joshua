@@ -32,6 +32,7 @@ export function Navbar() {
   }
 
   function scrollToSection(id: string) {
+    window.dispatchEvent(new Event("portfolio:programmatic-scroll"));
     const header = document.querySelector("header");
     const headerH = header ? header.getBoundingClientRect().height : 59;
     if (id === "dossier") {
@@ -172,7 +173,7 @@ export function Navbar() {
         </div>
 
         {/* Minimalist Desktop Navigation */}
-        <nav className="hidden md:flex items-center gap-7 text-xs font-mono">
+        <nav className="hidden md:flex items-center gap-7 text-[13px] font-sans">
           {navLinks.map((link) => {
             const isPage = link.id === "archive";
             const isActive = isPage
@@ -238,7 +239,7 @@ export function Navbar() {
             transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
             className="md:hidden border-t border-[#EAEAEA] bg-[#FFFFFF] px-6 py-4 overflow-hidden"
           >
-            <div id="mobile-navigation" className="flex flex-col gap-3 font-mono text-xs text-[#616161]">
+            <div id="mobile-navigation" className="flex flex-col gap-3 font-sans text-sm text-[#555555]">
               {navLinks.map((link) =>
                 link.id === "archive" ? (
                   <Link

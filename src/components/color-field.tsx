@@ -162,7 +162,7 @@ export function ColorField({ value, onChange, previewText = "Sample tag" }: Colo
       </div>
 
       {/* Derived pastel readout */}
-      <div className="mt-3 flex items-center gap-2 border-t border-[#EAEAEA] pt-2.5 font-mono text-[10px] text-[#616161]">
+      <div className="mt-3 flex items-center gap-2 border-t border-[#EAEAEA] pt-2.5 font-mono text-[11px] text-[#616161]">
         <span
           aria-hidden="true"
           className="inline-block h-3 w-3 rounded-[2px] border border-black/10"

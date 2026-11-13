@@ -5,7 +5,6 @@ import { ArrowSquareOut } from "@phosphor-icons/react";
 import { EXPERIENCES, EDUCATION_HISTORY } from "@/data/portfolio";
 import { usePortfolio } from "@/components/portfolio-provider";
 import { Reveal, StaggerContainer, StaggerItem, useStackSlide } from "@/components/motion-wrapper";
-import { DossierTag } from "@/components/dossier-tag";
 
 function validImage(src: string | undefined): src is string {
   if (!src) return false;
@@ -28,18 +27,13 @@ export function Experience() {
         {/* Section Header */}
         <Reveal>
           <div className="mb-14 max-w-2xl">
-            <div className="flex items-center gap-2 font-mono text-xs text-[#616161] uppercase tracking-wider mb-2">
-              <span>07 / CHRONOLOGY</span>
-              <span className="text-[#EAEAEA]">•</span>
-              <span>EXPERIENCE & FORMAL EDUCATION</span>
-            </div>
             <h2
               className="text-3xl sm:text-4xl font-serif text-[#111111] tracking-[-0.02em] mb-4"
               style={{ fontFamily: "var(--font-newsreader), Georgia, serif" }}
             >
               Milestones & Trajectory
             </h2>
-            <p className="text-sm sm:text-base text-[#555555]">
+            <p className="text-sm sm:text-base text-[#555555] font-sans">
               Professional engineering engagements, industry contributions, and academic background
               in Information Systems.
             </p>
@@ -49,9 +43,9 @@ export function Experience() {
         {/* Experience Timeline */}
         <div className="mb-16">
           <Reveal delay={0.05}>
-            <h3 className="font-mono text-xs uppercase tracking-wider text-[#616161] mb-6 flex items-center gap-2">
-              <span className="h-1.5 w-1.5 rounded-full bg-[#111111]"></span>
-              <span>{"// INDUSTRY ENGAGEMENT"}</span>
+            <h3 className="font-sans text-xs font-semibold uppercase tracking-wider text-[#525252] mb-6 flex items-center gap-2">
+              <span className="h-1.5 w-1.5 rounded-[1px] bg-[#111111]"></span>
+              <span>Industry Engagement</span>
             </h3>
           </Reveal>
 
@@ -61,7 +55,7 @@ export function Experience() {
                 <div className="py-8 grid grid-cols-1 md:grid-cols-12 gap-6 items-start group">
                   <div className="md:col-span-3 font-mono text-xs text-[#616161]">
                     <span className="font-medium text-[#111111]">{exp.period}</span>
-                    <div className="mt-1 text-[11px] text-[#616161]">{exp.location}</div>
+                    <div className="mt-1 font-sans text-xs text-[#555555]">{exp.location}</div>
                   </div>
 
                   <div className="md:col-span-9">
@@ -70,10 +64,7 @@ export function Experience() {
                         {exp.role}
                       </span>
                       <span className="text-sm text-[#616161]">@</span>
-                      <span className="text-sm font-semibold text-[#111111]">{exp.company}</span>
-                      <DossierTag tone="green" className="ml-2">
-                        {exp.type}
-                      </DossierTag>
+                      <span className="text-sm font-semibold text-[#111111] font-sans">{exp.company}</span>
                     </div>
 
                     <p className="text-sm text-[#555555] leading-relaxed mb-4 font-sans">
@@ -115,17 +106,17 @@ export function Experience() {
                             </span>
                           </span>
                         )}
-                        <figcaption className="pt-1.5 font-mono text-[10px] uppercase tracking-wider text-[#6B6B6B]">
+                        <figcaption className="pt-1.5 font-sans text-[11px] uppercase tracking-wider text-[#555555]">
                           Fig · {exp.company}
                         </figcaption>
                       </figure>
                     )}
 
-                    <div className="flex flex-wrap gap-1.5 font-mono text-[11px] text-[#616161]">
+                    <div className="flex flex-wrap gap-1.5 font-sans text-xs text-[#4A4A4A]">
                       {exp.technologies.map((tech) => (
                         <span
                           key={tech}
-                          className="rounded bg-[#F7F6F3] border border-[#EAEAEA] px-2 py-0.5"
+                          className="rounded bg-[#F7F6F3] border border-[#EAEAEA] px-2.5 py-1"
                         >
                           {tech}
                         </span>
@@ -141,9 +132,9 @@ export function Experience() {
         {/* Education Timeline */}
         <div>
           <Reveal delay={0.1}>
-            <h3 className="font-mono text-xs uppercase tracking-wider text-[#616161] mb-6 flex items-center gap-2">
-              <span className="h-1.5 w-1.5 rounded-full bg-[#787774]"></span>
-              <span>{"// ACADEMIC FOUNDATION"}</span>
+            <h3 className="font-sans text-xs font-semibold uppercase tracking-wider text-[#525252] mb-6 flex items-center gap-2">
+              <span className="h-1.5 w-1.5 rounded-[1px] bg-[#787774]"></span>
+              <span>Academic Foundation</span>
             </h3>
           </Reveal>
 
@@ -156,11 +147,11 @@ export function Experience() {
                   </div>
 
                   <div className="md:col-span-9">
-                    <div className="text-base font-medium text-[#111111] mb-1">
+                    <div className="text-base font-medium text-[#111111] mb-1 font-sans">
                       {edu.institution}
                     </div>
-                    <div className="text-xs font-mono text-[#616161] mb-2">{edu.degree}</div>
-                    <p className="text-xs sm:text-sm text-[#666666] leading-relaxed">
+                    <div className="text-sm font-sans text-[#4A4A4A] mb-2">{edu.degree}</div>
+                    <p className="text-xs sm:text-sm text-[#555555] leading-relaxed font-sans">
                       {edu.details}
                     </p>
 
@@ -199,7 +190,7 @@ export function Experience() {
                             </span>
                           </span>
                         )}
-                        <figcaption className="pt-1.5 font-mono text-[10px] uppercase tracking-wider text-[#6B6B6B]">
+                        <figcaption className="pt-1.5 font-sans text-[11px] uppercase tracking-wider text-[#555555]">
                           Fig · {edu.institution}
                         </figcaption>
                       </figure>

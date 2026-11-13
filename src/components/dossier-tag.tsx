@@ -96,13 +96,13 @@ export function DossierTag({
   className = "",
   children,
 }: DossierTagProps) {
-  const textSize = size === "md" ? "text-[11px]" : "text-[10px]";
+  const textSize = size === "md" ? "text-xs" : "text-[11px]";
   const isCustom = tone === "custom" || (customColor !== undefined && customColor !== "");
   const custom = isCustom ? customToneStyles(customColor ?? "#3E7C4F") : null;
 
   return (
     <span
-      className={`inline-flex items-stretch overflow-hidden rounded-[3px] border font-mono font-medium uppercase ${custom ? "" : TONES[tone === "custom" ? "neutral" : tone].frame} ${className}`}
+      className={`inline-flex items-stretch overflow-hidden rounded-[3px] border font-sans font-semibold uppercase ${custom ? "" : TONES[tone === "custom" ? "neutral" : tone].frame} ${className}`}
       style={custom?.frame}
     >
       <span
@@ -110,21 +110,17 @@ export function DossierTag({
         className={`w-[3px] shrink-0 ${custom ? "" : TONES[tone === "custom" ? "neutral" : tone].spine}`}
         style={custom?.spine}
       />
-      <span className={`inline-flex items-center gap-1.5 px-2 py-[3px] ${textSize}`}>
+      <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 leading-none ${textSize}`}>
         {code && (
-          <span aria-hidden="true" className="opacity-55">
+          <span aria-hidden="true" className="font-mono font-medium">
             {code}
           </span>
         )}
-        {pulse ? (
-          <span aria-hidden="true" className="relative flex h-[7px] w-[7px]">
-            <span className="absolute inline-flex h-full w-full animate-ping bg-current opacity-50" />
-            <span className="relative inline-flex h-[7px] w-[7px] bg-current" />
-          </span>
-        ) : (
-          <span aria-hidden="true" className="h-[6px] w-[6px] shrink-0 bg-current" />
-        )}
-        <span className="tracking-[0.08em]">{children}</span>
+        <span
+          aria-hidden="true"
+          className={`shrink-0 bg-current ${pulse ? "h-[7px] w-[7px]" : "h-[6px] w-[6px]"}`}
+        />
+        <span className="tracking-[0.06em]">{children}</span>
       </span>
     </span>
   );

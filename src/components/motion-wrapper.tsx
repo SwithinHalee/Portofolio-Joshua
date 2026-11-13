@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, useScroll, useTransform } from "framer-motion";
-import { ReactNode, useEffect, useState } from "react";
+import { ReactNode, RefObject, useEffect, useState } from "react";
 
 interface RevealProps {
   children: ReactNode;
@@ -118,6 +118,50 @@ export function getStackRange(stackId: string): [number, number] | undefined {
  * a `wide` flag — apply `style={wide ? { x } : undefined}` so mobile
  * keeps normal vertical flow.
  */
+/**
+ * Keeps a tall sticky section (`#dossier`, `#workspace`) pinned with its
+ * bottom edge flush against the viewport bottom once scrolled through,
+ * while never pinning lower than right beneath the fixed navbar on ultra-tall screens.
+ */
+export function useStickyBottomPin(
+  ref: RefObject<HTMLElement | null>,
+  triggerKey?: unknown
+) {
+  useEffect(() => {
+    const el = ref.current;
+    if (!el || typeof window === "undefined") return;
+    const mq = window.matchMedia("(min-width: 768px)");
+    const apply = () => {
+      if (!mq.matches) {
+        el.style.top = "";
+        return;
+      }
+      const h = Math.ceil(el.getBoundingClientRect().height);
+      const header = document.querySelector("header");
+      const headerH = header ? Math.ceil(header.getBoundingClientRect().height) : 59;
+      const pinTop = Math.min(headerH, window.innerHeight - h);
+      el.style.top = `${pinTop}px`;
+    };
+    apply();
+    const ro = new ResizeObserver(apply);
+    ro.observe(el);
+    window.addEventListener("resize", apply);
+    window.addEventListener("load", apply);
+    window.addEventListener("portfolio:hydrated", apply);
+    if (document.fonts) {
+      document.fonts.ready.then(apply).catch(() => {});
+    }
+    const t = window.setTimeout(apply, 600);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", apply);
+      window.removeEventListener("load", apply);
+      window.removeEventListener("portfolio:hydrated", apply);
+      window.clearTimeout(t);
+    };
+  }, [ref, triggerKey]);
+}
+
 export function useStackSlide(stackId: string) {
   const { scrollY } = useScroll();
   const [range, setRange] = useState<[number, number]>([
@@ -128,6 +172,8 @@ export function useStackSlide(stackId: string) {
 
   useEffect(() => {
     const mq = window.matchMedia("(min-width: 768px)");
+    let rafId = 0;
+
     const compute = () => {
       setWide(mq.matches);
       const wrap = document.getElementById(stackId);
@@ -143,12 +189,36 @@ export function useStackSlide(stackId: string) {
       const dockY = wrap.offsetTop + pinned.offsetHeight - headerH;
       const computed: [number, number] = [dockY, dockY + vh];
       stackRanges.set(stackId, computed);
-      setRange(computed);
+      setRange((prev) =>
+        prev[0] === computed[0] && prev[1] === computed[1] ? prev : computed
+      );
     };
+
+    const scheduleCompute = () => {
+      if (rafId) window.cancelAnimationFrame(rafId);
+      rafId = window.requestAnimationFrame(() => {
+        rafId = 0;
+        compute();
+      });
+    };
+
     compute();
+
+    // Observe body, stack wrapper, pinned sibling, and header so ANY height change
+    // (project layout/filter switches, accordion toggles, async images, hydration)
+    // immediately keeps [dockY, dockY + vh] exact.
+    const ro = new ResizeObserver(compute);
+    ro.observe(document.body);
+    const wrap = document.getElementById(stackId);
+    if (wrap) ro.observe(wrap);
+    const pinned = wrap?.querySelector(":scope > section:first-child");
+    if (pinned) ro.observe(pinned);
+    const header = document.querySelector("header");
+    if (header) ro.observe(header);
+
     window.addEventListener("resize", compute);
     window.addEventListener("load", compute);
-    window.addEventListener("portfolio:hydrated", compute);
+    window.addEventListener("portfolio:hydrated", scheduleCompute);
     if (typeof mq.addEventListener === "function") {
       mq.addEventListener("change", compute);
     }
@@ -156,9 +226,11 @@ export function useStackSlide(stackId: string) {
       document.fonts.ready.then(compute).catch(() => {});
     }
     return () => {
+      if (rafId) window.cancelAnimationFrame(rafId);
+      ro.disconnect();
       window.removeEventListener("resize", compute);
       window.removeEventListener("load", compute);
-      window.removeEventListener("portfolio:hydrated", compute);
+      window.removeEventListener("portfolio:hydrated", scheduleCompute);
       if (typeof mq.removeEventListener === "function") {
         mq.removeEventListener("change", compute);
       }

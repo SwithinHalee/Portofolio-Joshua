@@ -30,13 +30,13 @@ export default function Home() {
         <div id="dossier-stack" className="relative overflow-x-clip">
           <Dossier />
           <Principles />
-          <div aria-hidden="true" className="hidden md:block md:h-[130dvh]" />
+          <div aria-hidden="true" className="hidden md:block md:h-[115dvh]" />
         </div>
         {/* Stacking overlap: Experience slides over pinned Workspace as you scroll */}
         <div id="workspace-stack" className="relative overflow-x-clip">
           <Workspace />
           <Experience />
-          <div aria-hidden="true" className="hidden md:block md:h-[130dvh]" />
+          <div aria-hidden="true" className="hidden md:block md:h-[115dvh]" />
         </div>
       </main>
       <Colophon />

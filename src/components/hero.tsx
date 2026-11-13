@@ -44,7 +44,7 @@ export function Hero() {
           sizes="100vw"
           className="object-cover object-center opacity-80"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#FFFFFF] via-[#FFFFFF]/90 to-[#FFFFFF]/45" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#FFFFFF] via-[#FFFFFF]/95 to-[#FFFFFF]/70 md:via-[#FFFFFF]/92 md:to-[#FFFFFF]/60" />
       </div>
 
       <div className="relative z-10 mx-auto max-w-5xl px-6 sm:px-8 w-full flex-1 flex flex-col justify-between">
@@ -63,17 +63,17 @@ export function Hero() {
           {/* Human, Grounded Sub-copy */}
           <Reveal delay={0.18}>
             <div className="grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-8 items-start mb-12">
-              <p className="md:col-span-8 text-base sm:text-lg text-[#444444] leading-relaxed font-sans font-normal">
+              <p className="md:col-span-8 text-base sm:text-lg text-[#3D3D3D] leading-relaxed font-sans font-normal max-w-[60ch]">
                 {personalInfo.bio}
               </p>
 
-              <div className="md:col-span-4 border-l border-[#EAEAEA] pl-5 font-mono text-xs text-[#616161] space-y-2">
+              <div className="md:col-span-4 border-l border-[#EAEAEA] pl-5 font-sans text-[13px] text-[#4A4A4A] space-y-2.5">
                 <div>
-                  <span className="text-[#111111] font-medium block">{personalInfo.engagementLabel}</span>
+                  <span className="text-[#111111] font-semibold block">{personalInfo.engagementLabel}</span>
                   <span>{personalInfo.engagementValue}</span>
                 </div>
                 <div>
-                  <span className="text-[#111111] font-medium block">{personalInfo.focusLabel}</span>
+                  <span className="text-[#111111] font-semibold block">{personalInfo.focusLabel}</span>
                   <span>{personalInfo.focusValue}</span>
                 </div>
               </div>
@@ -85,7 +85,7 @@ export function Hero() {
             <div className="flex flex-wrap items-center gap-3.5 pt-2">
               <a
                 href="#projects"
-                className="inline-flex items-center gap-2 rounded-[4px] bg-[#111111] px-4 py-2.5 text-xs font-mono text-white transition-all hover:bg-[#2A2A2A] active:scale-[0.98] shadow-[0_1px_2px_rgba(0,0,0,0.05)]"
+                className="inline-flex items-center gap-2 rounded-[4px] bg-[#111111] px-4 py-2.5 text-xs font-sans font-medium text-white transition-all hover:bg-[#2A2A2A] active:scale-[0.98] shadow-[0_1px_2px_rgba(0,0,0,0.05)]"
               >
                 <span>{personalInfo.ctaLabel}</span>
                 <ArrowDown size={13} weight="bold" />
@@ -95,7 +95,7 @@ export function Hero() {
                 href={`mailto:${email}`}
                 onClick={handleEmailClick}
                 aria-label={`Send direct email to ${email}`}
-                className="inline-flex items-center gap-2 rounded-[4px] border border-[#EAEAEA] bg-[#FBFBFA] px-4 py-2.5 text-xs font-mono text-[#111111] transition-all hover:bg-[#F0F0EE] active:scale-[0.98]"
+                className="inline-flex items-center gap-2 rounded-[4px] border border-[#EAEAEA] bg-[#FBFBFA] px-4 py-2.5 text-xs font-sans font-medium text-[#111111] transition-all hover:bg-[#F0F0EE] active:scale-[0.98]"
               >
                 {copied ? (
                   <>
@@ -151,7 +151,7 @@ export function Hero() {
 
         {/* Micro-dossier Quick Metrics Bar (Anchored at Bottom of Screen) */}
         <Reveal delay={0.3}>
-          <div className="grid grid-cols-2 sm:grid-cols-4 border-t border-[#EAEAEA] pt-4 sm:pt-6 font-mono text-xs mt-auto" aria-label="Quick profile facts">
+          <div className="grid grid-cols-2 sm:grid-cols-4 border-t border-[#EAEAEA] pt-4 sm:pt-6 font-sans text-xs mt-auto" aria-label="Quick profile facts">
             {personalInfo.quickFacts.map((fact, i) => {
               const last = i === personalInfo.quickFacts.length - 1;
               return (
@@ -159,8 +159,8 @@ export function Hero() {
                   key={`${fact.label}-${i}`}
                   className={`py-2 ${i % 2 === 0 ? "pr-4 border-r border-[#EAEAEA]" : "pl-4"} sm:px-4 ${i === 0 ? "sm:pl-0" : ""} ${last ? "sm:pr-0" : "sm:border-r sm:border-[#EAEAEA]"}`}
                 >
-                  <span className="text-[#616161] block text-[10px] uppercase">{fact.label}</span>
-                  <span className="text-[#111111] font-medium">{fact.value}</span>
+                  <span className="text-[#525252] block font-sans text-[11px] font-medium uppercase tracking-wider mb-0.5">{fact.label}</span>
+                  <span className="text-[#111111] font-medium text-[13px]">{fact.value}</span>
                 </div>
               );
             })}

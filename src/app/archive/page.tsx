@@ -99,7 +99,7 @@ export default function ArchivePage() {
           <div className="mb-10">
             <Link
               href="/"
-              className="inline-flex items-center gap-2 font-mono text-xs text-[#616161] hover:text-[#111111] transition-colors"
+              className="inline-flex items-center gap-2 font-sans text-xs font-medium text-[#525252] hover:text-[#111111] transition-colors"
             >
               <ArrowLeft size={13} weight="bold" />
               <span>Return to Portfolio Home</span>
@@ -108,12 +108,6 @@ export default function ArchivePage() {
 
           {/* Header */}
           <div className="border-b border-[#EAEAEA] pb-10 mb-12">
-            <div className="flex items-center gap-2 font-mono text-xs text-[#616161] uppercase tracking-wider mb-3">
-              <span>DOSSIER ARCHIVE</span>
-              <span className="text-[#EAEAEA]">•</span>
-              <span>COMPLETE CHRONOLOGICAL RECORD</span>
-            </div>
-
             <h1
               className="text-4xl sm:text-5xl font-serif text-[#111111] tracking-[-0.03em] mb-4"
               style={{ fontFamily: "var(--font-newsreader), Georgia, serif" }}
@@ -121,7 +115,7 @@ export default function ArchivePage() {
               Complete Engineering Archive
             </h1>
 
-            <p className="text-base text-[#555555] max-w-2xl mb-8">
+            <p className="text-base text-[#555555] max-w-2xl mb-8 font-sans">
               An exhaustive catalog of production platforms, open-source repositories, university
               systems research, and technical explorations spanning 2023 to present.
             </p>
@@ -140,7 +134,7 @@ export default function ArchivePage() {
                 aria-label="Filter archive entries"
                 aria-describedby="archive-result-count"
                 autoComplete="off"
-                className="w-full rounded-[6px] border border-[#EAEAEA] bg-[#FBFBFA] py-2.5 pl-9 pr-9 text-xs font-mono text-[#111111] placeholder:text-[#616161] focus:border-[#111111] focus:outline-none"
+                className="w-full rounded-[6px] border border-[#EAEAEA] bg-[#FBFBFA] py-2.5 pl-9 pr-9 text-xs sm:text-sm font-sans text-[#111111] placeholder:text-[#555555] focus:border-[#111111] focus:outline-none"
               />
               <MagnifyingGlass
                 size={14}
@@ -164,12 +158,12 @@ export default function ArchivePage() {
           <div
             id="archive-result-count"
             aria-live="polite"
-            className="mb-4 font-mono text-[11px] uppercase tracking-wider text-[#616161]"
+            className="mb-4 font-sans text-xs uppercase tracking-wider text-[#525252]"
           >
             Showing {filtered.length} of {ARCHIVE_ITEMS.length}{" "}
             {ARCHIVE_ITEMS.length === 1 ? "entry" : "entries"}
             {searchQuery.trim() && (
-              <span className="text-[#616161]">
+              <span className="text-[#525252]">
                 {" "}
                 — filtered by &ldquo;{searchQuery.trim()}&rdquo;
               </span>
@@ -178,22 +172,22 @@ export default function ArchivePage() {
 
           {/* Tabular Archive Table */}
           <div className="overflow-x-auto">
-            <table className="w-full text-left font-mono text-xs">
+            <table className="w-full text-left font-sans text-xs sm:text-[13px]">
               <thead>
-                <tr className="border-b border-[#EAEAEA] text-[#616161] text-[11px] uppercase tracking-wider">
-                  <th scope="col" className="py-3 pr-4 font-normal">
+                <tr className="border-b border-[#EAEAEA] text-[#525252] text-xs uppercase tracking-wider">
+                  <th scope="col" className="py-3 pr-4 font-medium">
                     Year
                   </th>
-                  <th scope="col" className="py-3 pr-4 font-normal">
+                  <th scope="col" className="py-3 pr-4 font-medium">
                     Project / Entry
                   </th>
-                  <th scope="col" className="py-3 pr-4 font-normal hidden md:table-cell">
+                  <th scope="col" className="py-3 pr-4 font-medium hidden md:table-cell">
                     Context
                   </th>
-                  <th scope="col" className="py-3 pr-4 font-normal hidden sm:table-cell">
+                  <th scope="col" className="py-3 pr-4 font-medium hidden sm:table-cell">
                     Stack
                   </th>
-                  <th scope="col" className="py-3 font-normal text-right">
+                  <th scope="col" className="py-3 font-medium text-right">
                     Links
                   </th>
                 </tr>
@@ -204,7 +198,7 @@ export default function ArchivePage() {
                     key={item.title}
                     className="hover:bg-[#FBFBFA] transition-colors group"
                   >
-                    <td className="py-4 pr-4 text-[#616161] font-medium align-top whitespace-nowrap">
+                    <td className="py-4 pr-4 font-mono text-xs text-[#525252] font-medium align-top whitespace-nowrap">
                       {item.year}
                     </td>
 
@@ -218,18 +212,18 @@ export default function ArchivePage() {
                           item.title
                         )}
                       </div>
-                      <div className="text-[11px] text-[#616161] font-mono mt-0.5">
+                      <div className="text-xs text-[#555555] font-sans mt-0.5">
                         {item.category}
                       </div>
                       {/* Mobile fallback: context + stack (columns hidden on small screens) */}
-                      <div className="mt-1.5 text-[11px] text-[#666666] sm:hidden">
+                      <div className="mt-1.5 text-xs text-[#555555] font-sans sm:hidden">
                         {item.context}
                       </div>
-                      <div className="mt-1.5 flex flex-wrap gap-1 sm:hidden">
+                      <div className="mt-2 flex flex-wrap gap-1.5 sm:hidden">
                         {item.tech.map((t) => (
                           <span
                             key={t}
-                            className="rounded bg-[#F7F6F3] border border-[#EAEAEA] px-1.5 py-0.5 text-[10px] text-[#666666]"
+                            className="rounded bg-[#F7F6F3] border border-[#EAEAEA] px-2 py-1 text-xs font-sans text-[#4A4A4A]"
                           >
                             {t}
                           </span>
@@ -237,16 +231,16 @@ export default function ArchivePage() {
                       </div>
                     </td>
 
-                    <td className="py-4 pr-4 text-[#666666] align-top hidden md:table-cell">
+                    <td className="py-4 pr-4 text-[#555555] align-top hidden md:table-cell">
                       {item.context}
                     </td>
 
                     <td className="py-4 pr-4 align-top hidden sm:table-cell">
-                      <div className="flex flex-wrap gap-1">
+                      <div className="flex flex-wrap gap-1.5">
                         {item.tech.map((t) => (
                           <span
                             key={t}
-                            className="rounded bg-[#F7F6F3] border border-[#EAEAEA] px-1.5 py-0.5 text-[10px] text-[#666666]"
+                            className="rounded bg-[#F7F6F3] border border-[#EAEAEA] px-2 py-1 text-xs font-sans text-[#4A4A4A]"
                           >
                             {t}
                           </span>
@@ -259,7 +253,7 @@ export default function ArchivePage() {
                         {item.slug && (
                           <Link
                             href={`/work/${item.slug}`}
-                            className="text-[#111111] font-medium hover:underline text-[11px]"
+                            className="text-[#111111] font-medium hover:underline text-xs whitespace-nowrap"
                           >
                             Case Study
                           </Link>
@@ -307,16 +301,16 @@ export default function ArchivePage() {
             {/* Empty State */}
             {filtered.length === 0 && (
               <div className="rounded-[8px] border border-[#EAEAEA] bg-[#FBFBFA] px-6 py-12 text-center">
-                <p className="font-mono text-xs text-[#111111] font-medium mb-1">
+                <p className="font-sans text-sm text-[#111111] font-medium mb-1">
                   No entries match &ldquo;{searchQuery.trim()}&rdquo;
                 </p>
-                <p className="font-mono text-[11px] text-[#616161] mb-4">
+                <p className="font-sans text-xs text-[#555555] mb-4">
                   Try a project title, year, category, or stack keyword.
                 </p>
                 <button
                   type="button"
                   onClick={() => setSearchQuery("")}
-                  className="rounded-[4px] border border-[#EAEAEA] bg-[#FFFFFF] px-4 py-2 font-mono text-[11px] text-[#111111] hover:bg-[#F0F0EE] transition-colors"
+                  className="rounded-[4px] border border-[#EAEAEA] bg-[#FFFFFF] px-4 py-2 font-sans text-xs font-medium text-[#111111] hover:bg-[#F0F0EE] transition-colors"
                 >
                   Clear filter
                 </button>

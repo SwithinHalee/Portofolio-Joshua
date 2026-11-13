@@ -23,18 +23,13 @@ export function Principles() {
         {/* Single one-shot entrance: header + rows reveal together, at once */}
         <Reveal>
           <div className="mb-14 max-w-2xl">
-            <div className="flex items-center gap-2 font-mono text-xs text-[#616161] uppercase tracking-wider mb-2">
-              <span>05 / SYSTEM ARCHITECTURE</span>
-              <span className="text-[#EAEAEA]">•</span>
-              <span>ENGINEERING PRINCIPLES</span>
-            </div>
             <h2
               className="text-3xl sm:text-4xl font-serif text-[#111111] tracking-[-0.02em] mb-4"
               style={{ fontFamily: "var(--font-newsreader), Georgia, serif" }}
             >
               Engineering Tenets & Values
             </h2>
-            <p className="text-sm sm:text-base text-[#555555]">
+            <p className="text-sm sm:text-base text-[#555555] font-sans">
               Non-negotiable architectural tenets governing code clarity, performance budgets,
               and interface reliability across every project.
             </p>
@@ -93,7 +88,7 @@ export function Principles() {
                         <div className="overflow-hidden" aria-hidden={!isExpanded}>
                           <div
                             id={`principle-panel-${principle.number}`}
-                            className="mt-3 pt-3 border-t border-[#EAEAEA] font-mono text-xs text-[#616161] flex items-center gap-2"
+                            className="mt-3 pt-3 border-t border-[#EAEAEA] font-sans text-xs text-[#525252] flex items-center gap-2"
                           >
                             <span className="h-1.5 w-1.5 rounded-full bg-[#346538]"></span>
                             <span>Strictly enforced in code reviews & CI pipelines</span>

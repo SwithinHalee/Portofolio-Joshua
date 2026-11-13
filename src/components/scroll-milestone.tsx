@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useState, useRef, useCallback } from "react";
+import { getStackRange } from "@/components/motion-wrapper";
+import { scrollWithWeight } from "@/components/weighted-scroll";
 
 interface MilestoneItem {
   id: string;
@@ -20,6 +22,79 @@ const MILESTONES: MilestoneItem[] = [
   { id: "experience", num: "07", shortLabel: "CHRONO", fullLabel: "Milestones & Record" },
   { id: "contact", num: "08", shortLabel: "CONNECT", fullLabel: "Direct Initiation" },
 ];
+
+interface SectionGeometry {
+  clickY: number;
+  activateY: number;
+}
+
+const STACK_PAIR: Record<string, { wrapId: string; pinnedId: string; role: "pinned" | "slide" }> = {
+  dossier: { wrapId: "dossier-stack", pinnedId: "dossier", role: "pinned" },
+  principles: { wrapId: "dossier-stack", pinnedId: "dossier", role: "slide" },
+  workspace: { wrapId: "workspace-stack", pinnedId: "workspace", role: "pinned" },
+  experience: { wrapId: "workspace-stack", pinnedId: "workspace", role: "slide" },
+};
+
+function measureSectionGeometry(
+  id: string,
+  scrollY: number,
+  viewportH: number,
+  navOffset = 85
+): SectionGeometry | null {
+  const header = document.querySelector("header");
+  const headerH = header ? header.getBoundingClientRect().height : 59;
+  const wide = window.matchMedia("(min-width: 768px)").matches;
+
+  if (id === "hero") {
+    return { clickY: 0, activateY: 0 };
+  }
+
+  const stackInfo = STACK_PAIR[id];
+  if (stackInfo) {
+    const wrap = document.getElementById(stackInfo.wrapId);
+    const pinned = document.getElementById(stackInfo.pinnedId);
+    if (wrap) {
+      if (stackInfo.role === "pinned") {
+        const top = wrap.offsetTop;
+        return {
+          clickY: Math.max(0, top - headerH + 1),
+          activateY: top - navOffset,
+        };
+      }
+      if (wide) {
+        const sharedRange = getStackRange(stackInfo.wrapId);
+        const fallbackDockY = pinned
+          ? wrap.offsetTop + pinned.offsetHeight - headerH
+          : wrap.offsetTop - headerH;
+        const dockY =
+          sharedRange && Number.isFinite(sharedRange[0]) ? sharedRange[0] : fallbackDockY;
+        const endY =
+          sharedRange && Number.isFinite(sharedRange[1]) ? sharedRange[1] : dockY + viewportH;
+        return {
+          // +4px ensures subpixel zoom/exponential settle crosses endY with x === 0vw.
+          clickY: Math.max(0, endY + 4),
+          // Switch active rail indicator when the horizontal slide crosses the screen midpoint.
+          activateY: dockY + viewportH * 0.5,
+        };
+      }
+      if (pinned) {
+        const top = wrap.offsetTop + pinned.offsetHeight;
+        return {
+          clickY: Math.max(0, top - headerH + 1),
+          activateY: top - navOffset,
+        };
+      }
+    }
+  }
+
+  const el = document.getElementById(id);
+  if (!el) return null;
+  const docTop = el.getBoundingClientRect().top + scrollY;
+  return {
+    clickY: Math.max(0, docTop - headerH + 1),
+    activateY: docTop - navOffset,
+  };
+}
 
 export function ScrollMilestone() {
   const [activeId, setActiveId] = useState<string>("hero");
@@ -86,48 +161,29 @@ export function ScrollMilestone() {
             return;
           }
 
-          // 3. Compute absolute top position of each section.
-          // Stack sections are sticky-pinned (md+) while the next section
-          // overlaps them, so their bounding rects drift with scroll — anchor
-          // via wrapper-relative stable tops instead (smooth progress).
-          const stackWrap = document.getElementById("dossier-stack");
-          const studioWrap = document.getElementById("workspace-stack");
-          const dossierEl = document.getElementById("dossier");
-          const workspaceEl = document.getElementById("workspace");
-          const stableTop = (id: string): number | null => {
-            if (id === "dossier" && stackWrap) return stackWrap.offsetTop;
-            if (id === "principles" && stackWrap && dossierEl)
-              return stackWrap.offsetTop + dossierEl.offsetHeight;
-            if (id === "workspace" && studioWrap) return studioWrap.offsetTop;
-            if (id === "experience" && studioWrap && workspaceEl)
-              return studioWrap.offsetTop + workspaceEl.offsetHeight;
-            return null;
-          };
-          const sectionTops: number[] = [];
+          // 3. Measure milestone activation thresholds synchronized with horizontal slides.
+          const navOffset = 85;
+          const activateYs: number[] = [];
           for (let i = 0; i < MILESTONES.length; i++) {
-            const id = MILESTONES[i].id;
-            const stable = stableTop(id);
-            if (stable !== null) {
-              sectionTops[i] = stable;
-              continue;
-            }
-            const el = document.getElementById(id);
-            if (el) {
-              const rect = el.getBoundingClientRect();
-              sectionTops[i] = rect.top + scrollY;
-            } else {
-              sectionTops[i] = (i / (MILESTONES.length - 1)) * maxScroll;
-            }
+            const geom = measureSectionGeometry(
+              MILESTONES[i].id,
+              scrollY,
+              viewportH,
+              navOffset
+            );
+            activateYs[i] = geom
+              ? geom.activateY
+              : (i / (MILESTONES.length - 1)) * maxScroll;
           }
 
           const numSegments = MILESTONES.length - 1;
-          const aboutSectionTop = sectionTops[1] || viewportH;
+          const aboutActivateY = activateYs[1] ?? viewportH - navOffset;
 
           // Special smooth handling for Section 00 (Hero to About transition)
-          if (scrollY < aboutSectionTop - 80) {
+          if (scrollY < aboutActivateY) {
             setActiveId(MILESTONES[0].id);
             const heroProgress = Math.min(
-              Math.max(scrollY / Math.max(aboutSectionTop - 80, 1), 0),
+              Math.max(scrollY / Math.max(aboutActivateY, 1), 0),
               1
             );
             setMilestoneProgress(heroProgress / numSegments);
@@ -136,10 +192,6 @@ export function ScrollMilestone() {
           }
 
           // 3b. Lock CONNECT to the black 08/INITIATION container itself.
-          // The footer content below the container is shorter than one viewport
-          // on desktop, so the probe (scrollY + 85) can never reach the
-          // container top before max-scroll. Detect container visibility
-          // directly so 100% lands exactly on the container, not page bottom.
           const contactEl = document.getElementById("contact");
           if (contactEl) {
             const cRect = contactEl.getBoundingClientRect();
@@ -151,13 +203,10 @@ export function ScrollMilestone() {
             }
           }
 
-          // Standard smooth section tracking for Sections 01 to 08
-          const navOffset = 85;
-          const probeY = scrollY + navOffset;
-
+          // Standard section tracking for Sections 01 to 08
           let currentIdx = 1;
-          for (let i = 1; i < sectionTops.length; i++) {
-            if (probeY >= sectionTops[i]) {
+          for (let i = 1; i < activateYs.length; i++) {
+            if (scrollY >= activateYs[i]) {
               currentIdx = i;
             }
           }
@@ -167,11 +216,11 @@ export function ScrollMilestone() {
           if (currentIdx >= numSegments) {
             setMilestoneProgress(1);
           } else {
-            const startY = sectionTops[currentIdx];
-            const endY = sectionTops[currentIdx + 1] || startY + 400;
+            const startY = activateYs[currentIdx];
+            const endY = activateYs[currentIdx + 1] ?? startY + 400;
             const segmentDist = Math.max(endY - startY, 1);
             const localProgress = Math.min(
-              Math.max((probeY - startY) / segmentDist, 0),
+              Math.max((scrollY - startY) / segmentDist, 0),
               1
             );
 
@@ -185,98 +234,29 @@ export function ScrollMilestone() {
       }
     }
 
+    const ro = new ResizeObserver(handleScroll);
+    ro.observe(document.body);
     window.addEventListener("scroll", handleScroll, { passive: true });
+    window.addEventListener("resize", handleScroll, { passive: true });
+    window.addEventListener("portfolio:hydrated", handleScroll);
     handleScroll();
 
-    return () => window.removeEventListener("scroll", handleScroll);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", handleScroll);
+      window.removeEventListener("portfolio:hydrated", handleScroll);
+    };
   }, []);
 
   const activeIndex = MILESTONES.findIndex((m) => m.id === activeId);
   const currentIdx = activeIndex === -1 ? 0 : activeIndex;
 
   const scrollTo = (id: string) => {
-    const header = document.querySelector("header");
-    const headerH = header ? header.getBoundingClientRect().height : 59;
-
-    // Smooth-glide with guaranteed arrival: re-assert the destination until
-    // reached, the user takes over (wheel / touch / key / pointer), or the
-    // budget runs out. This heals glides that get aborted or clamped
-    // mid-flight and would otherwise strand the user in the wrong section.
-    const smoothTo = (target: number) => {
-      const dest = Math.max(0, target);
-      window.scrollTo({ top: dest, behavior: "smooth" });
-      let tries = 0;
-      let done = false;
-      const cancel = () => {
-        if (done) return;
-        done = true;
-        window.removeEventListener("wheel", cancel);
-        window.removeEventListener("touchmove", cancel);
-        window.removeEventListener("keydown", cancel);
-        window.removeEventListener("pointerdown", cancel);
-      };
-      window.addEventListener("wheel", cancel, { passive: true });
-      window.addEventListener("touchmove", cancel, { passive: true });
-      window.addEventListener("keydown", cancel);
-      window.addEventListener("pointerdown", cancel);
-      const tick = () => {
-        if (done) return;
-        tries += 1;
-        if (Math.abs(window.scrollY - dest) <= 4 || tries > 20) {
-          cancel();
-          return;
-        }
-        window.scrollTo({ top: dest, behavior: "smooth" });
-        window.setTimeout(tick, 350);
-      };
-      window.setTimeout(tick, 450);
-    };
-
-    if (id === "hero") {
-      smoothTo(0);
-      return;
-    }
-    if (id === "dossier" || id === "principles" || id === "workspace" || id === "experience") {
-      // Stack sections are sticky-pinned (md+) while overlapping, so their
-      // bounding rects drift — anchor via wrapper-relative stable tops
-      // measured fresh at click time (never a cached range).
-      const dWrap = document.getElementById("dossier-stack");
-      const sWrap = document.getElementById("workspace-stack");
-      let top: number | null = null;
-      if (id === "dossier" && dWrap) top = dWrap.offsetTop;
-      if (id === "principles" && dWrap) {
-        const d = document.getElementById("dossier");
-        if (d) top = dWrap.offsetTop + d.offsetHeight;
-      }
-      if (id === "workspace" && sWrap) top = sWrap.offsetTop;
-      if (id === "experience" && sWrap) {
-        const w = document.getElementById("workspace");
-        if (w) top = sWrap.offsetTop + w.offsetHeight;
-      }
-      if (top === null) {
-        top = (document.getElementById(id)?.getBoundingClientRect().top ?? 0) + window.scrollY;
-      }
-      if (id === "principles" || id === "experience") {
-        // These sections slide in horizontally (md+): landing on their natural
-        // top would leave the card off-screen right (sweep start). Land one
-        // viewport past the dock point instead, so the slide value is settled
-        // at 0 on arrival. Mobile has no sweep: natural top as usual.
-        const wide = window.matchMedia("(min-width: 768px)").matches;
-        if (wide) {
-          smoothTo(top - headerH + window.innerHeight + 1);
-          return;
-        }
-      }
-      smoothTo(top - headerH + 1);
-      return;
-    }
-    const el = document.getElementById(id);
-    if (el) {
-      // Subtract header height minus 1px so the section's top border aligns flush beneath the navbar,
-      // completely hiding the previous section above it.
-      const elTop = el.getBoundingClientRect().top + window.scrollY - headerH + 1;
-      smoothTo(elTop);
-    }
+    scrollWithWeight(() => {
+      const geom = measureSectionGeometry(id, window.scrollY, window.innerHeight);
+      return geom ? geom.clickY : window.scrollY;
+    });
   };
 
   const percentage = Math.round(milestoneProgress * 100);
@@ -286,27 +266,14 @@ export function ScrollMilestone() {
       {/* 1. Desktop & Widescreen Milestone Rail (Native Real-Time Pixel-Level Difference Blending) */}
       <nav
         aria-label="Document Section Milestones"
-        className="fixed left-4 2xl:left-8 top-1/2 -translate-y-1/2 z-40 hidden xl:flex flex-col items-start select-none py-2 mix-blend-difference pointer-events-auto"
+        className="fixed left-4 2xl:left-8 top-1/2 -translate-y-1/2 z-40 hidden xl:flex flex-col items-start select-none py-2 bg-transparent mix-blend-difference pointer-events-auto"
       >
         <div className="flex flex-col items-start group">
-          {/* Top Rail Header */}
-          <div className="flex items-center gap-2 pb-2 mb-3 font-mono text-[10px] uppercase tracking-wider text-white">
-            <span className="relative flex h-1.5 w-1.5">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75" />
-              <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-white" />
-            </span>
-            <span className="font-semibold text-white">DOSSIER RAIL</span>
-            <span className="text-white/40">•</span>
-            <span className="tabular-nums text-[10px] font-mono text-white/70">
-              {MILESTONES[currentIdx]?.num}/08
-            </span>
-          </div>
-
           {/* Milestone Nodes Track & Continuous Fill Line */}
           <div ref={listRef} className="relative py-1">
             {/* Background Static Hairline Track */}
             <div
-              className="absolute left-2.5 -translate-x-1/2 w-[1.5px] bg-white/30 rounded-full z-0 pointer-events-none"
+              className="absolute left-2.5 -translate-x-1/2 w-[1.5px] bg-white/35 rounded-full z-0 pointer-events-none"
               style={{
                 top: `${trackMetrics.top}px`,
                 height: `${trackMetrics.height}px`,
@@ -337,6 +304,7 @@ export function ScrollMilestone() {
                     <button
                       type="button"
                       onClick={() => scrollTo(item.id)}
+                      aria-current={isActive ? "location" : undefined}
                       className="group/btn flex items-center gap-3 text-left focus:outline-none focus-visible:ring-1 focus-visible:ring-white rounded py-0.5"
                       aria-label={`Scroll to ${item.fullLabel}`}
                     >
@@ -350,10 +318,10 @@ export function ScrollMilestone() {
                         <div
                           className={`rounded-full transition-all duration-150 ease-out z-10 flex items-center justify-center ${
                             isActive
-                              ? "w-3.5 h-3.5 bg-white ring-2 ring-white/50 scale-100 shadow-[0_0_10px_rgba(255,255,255,0.4)]"
+                              ? "w-3.5 h-3.5 bg-white ring-2 ring-white/55 scale-100"
                               : isPassed
                               ? "w-2.5 h-2.5 bg-white"
-                              : "w-2.5 h-2.5 border border-white/40 bg-transparent group-hover/btn:border-white"
+                              : "w-2.5 h-2.5 border border-white/75 bg-black group-hover/btn:border-white"
                           }`}
                         >
                           {isActive && (
@@ -368,8 +336,8 @@ export function ScrollMilestone() {
                           isActive
                             ? "font-bold text-white"
                             : isPassed
-                            ? "text-white/85 font-medium"
-                            : "text-white/50"
+                            ? "text-white/90 font-medium"
+                            : "text-white/70"
                         }`}
                       >
                         {item.num}
@@ -377,12 +345,12 @@ export function ScrollMilestone() {
 
                       {/* Compact Label */}
                       <span
-                        className={`font-mono text-[11px] tracking-tight ${
+                        className={`font-sans text-[11px] tracking-tight ${
                           isActive
                             ? "text-white font-semibold"
                             : isPassed
-                            ? "text-white/80"
-                            : "text-white/45"
+                            ? "text-white/90 font-medium"
+                            : "text-white/70"
                         }`}
                       >
                         {item.shortLabel}
@@ -393,21 +361,13 @@ export function ScrollMilestone() {
               })}
             </div>
           </div>
-
-          {/* Bottom Live Digital Meter */}
-          <div className="mt-3 pt-2 flex items-center gap-2 font-mono text-[10px] text-white">
-            <span className="uppercase text-white/60">PROGRESS</span>
-            <span className="font-semibold tabular-nums text-white">
-              {percentage}%
-            </span>
-          </div>
         </div>
       </nav>
 
       {/* 2. Mobile & Tablet Minimal Floating Status */}
       <aside
         aria-label="Mobile reading progress"
-        className="fixed bottom-4 left-4 z-40 xl:hidden select-none mix-blend-difference"
+        className="fixed bottom-4 left-4 z-40 xl:hidden select-none"
       >
         <button
           type="button"
@@ -415,14 +375,17 @@ export function ScrollMilestone() {
             const nextIdx = (currentIdx + 1) % MILESTONES.length;
             scrollTo(MILESTONES[nextIdx].id);
           }}
-          className="flex items-center gap-2 font-mono text-[10px] px-3 py-1.5 rounded-full border border-white/40 text-white backdrop-blur-md active:scale-95 transition-transform"
+          className="flex items-center gap-2 font-sans text-[11px] px-3 py-1.5 rounded-[4px] border border-[#EAEAEA] bg-white/95 text-[#111111] backdrop-blur-md shadow-[0_2px_10px_rgba(0,0,0,0.08)] active:scale-95 transition-transform"
         >
-          <div className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
-          <span className="font-semibold text-white">
-            {MILESTONES[currentIdx]?.num} {MILESTONES[currentIdx]?.shortLabel}
+          <span className="w-1.5 h-1.5 rounded-[1px] bg-[#346538] inline-block" />
+          <span className="font-mono font-semibold text-[#111111]">
+            {MILESTONES[currentIdx]?.num}
           </span>
-          <span className="text-white/40">•</span>
-          <span className="tabular-nums text-white/70">{percentage}%</span>
+          <span className="font-semibold text-[#111111]">
+            {MILESTONES[currentIdx]?.shortLabel}
+          </span>
+          <span className="text-[#999999]">•</span>
+          <span className="font-mono tabular-nums text-[#525252]">{percentage}%</span>
         </button>
       </aside>
     </>

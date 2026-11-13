@@ -122,8 +122,9 @@ export default function PrivacyPage() {
           receive no data from this site until you choose to visit them.
         </p>
         <p>
-          Fonts (Geist, Newsreader) are self-hosted through the application
-          bundle — loading a page does not contact external font servers.
+          Fonts (Hanken Grotesk, JetBrains Mono, Newsreader) are self-hosted
+          through the application bundle — loading a page does not contact
+          external font servers.
         </p>
       </LegalSection>
 

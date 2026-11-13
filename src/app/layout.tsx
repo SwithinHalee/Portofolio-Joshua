@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Newsreader } from "next/font/google";
+import { Hanken_Grotesk, JetBrains_Mono, Newsreader } from "next/font/google";
 import { CustomCursor } from "@/components/custom-cursor";
 import { ScrollMemory } from "@/components/scroll-memory";
+import { WeightedScroll } from "@/components/weighted-scroll";
 import { PortfolioProvider } from "@/components/portfolio-provider";
 import {
   GOOGLE_VERIFICATION,
@@ -15,14 +16,14 @@ import {
 } from "@/lib/site";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const hankenGrotesk = Hanken_Grotesk({
+  variable: "--font-hanken-grotesk",
   subsets: ["latin"],
   display: "swap",
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const jetbrainsMono = JetBrains_Mono({
+  variable: "--font-jetbrains-mono",
   subsets: ["latin"],
   display: "swap",
 });
@@ -150,7 +151,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} ${newsreader.variable} scroll-smooth antialiased`}
+      className={`${hankenGrotesk.variable} ${jetbrainsMono.variable} ${newsreader.variable} scroll-smooth antialiased`}
     >
       <body className="min-h-screen bg-[#FFFFFF] text-[#111111] selection:bg-[#111111] selection:text-[#FFFFFF]">
         <script
@@ -159,11 +160,12 @@ export default function RootLayout({
         />
         <a
           href="#main-content"
-          className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[100] focus:rounded-[4px] focus:bg-[#111111] focus:px-4 focus:py-2 focus:font-mono focus:text-xs focus:text-white"
+          className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[100] focus:rounded-[4px] focus:bg-[#111111] focus:px-4 focus:py-2 focus:font-sans focus:text-xs focus:font-medium focus:text-white"
         >
           Skip to main content
         </a>
         <PortfolioProvider>{children}</PortfolioProvider>
+        <WeightedScroll />
         <ScrollMemory />
         <CustomCursor />
       </body>
