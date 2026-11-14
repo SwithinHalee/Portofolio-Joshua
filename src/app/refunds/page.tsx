@@ -51,7 +51,7 @@ export default function RefundsPage() {
           pages, email{" "}
           <a
             href={`mailto:${PERSONAL_INFO.email}?subject=Mistaken%20payment%20report`}
-            className="font-medium text-[#111111] underline underline-offset-4"
+            className="link-hug-inline rounded-[2px] font-medium text-[#111111] underline underline-offset-4"
           >
             {PERSONAL_INFO.email}
           </a>{" "}

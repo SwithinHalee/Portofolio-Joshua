@@ -107,7 +107,7 @@ export default function TermsPage() {
 
       <LegalSection id="external-links" index="05" title="External links">
         <p>
-          This site links to GitHub, Instagram, web-staging.carbonethics.co, and referenced
+          This site links to GitHub, Instagram, www.carbonethics.co, and referenced
           technical sources. Those destinations are operated by third parties.
           Their availability, accuracy, and practices are outside the control of
           this site&apos;s operator, and linking does not imply endorsement of
@@ -137,7 +137,7 @@ export default function TermsPage() {
           informally by email to{" "}
           <a
             href={`mailto:${PERSONAL_INFO.email}?subject=Terms%20enquiry`}
-            className="font-medium text-[#111111] underline underline-offset-4"
+            className="link-hug-inline rounded-[2px] font-medium text-[#111111] underline underline-offset-4"
           >
             {PERSONAL_INFO.email}
           </a>{" "}

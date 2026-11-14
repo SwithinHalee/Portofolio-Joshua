@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import Link from "next/link";
-import { motion, AnimatePresence } from "framer-motion";
+import { AnimatePresence, LayoutGroup, motion, useReducedMotion } from "framer-motion";
 import {
   ArrowRight,
   ArrowUpRight,
@@ -20,6 +20,7 @@ import { PROJECTS, ProjectItem } from "@/data/portfolio";
 import { usePortfolio } from "@/components/portfolio-provider";
 import { Reveal } from "@/components/motion-wrapper";
 import { ProjectMedia } from "@/components/project-media";
+import { scrollWithWeight } from "@/components/weighted-scroll";
 
 type ViewMode = "grid" | "detail" | "list";
 
@@ -36,9 +37,33 @@ function projectYear(project: ProjectItem): string {
 export function Projects() {
   const { data } = usePortfolio();
   const projects = data.projects ?? PROJECTS;
+  const sectionRef = useRef<HTMLElement>(null);
+  const shouldReduceMotion = useReducedMotion();
   const [filterTag, setFilterTag] = useState<string>("ALL");
   const [viewMode, setViewMode] = useState<ViewMode>("grid");
   const [expandedBlueprints, setExpandedBlueprints] = useState<string[]>([]);
+
+  const scrollToProjectsTop = () => {
+    scrollWithWeight(() => {
+      const el = sectionRef.current;
+      if (!el) return window.scrollY;
+      return Math.max(0, Math.ceil(el.getBoundingClientRect().top + window.scrollY) + 1);
+    });
+  };
+
+  const handleViewModeChange = (nextMode: ViewMode) => {
+    if (nextMode === viewMode) return;
+    setViewMode(nextMode);
+    setExpandedBlueprints([]);
+    scrollToProjectsTop();
+  };
+
+  const handleFilterTagChange = (nextTag: string) => {
+    if (nextTag === filterTag) return;
+    setFilterTag(nextTag);
+    setExpandedBlueprints([]);
+    scrollToProjectsTop();
+  };
 
   const handleBlueprintToggle = (projectId: string, expanded: boolean) => {
     setExpandedBlueprints((prev) =>
@@ -66,112 +91,121 @@ export function Projects() {
   );
 
   return (
-    <section id="projects" className="pt-8 md:pt-12 pb-24 md:pb-28 border-b border-[#EAEAEA]">
-      <div className="mx-auto max-w-5xl px-6 sm:px-8">
-        {/* Section Header */}
-        <Reveal>
-          <div className="mb-12">
-            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-5">
-            <div>
+    <section
+      ref={sectionRef}
+      id="projects"
+      className="pb-24 md:pb-28 border-b border-[#EAEAEA] bg-[#FFFFFF]"
+    >
+      {/* Sticky Section Header: Title, Layout Switcher & Category Filter */}
+      <div className="sticky top-0 z-20 bg-[#FFFFFF]/95 backdrop-blur-md pt-14 sm:pt-16 xl:pt-10 pb-3">
+        <div className="mx-auto max-w-5xl px-6 sm:px-8">
+          <Reveal>
+            <div className="flex items-end justify-between gap-4 mb-3">
               <h2
                 className="text-3xl sm:text-4xl font-serif text-[#111111] tracking-[-0.02em]"
                 style={{ fontFamily: "var(--font-newsreader), Georgia, serif" }}
               >
                 Architected for Performance & Utility
               </h2>
-            </div>
 
-              <div className="flex shrink-0 items-center gap-2">
-                <span className="font-sans text-[11px] font-medium uppercase tracking-wider text-[#525252]">
-                  Layout
-                </span>
-                <div
-                  role="group"
-                  aria-label="Change projects layout"
-                  className="flex items-center gap-1 font-sans text-xs p-1 rounded-[6px] border border-[#EAEAEA] bg-[#FBFBFA]"
-                >
-                  {VIEW_MODES.map((mode) => {
-                    const isSelected = viewMode === mode.id;
-                    const Icon = mode.icon;
-                    return (
-                      <button
-                        key={mode.id}
-                        type="button"
-                        onClick={() => {
-                          setViewMode(mode.id);
-                          setExpandedBlueprints([]);
-                        }}
-                        aria-pressed={isSelected}
-                        title={mode.label}
-                        aria-label={`${mode.label} layout`}
-                        className={`relative p-2 transition-colors rounded-[4px] ${
-                          isSelected ? "text-white" : "text-[#616161] hover:text-[#111111]"
-                        }`}
-                      >
-                        {isSelected && (
-                          <motion.span
-                            layoutId="view-mode-pill"
-                            transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
-                            className="absolute inset-0 bg-[#111111] rounded-[4px] -z-0"
-                          />
-                        )}
-                        <Icon
-                          size={14}
-                          weight={isSelected ? "fill" : "regular"}
-                          className="relative z-10 block"
-                        />
-                      </button>
-                    );
-                  })}
-                </div>
+              <div
+                role="group"
+                aria-label="Change projects layout"
+                className="flex shrink-0 items-center gap-2.5 pb-0.5"
+              >
+                {VIEW_MODES.map((mode) => {
+                  const isSelected = viewMode === mode.id;
+                  const Icon = mode.icon;
+                  const activeWeight = mode.id === "list" ? "bold" : "fill";
+                  return (
+                    <button
+                      key={mode.id}
+                      type="button"
+                      onClick={() => handleViewModeChange(mode.id)}
+                      aria-pressed={isSelected}
+                      title={mode.label}
+                      aria-label={`${mode.label} layout`}
+                      className={`inline-flex items-center justify-center p-1 border-0 bg-transparent shadow-none transition-colors active:scale-[0.95] cursor-pointer ${
+                        isSelected
+                          ? "text-[#111111]"
+                          : "text-[#787774] hover:text-[#111111]"
+                      }`}
+                    >
+                      <Icon
+                        size={18}
+                        weight={isSelected ? activeWeight : "regular"}
+                        aria-hidden="true"
+                      />
+                    </button>
+                  );
+                })}
               </div>
             </div>
 
-            <motion.div
-              layoutScroll
-              role="group"
-              aria-label="Filter projects by technology"
-              className="flex max-w-full scroll-auto items-center gap-1.5 overflow-x-auto whitespace-nowrap p-1 font-sans text-xs rounded-[6px] border border-[#EAEAEA] bg-[#FBFBFA]"
-            >
-              {allTags.map((tag) => {
-                const isSelected = filterTag === tag;
-                return (
-                  <button
-                    key={tag}
-                    type="button"
-                    onClick={() => {
-                      setFilterTag(tag);
-                      setExpandedBlueprints([]);
-                    }}
-                    aria-pressed={isSelected}
-                    aria-label={`Show ${tag === "ALL" ? "all projects" : `${tag} projects`}`}
-                    className={`relative shrink-0 px-3 py-1 text-xs transition-colors rounded-[4px] ${
-                      isSelected ? "text-white font-medium" : "text-[#525252] hover:text-[#111111]"
-                    }`}
-                  >
-                    {isSelected && (
-                      <motion.span
-                        layoutId="project-tab-pill"
-                        transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
-                        className="absolute inset-0 bg-[#111111] rounded-[4px] -z-0"
-                      />
-                    )}
-                    <span className="relative z-10">{tag}</span>
-                  </button>
-                );
-              })}
-            </motion.div>
-          </div>
-        </Reveal>
+            <LayoutGroup id="project-category-tabs">
+              <motion.div
+                layoutScroll
+                role="group"
+                aria-label="Filter projects by technology"
+                className="flex max-w-full scroll-auto items-center gap-1 overflow-x-auto whitespace-nowrap px-1 -mx-1 py-1.5 -my-1.5 font-sans"
+              >
+                {allTags.map((tag) => {
+                  const isSelected = filterTag === tag;
+                  return (
+                    <button
+                      key={tag}
+                      type="button"
+                      onClick={() => handleFilterTagChange(tag)}
+                      aria-pressed={isSelected}
+                      aria-label={`Show ${tag === "ALL" ? "all projects" : `${tag} projects`}`}
+                      className={`group/tab relative shrink-0 px-3.5 py-1.5 border-0 bg-transparent rounded-[14px] text-[13px] leading-4 tracking-[-0.01em] font-medium transition-colors duration-200 cursor-pointer ${
+                        isSelected
+                          ? "text-[#FFFFFF]"
+                          : "text-[#6B6B6B] hover:text-[#111111]"
+                      }`}
+                    >
+                      {isSelected && (
+                        <motion.span
+                          layoutId="project-category-pill"
+                          aria-hidden="true"
+                          style={{ borderRadius: 14 }}
+                          transition={
+                            shouldReduceMotion
+                              ? { duration: 0 }
+                              : {
+                                  type: "spring",
+                                  stiffness: 380,
+                                  damping: 32,
+                                  mass: 0.8,
+                                }
+                          }
+                          className="pointer-events-none absolute inset-0 bg-[#111111] rounded-[14px]"
+                        />
+                      )}
+                      <span className="relative z-10 inline-block transition-transform duration-150 group-active/tab:scale-[0.97]">
+                        {tag}
+                      </span>
+                    </button>
+                  );
+                })}
+              </motion.div>
+            </LayoutGroup>
+          </Reveal>
+        </div>
+      </div>
 
-        {/* Layout-aware Results with Cross-fade */}
+      <div className="mx-auto max-w-5xl px-6 sm:px-8 pt-8 md:pt-10">
+        {/* Layout & Category-aware Results Transition */}
         <AnimatePresence mode="wait" initial={false}>
           <motion.div
-            key={viewMode}
-            initial={{ opacity: 0 }}
+            key={`${viewMode}-${filterTag}`}
+            initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0 }}
             animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.15, ease: "easeOut" }}
+            exit={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, y: -4 }}
+            transition={{
+              duration: shouldReduceMotion ? 0 : 0.16,
+              ease: [0.16, 1, 0.3, 1],
+            }}
             className={
               viewMode === "grid"
                 ? `grid grid-cols-12 gap-6 ${hasExpandedBlueprint ? "items-start" : "items-stretch"}`
@@ -238,19 +272,22 @@ function ProjectCard({
           </div>
 
           {/* Title */}
-          <Link href={`/work/${project.slug}`} className="group-hover:text-[#444444] transition-colors block mb-2.5">
-            <h3
-              className="text-2xl sm:text-3xl font-serif text-[#111111] tracking-tight flex items-center justify-between"
-              style={{ fontFamily: "var(--font-newsreader), Georgia, serif" }}
+          <h3
+            className="text-2xl sm:text-3xl font-serif leading-[1.15] tracking-tight mb-2.5"
+            style={{ fontFamily: "var(--font-newsreader), Georgia, serif" }}
+          >
+            <Link
+              href={`/work/${project.slug}`}
+              className="group/title link-hug-serif inline rounded-[2px] text-[#111111] transition-colors duration-300 hover:text-[#FFFFFF] focus-visible:text-[#FFFFFF]"
             >
               <span>{project.title}</span>
               <ArrowRight
-                size={18}
+                size={17}
                 weight="bold"
-                className="text-[#616161] group-hover:text-[#111111] transition-colors opacity-0 group-hover:opacity-100"
+                className="ml-2 inline-block align-baseline relative -top-[0.07em] text-[#616161] opacity-0 transition-all duration-300 group-hover:opacity-100 group-hover/title:opacity-100 group-hover/title:text-[#FFFFFF] group-focus-visible/title:opacity-100 group-focus-visible/title:text-[#FFFFFF]"
               />
-            </h3>
-          </Link>
+            </Link>
+          </h3>
 
           {/* Narrative Summary */}
           <p className="text-sm text-[#4A4A4A] leading-relaxed mb-6 font-sans">
@@ -277,6 +314,7 @@ function ProjectCard({
             {/* Clickable Image Container */}
             <Link
               href={`/work/${project.slug}`}
+              data-link-fill="off"
               data-cursor-label="Open case"
               className="block relative aspect-[16/9] w-full bg-[#F5F5F3] overflow-hidden"
             >
@@ -410,21 +448,21 @@ function ProjectCard({
 
           {/* Card Footer: Tags & External Links (single top divider, zero redundant hairline) */}
           <div className="pt-4 border-t border-[#EAEAEA] flex flex-wrap items-center justify-between gap-x-4 gap-y-3">
-            <div className="flex flex-wrap items-center gap-1.5 font-sans text-[11px] text-[#4A4A4A]">
+            <div className="flex flex-wrap items-center gap-1.5 font-sans text-[11px]">
               {project.tags.map((t) => (
                 <span
                   key={t}
-                  className="rounded bg-[#F7F6F3] border border-[#EAEAEA] px-2.5 py-1 whitespace-nowrap"
+                  className="rounded border border-[#111111] bg-[#111111] px-2.5 py-1 text-[#FFFFFF] whitespace-nowrap"
                 >
                   {t}
                 </span>
               ))}
             </div>
 
-            <div className="flex flex-wrap items-center gap-3">
+            <div className="flex flex-wrap items-center gap-2 sm:gap-2.5">
               <Link
                 href={`/work/${project.slug}`}
-                className="inline-flex items-center gap-1 font-sans text-xs text-[#111111] hover:underline underline-offset-4 font-semibold whitespace-nowrap shrink-0"
+                className="link-hug gap-1 rounded-[2px] font-sans text-xs text-[#111111] font-semibold whitespace-nowrap shrink-0"
               >
                 <span>Case Study</span>
                 <ArrowRight size={12} weight="bold" />
@@ -435,7 +473,7 @@ function ProjectCard({
                   href={project.githubUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 font-sans text-xs font-medium text-[#525252] hover:text-[#111111] transition-colors whitespace-nowrap shrink-0"
+                  className="link-hug gap-1 rounded-[2px] font-sans text-xs font-medium text-[#525252] whitespace-nowrap shrink-0"
                 >
                   <GithubLogo size={13} weight="regular" />
                   <span>Source</span>
@@ -447,7 +485,7 @@ function ProjectCard({
                   href={project.liveUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 font-sans text-xs font-medium text-[#525252] hover:text-[#111111] transition-colors whitespace-nowrap shrink-0"
+                  className="link-hug gap-1 rounded-[2px] font-sans text-xs font-medium text-[#525252] whitespace-nowrap shrink-0"
                 >
                   <Globe size={13} weight="regular" />
                   <span>Live</span>
@@ -460,7 +498,7 @@ function ProjectCard({
                   href={project.downloadUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 rounded-[4px] bg-[#111111] px-2.5 py-1.5 font-sans text-xs font-semibold text-white transition-colors hover:bg-[#2A2A2A] whitespace-nowrap shrink-0"
+                  className="inline-flex items-center gap-1.5 rounded-[4px] bg-[#111111] px-2.5 py-1.5 font-sans text-xs font-semibold text-white whitespace-nowrap shrink-0"
                 >
                   <DownloadSimple size={13} weight="bold" />
                   <span>Download APK</span>
@@ -487,14 +525,17 @@ function ProjectDetailRow({ project, index }: { project: ProjectItem; index: num
             </span>
           </div>
 
-          <Link href={`/work/${project.slug}`} className="mb-3 block">
-            <h3
-              className="font-serif text-2xl tracking-tight text-[#111111] transition-colors group-hover:text-[#444444] sm:text-3xl"
-              style={{ fontFamily: "var(--font-newsreader), Georgia, serif" }}
+          <h3
+            className="mb-3 font-serif text-2xl leading-[1.15] tracking-tight sm:text-3xl"
+            style={{ fontFamily: "var(--font-newsreader), Georgia, serif" }}
+          >
+            <Link
+              href={`/work/${project.slug}`}
+              className="link-hug-serif inline rounded-[2px] text-[#111111]"
             >
               {project.title}
-            </h3>
-          </Link>
+            </Link>
+          </h3>
 
           <p className="mb-3 font-sans text-sm leading-relaxed text-[#111111]">
             {project.summary}
@@ -531,18 +572,18 @@ function ProjectDetailRow({ project, index }: { project: ProjectItem; index: num
           )}
 
           <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-3 border-t border-[#EAEAEA] pt-4">
-            <div className="flex flex-wrap items-center gap-1.5 font-sans text-[11px] text-[#4A4A4A]">
+            <div className="flex flex-wrap items-center gap-1.5 font-sans text-[11px]">
               {project.tags.map((t) => (
-                <span key={t} className="rounded border border-[#EAEAEA] bg-[#F7F6F3] px-2.5 py-1 whitespace-nowrap">
+                <span key={t} className="rounded border border-[#111111] bg-[#111111] px-2.5 py-1 text-[#FFFFFF] whitespace-nowrap">
                   {t}
                 </span>
               ))}
             </div>
 
-            <div className="flex flex-wrap items-center gap-3">
+            <div className="flex flex-wrap items-center gap-2 sm:gap-2.5">
               <Link
                 href={`/work/${project.slug}`}
-                className="inline-flex items-center gap-1 font-sans text-xs font-semibold text-[#111111] underline-offset-4 hover:underline whitespace-nowrap shrink-0"
+                className="link-hug gap-1 rounded-[2px] font-sans text-xs font-semibold text-[#111111] whitespace-nowrap shrink-0"
               >
                 <span>Case Study</span>
                 <ArrowRight size={12} weight="bold" />
@@ -553,7 +594,7 @@ function ProjectDetailRow({ project, index }: { project: ProjectItem; index: num
                   href={project.githubUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 font-sans text-xs font-medium text-[#525252] transition-colors hover:text-[#111111] whitespace-nowrap shrink-0"
+                  className="link-hug gap-1 rounded-[2px] font-sans text-xs font-medium text-[#525252] whitespace-nowrap shrink-0"
                 >
                   <GithubLogo size={13} weight="regular" />
                   <span>Source</span>
@@ -565,7 +606,7 @@ function ProjectDetailRow({ project, index }: { project: ProjectItem; index: num
                   href={project.liveUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 font-sans text-xs font-medium text-[#525252] transition-colors hover:text-[#111111] whitespace-nowrap shrink-0"
+                  className="link-hug gap-1 rounded-[2px] font-sans text-xs font-medium text-[#525252] whitespace-nowrap shrink-0"
                 >
                   <Globe size={13} weight="regular" />
                   <span>Live</span>
@@ -578,7 +619,7 @@ function ProjectDetailRow({ project, index }: { project: ProjectItem; index: num
                   href={project.downloadUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 rounded-[4px] bg-[#111111] px-2.5 py-1.5 font-sans text-xs font-semibold text-white transition-colors hover:bg-[#2A2A2A] whitespace-nowrap shrink-0"
+                  className="inline-flex items-center gap-1.5 rounded-[4px] bg-[#111111] px-2.5 py-1.5 font-sans text-xs font-semibold text-white whitespace-nowrap shrink-0"
                 >
                   <DownloadSimple size={13} weight="bold" />
                   <span>Download APK</span>
@@ -606,6 +647,7 @@ function ProjectDetailRow({ project, index }: { project: ProjectItem; index: num
 
             <Link
               href={`/work/${project.slug}`}
+              data-link-fill="off"
               className="relative block aspect-[16/9] w-full overflow-hidden bg-[#F5F5F3]"
             >
               <ProjectMedia
@@ -640,7 +682,7 @@ function ProjectListRow({ project, index }: { project: ProjectItem; index: numbe
         <div className="col-span-10 sm:col-span-5 lg:col-span-4">
           <Link
             href={`/work/${project.slug}`}
-            className="font-serif text-lg text-[#111111] underline-offset-4 hover:underline"
+            className="link-hug-inline inline rounded-[2px] font-serif text-lg leading-tight text-[#111111]"
             style={{ fontFamily: "var(--font-newsreader), Georgia, serif" }}
           >
             {project.title}
@@ -654,7 +696,7 @@ function ProjectListRow({ project, index }: { project: ProjectItem; index: numbe
           {project.tags.slice(0, 3).map((t) => (
             <span
               key={t}
-              className="rounded border border-[#EAEAEA] bg-[#F7F6F3] px-2 py-1 font-sans text-[11px] text-[#4A4A4A]"
+              className="rounded border border-[#111111] bg-[#111111] px-2 py-1 font-sans text-[11px] text-[#FFFFFF]"
             >
               {t}
             </span>
@@ -670,11 +712,11 @@ function ProjectListRow({ project, index }: { project: ProjectItem; index: numbe
           {year}
         </span>
 
-        <div className="col-span-12 flex flex-wrap items-center gap-2 sm:col-span-4 sm:justify-end lg:col-span-3">
+        <div className="col-span-12 flex flex-wrap items-center gap-1.5 sm:col-span-4 sm:justify-end lg:col-span-3">
           <Link
             href={`/work/${project.slug}`}
             aria-label={`Open ${project.title} case study`}
-            className="inline-flex items-center gap-1 font-sans text-xs font-semibold text-[#111111] underline-offset-4 hover:underline"
+            className="inline-flex items-center gap-1 rounded-[4px] p-1 font-sans text-xs font-semibold text-[#111111]"
           >
             <span className="sm:hidden lg:hidden">Case Study</span>
             <ArrowRight size={13} weight="bold" />
@@ -686,7 +728,7 @@ function ProjectListRow({ project, index }: { project: ProjectItem; index: numbe
               target="_blank"
               rel="noopener noreferrer"
               aria-label={`${project.title} source repository`}
-              className="text-[#525252] transition-colors hover:text-[#111111]"
+              className="inline-flex items-center justify-center rounded-[4px] p-1 text-[#525252]"
             >
               <GithubLogo size={14} weight="regular" />
             </a>
@@ -698,7 +740,7 @@ function ProjectListRow({ project, index }: { project: ProjectItem; index: numbe
               target="_blank"
               rel="noopener noreferrer"
               aria-label={`${project.title} live site`}
-              className="text-[#525252] transition-colors hover:text-[#111111]"
+              className="inline-flex items-center justify-center rounded-[4px] p-1 text-[#525252]"
             >
               <Globe size={14} weight="regular" />
             </a>
@@ -711,7 +753,7 @@ function ProjectListRow({ project, index }: { project: ProjectItem; index: numbe
               rel="noopener noreferrer"
               aria-label={`Download ${project.title} APK`}
               title={`Download ${project.title} APK`}
-              className="inline-flex items-center gap-1 rounded-[4px] bg-[#111111] px-2 py-1 font-sans text-[11px] font-semibold text-white transition-colors hover:bg-[#2A2A2A]"
+              className="inline-flex items-center gap-1 rounded-[4px] bg-[#111111] px-2 py-1 font-sans text-[11px] font-semibold text-white"
             >
               <DownloadSimple size={13} weight="bold" />
               <span>APK</span>

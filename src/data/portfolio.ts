@@ -69,7 +69,7 @@ export interface EducationItem {
 export interface TechCategory {
   title: string;
   description: string;
-  skills: { name: string; detail: string; kbd?: string; logos?: string[] }[];
+  skills: { name: string; detail: string; kbd?: string; logos?: string[]; url?: string }[];
 }
 
 export interface PrincipleItem {
@@ -150,7 +150,7 @@ export const PROJECTS: ProjectItem[] = [
       { label: "Design Token", value: "Tailwind UI System" },
     ],
     tags: ["Next.js", "TypeScript", "Tailwind CSS", "TanStack Query", "REST API"],
-    liveUrl: "https://web-staging.carbonethics.co/",
+    liveUrl: "https://www.carbonethics.co/",
     featured: true,
     gridSpan: "col-span-12",
     badge: {
@@ -389,31 +389,106 @@ export const TECH_CATEGORIES: TechCategory[] = [
     title: "Frontend Architecture",
     description: "Production web interfaces, modern component systems, and state synchronization.",
     skills: [
-      { name: "TypeScript", detail: "End-to-end strict typing & contract safety", kbd: "TS", logos: ["typescript"] },
-      { name: "React 19 & Next.js", detail: "App Router, SSR, Server Components & Hydration", kbd: "NEXT", logos: ["react", "nextdotjs"] },
-      { name: "Tailwind CSS v4", detail: "Custom design systems & tokenized hairlines", kbd: "CSS", logos: ["tailwindcss"] },
-      { name: "TanStack Query", detail: "Asynchronous state, caching & query invalidation", kbd: "RQ", logos: ["tanstack"] },
-      { name: "Framer Motion", detail: "Subtle micro-interactions & hardware-accelerated reveals", kbd: "FM", logos: ["framer"] },
+      {
+        name: "TypeScript",
+        detail: "End-to-end strict typing & contract safety",
+        kbd: "TS",
+        logos: ["typescript"],
+        url: "https://www.typescriptlang.org/docs/",
+      },
+      {
+        name: "React 19 & Next.js",
+        detail: "App Router, SSR, Server Components & Hydration",
+        kbd: "NEXT",
+        logos: ["react", "nextdotjs"],
+        url: "https://nextjs.org/docs",
+      },
+      {
+        name: "Tailwind CSS v4",
+        detail: "Custom design systems & tokenized hairlines",
+        kbd: "CSS",
+        logos: ["tailwindcss"],
+        url: "https://tailwindcss.com/docs",
+      },
+      {
+        name: "TanStack Query",
+        detail: "Asynchronous state, caching & query invalidation",
+        kbd: "RQ",
+        logos: ["tanstack"],
+        url: "https://tanstack.com/query/latest",
+      },
+      {
+        name: "Framer Motion",
+        detail: "Subtle micro-interactions & hardware-accelerated reveals",
+        kbd: "FM",
+        logos: ["framer"],
+        url: "https://motion.dev/docs",
+      },
     ],
   },
   {
     title: "Systems & Backend Integration",
     description: "API communication, schema design, and server-side data models.",
     skills: [
-      { name: "RESTful API Design", detail: "HTTP methods, status semantics & payload contracts", kbd: "REST" },
-      { name: "Node.js & Runtime", detail: "JavaScript server environments & asynchronous event loop", kbd: "NODE", logos: ["nodedotjs"] },
-      { name: "PostgreSQL & Relational DB", detail: "Table schema design, foreign keys & query hygiene", kbd: "SQL", logos: ["postgresql"] },
-      { name: "Network Engineering", detail: "TCP/IP, routing protocols, subnets & GNS3 emulation", kbd: "NET" },
+      {
+        name: "RESTful API Design",
+        detail: "HTTP methods, status semantics & payload contracts",
+        kbd: "REST",
+        url: "https://developer.mozilla.org/en-US/docs/Web/HTTP",
+      },
+      {
+        name: "Node.js & Runtime",
+        detail: "JavaScript server environments & asynchronous event loop",
+        kbd: "NODE",
+        logos: ["nodedotjs"],
+        url: "https://nodejs.org/en/docs",
+      },
+      {
+        name: "PostgreSQL & Relational DB",
+        detail: "Table schema design, foreign keys & query hygiene",
+        kbd: "SQL",
+        logos: ["postgresql"],
+        url: "https://www.postgresql.org/docs/",
+      },
+      {
+        name: "Network Engineering",
+        detail: "TCP/IP, routing protocols, subnets & GNS3 emulation",
+        kbd: "NET",
+        url: "https://docs.gns3.com/",
+      },
     ],
   },
   {
     title: "Tooling & Workflow Precision",
     description: "Daily engineering instrument cluster for development, debugging, and review.",
     skills: [
-      { name: "VS Code", detail: "Strict linting, TypeScript compiler integration & keybindings", kbd: "IDE" },
-      { name: "Postman", detail: "Endpoint interrogation, payload mocking & automated testing", kbd: "API", logos: ["postman"] },
-      { name: "Git & GitHub", detail: "Branching strategies, semantic commits & PR reviews", kbd: "GIT", logos: ["git", "github"] },
-      { name: "Figma", detail: "Design handoff, spacing audits & layout geometry parsing", kbd: "FIGMA", logos: ["figma"] },
+      {
+        name: "VS Code",
+        detail: "Strict linting, TypeScript compiler integration & keybindings",
+        kbd: "IDE",
+        url: "https://code.visualstudio.com/docs",
+      },
+      {
+        name: "Postman",
+        detail: "Endpoint interrogation, payload mocking & automated testing",
+        kbd: "API",
+        logos: ["postman"],
+        url: "https://www.postman.com/",
+      },
+      {
+        name: "Git & GitHub",
+        detail: "Branching strategies, semantic commits & PR reviews",
+        kbd: "GIT",
+        logos: ["git", "github"],
+        url: "https://docs.github.com/en",
+      },
+      {
+        name: "Figma",
+        detail: "Design handoff, spacing audits & layout geometry parsing",
+        kbd: "FIGMA",
+        logos: ["figma"],
+        url: "https://www.figma.com/",
+      },
     ],
   },
 ];

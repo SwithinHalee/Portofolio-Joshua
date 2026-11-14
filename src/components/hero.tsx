@@ -1,147 +1,279 @@
 "use client";
 
-import { useState } from "react";
-import {
-  ArrowDown,
-  Check,
-  EnvelopeSimple,
-  GithubLogo,
-  InstagramLogo,
-} from "@phosphor-icons/react";
+import { useEffect, useRef } from "react";
 import { PERSONAL_INFO } from "@/data/portfolio";
-import { cleanEmail } from "@/lib/portfolio-store";
 import { usePortfolio } from "@/components/portfolio-provider";
+
+const MATRIX_ROWS = 7;
+const MATRIX_COLS_DESKTOP = 48;
+const MATRIX_COLS_TABLET = 32;
+const MATRIX_COLS_MOBILE = 20;
+
+const GLYPH_POOL =
+  "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%&*+=~^/\\|<>[]{}():;.,?!";
+
+interface GlyphCell {
+  char: string;
+  phaseOffset: number;
+}
+
+function buildMatrix(): GlyphCell[][] {
+  const grid: GlyphCell[][] = [];
+  for (let r = 0; r < MATRIX_ROWS; r++) {
+    const row: GlyphCell[] = [];
+    for (let c = 0; c < MATRIX_COLS_DESKTOP; c++) {
+      // Deterministic pseudo-random seed so initial SSR/CSR frame matches cleanly.
+      const seed = (r * 73 + c * 41 + 19) % GLYPH_POOL.length;
+      row.push({
+        char: GLYPH_POOL[seed],
+        phaseOffset: ((r * 17 + c * 29) % 31) / 31,
+      });
+    }
+    grid.push(row);
+  }
+  return grid;
+}
 
 export function Hero() {
   const { data } = usePortfolio();
   const personalInfo = data.personalInfo ?? PERSONAL_INFO;
-  const email = cleanEmail(personalInfo.email);
-  const [copied, setCopied] = useState(false);
 
-  const handleEmailClick = () => {
-    try {
-      if (typeof navigator !== "undefined" && navigator.clipboard) {
-        navigator.clipboard.writeText(email).catch(() => {});
+  const sectionRef = useRef<HTMLElement | null>(null);
+  const stageRef = useRef<HTMLDivElement | null>(null);
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const pointerRef = useRef<{ x: number; y: number; active: boolean }>({
+    x: 0.5,
+    y: 0.5,
+    active: false,
+  });
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    const stage = stageRef.current;
+    const section = sectionRef.current;
+    if (!canvas || !stage || !section) return;
+
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    const matrix = buildMatrix();
+    const reducedMotion =
+      typeof window.matchMedia === "function" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    let width = 0;
+    let height = 0;
+    let dpr = 1;
+    let isVisible = true;
+    let rafId: number | null = null;
+    const startTime = performance.now();
+    let smoothX = 0.5;
+    let smoothY = 0.5;
+    let smoothInfluence = 0;
+
+    const monoFont =
+      getComputedStyle(document.documentElement)
+        .getPropertyValue("--font-jetbrains-mono")
+        .trim() || "ui-monospace, SFMono-Regular, Menlo, monospace";
+
+    const updateSize = () => {
+      const rect = stage.getBoundingClientRect();
+      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      width = Math.max(1, Math.floor(rect.width));
+      height = Math.max(1, Math.floor(rect.height));
+      canvas.width = Math.floor(width * dpr);
+      canvas.height = Math.floor(height * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    };
+
+    const drawFrame = (now: number) => {
+      const elapsed = reducedMotion ? 0.6 : (now - startTime) * 0.001;
+      const isHovering = pointerRef.current.active;
+
+      const targetInfluence = isHovering && !reducedMotion ? 1 : 0;
+      smoothInfluence += (targetInfluence - smoothInfluence) * 0.14;
+      smoothX += (pointerRef.current.x - smoothX) * 0.25;
+      smoothY += (pointerRef.current.y - smoothY) * 0.25;
+
+      ctx.clearRect(0, 0, width, height);
+
+      const cols =
+        width >= 1024
+          ? MATRIX_COLS_DESKTOP
+          : width >= 640
+            ? MATRIX_COLS_TABLET
+            : MATRIX_COLS_MOBILE;
+
+      const fontSize = width >= 1024 ? 12.5 : width >= 640 ? 11.5 : 10.5;
+      ctx.font = `400 ${fontSize}px ${monoFont}`;
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+
+      const padX = Math.max(12, Math.min(28, width * 0.015));
+      const usableW = Math.max(1, width - padX * 2);
+      const colStep = cols > 1 ? usableW / (cols - 1) : 0;
+
+      const amplitudePrimary = Math.min(44, Math.max(18, height * 0.072));
+      const amplitudeSecondary = Math.min(18, Math.max(6, height * 0.028));
+      const verticalPad = amplitudePrimary + amplitudeSecondary + 16;
+      const usableH = Math.max(120, height - verticalPad * 2);
+      const rowStep = MATRIX_ROWS > 1 ? usableH / (MATRIX_ROWS - 1) : 0;
+
+      const pointerPxX = smoothX * width;
+      const pointerPxY = smoothY * height;
+      const rippleRadiusSq = 160 * 160;
+
+      for (let r = 0; r < MATRIX_ROWS; r++) {
+        const baseY = verticalPad + r * rowStep;
+        const rowPhase = r * 0.16;
+
+        for (let c = 0; c < cols; c++) {
+          const cell = matrix[r][c];
+          const x = padX + c * colStep;
+          const waveRatio = c / Math.max(1, cols - 1);
+
+          const wave1 =
+            Math.sin(waveRatio * Math.PI * 2.55 - elapsed * 0.65 + rowPhase) *
+            amplitudePrimary;
+          const wave2 =
+            Math.cos(waveRatio * Math.PI * 1.3 + elapsed * 0.38 - r * 0.11) *
+            amplitudeSecondary;
+
+          let y = baseY + wave1 + wave2;
+          let alpha = 0.56;
+
+          if (smoothInfluence > 0.01) {
+            const dx = x - pointerPxX;
+            const dy = y - pointerPxY;
+            const distSq = dx * dx + dy * dy;
+            if (distSq < rippleRadiusSq) {
+              const falloff = 1 - distSq / rippleRadiusSq;
+              const smoothFalloff = falloff * falloff;
+              if (!reducedMotion && isHovering) {
+                cell.char = GLYPH_POOL[Math.floor(Math.random() * GLYPH_POOL.length)];
+              }
+              y += Math.sin(elapsed * 8.5 + c * 0.45) * 15 * smoothFalloff * smoothInfluence;
+              alpha = Math.min(0.95, alpha + 0.36 * smoothFalloff * smoothInfluence);
+            }
+          }
+
+          ctx.fillStyle = `rgba(38, 38, 35, ${alpha.toFixed(3)})`;
+          ctx.fillText(cell.char, x, y);
+        }
       }
-    } catch {
-      // Fallback
-    }
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2400);
+
+      if (!reducedMotion && isVisible) {
+        rafId = window.requestAnimationFrame(drawFrame);
+      }
+    };
+
+    const startLoop = () => {
+      if (rafId !== null) return;
+      if (reducedMotion) {
+        drawFrame(startTime);
+      } else if (isVisible) {
+        rafId = window.requestAnimationFrame(drawFrame);
+      }
+    };
+
+    const stopLoop = () => {
+      if (rafId !== null) {
+        window.cancelAnimationFrame(rafId);
+        rafId = null;
+      }
+    };
+
+    updateSize();
+
+    const resizeObserver = new ResizeObserver(() => {
+      updateSize();
+      if (reducedMotion) {
+        drawFrame(startTime);
+      }
+    });
+    resizeObserver.observe(stage);
+
+    const visibilityObserver = new IntersectionObserver(
+      ([entry]) => {
+        isVisible = entry.isIntersecting;
+        if (isVisible) {
+          startLoop();
+        } else {
+          stopLoop();
+        }
+      },
+      { threshold: 0.05 }
+    );
+    visibilityObserver.observe(section);
+
+    startLoop();
+
+    document.fonts?.ready
+      .then(() => {
+        if (reducedMotion && isVisible) {
+          drawFrame(startTime);
+        }
+      })
+      .catch(() => {});
+
+    return () => {
+      stopLoop();
+      resizeObserver.disconnect();
+      visibilityObserver.disconnect();
+    };
+  }, []);
+
+  const handlePointerMove = (e: React.PointerEvent<HTMLElement>) => {
+    const stage = stageRef.current;
+    if (!stage) return;
+    const rect = stage.getBoundingClientRect();
+    if (rect.width <= 0 || rect.height <= 0) return;
+    pointerRef.current = {
+      x: Math.min(1, Math.max(0, (e.clientX - rect.left) / rect.width)),
+      y: Math.min(1, Math.max(0, (e.clientY - rect.top) / rect.height)),
+      active: true,
+    };
+  };
+
+  const handlePointerLeave = () => {
+    pointerRef.current.active = false;
   };
 
   return (
-    <section id="hero" className="min-h-[100dvh] flex flex-col justify-between border-b border-[#EAEAEA] bg-[#FFFFFF] pt-20 pb-8 sm:pt-24 sm:pb-10 xl:py-10">
-      <div className="mx-auto max-w-5xl px-6 sm:px-8 w-full flex-1 flex flex-col justify-between">
-        {/* Main Content Cluster (Centered Vertically in Viewport) */}
-        <div className="my-auto py-2 sm:py-4">
-          {/* Editorial Headline */}
+    <section
+      id="hero"
+      ref={sectionRef}
+      onPointerEnter={handlePointerMove}
+      onPointerMove={handlePointerMove}
+      onPointerLeave={handlePointerLeave}
+      className="relative flex min-h-[100dvh] flex-col justify-center overflow-hidden border-b border-[#EAEAEA] bg-[#F5F4EF] pt-16 pb-6 sm:pt-20 sm:pb-8 xl:pt-[76px]"
+    >
+      {/* Central Interactive Glyph Matrix + Monumental Roman/Italic Serif Display */}
+      <div
+        ref={stageRef}
+        className="relative my-auto flex min-h-[380px] w-full flex-1 items-center justify-center sm:min-h-[460px] lg:min-h-[540px]"
+      >
+        <canvas
+          ref={canvasRef}
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 h-full w-full"
+        />
+
+        <div className="relative z-10 mx-auto max-w-6xl px-6 text-center">
           <h1
-            className="text-4xl sm:text-5xl md:text-6xl font-serif text-[#111111] tracking-[-0.03em] leading-[1.1] max-w-3xl mb-8"
-            style={{ fontFamily: "var(--font-newsreader), Georgia, serif" }}
+            className="font-serif text-[clamp(3.15rem,11.5vw,8.5rem)] leading-[0.95] tracking-[-0.03em] text-[#111111]"
+            style={{
+              fontFamily: "var(--font-newsreader), Georgia, serif",
+              textShadow: "0 0 28px rgba(245, 244, 239, 0.72)",
+            }}
           >
-            {personalInfo.headline}
+            <span className="font-semibold not-italic">Type</span>{" "}
+            <span className="font-normal italic tracking-[-0.025em]">Systems</span>
           </h1>
-
-          {/* Human, Grounded Sub-copy */}
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-8 items-start mb-12">
-            <p className="md:col-span-8 text-base sm:text-lg text-[#3D3D3D] leading-relaxed font-sans font-normal max-w-[60ch]">
-              {personalInfo.bio}
-            </p>
-
-            <div className="md:col-span-4 border-l border-[#EAEAEA] pl-5 font-sans text-[13px] text-[#4A4A4A] space-y-2.5">
-              <div>
-                <span className="text-[#111111] font-semibold block">{personalInfo.engagementLabel}</span>
-                <span>{personalInfo.engagementValue}</span>
-              </div>
-              <div>
-                <span className="text-[#111111] font-semibold block">{personalInfo.focusLabel}</span>
-                <span>{personalInfo.focusValue}</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Action Controls & External Handles */}
-          <div className="flex flex-wrap items-center gap-3.5 pt-2">
-            <a
-              href="#projects"
-              className="inline-flex items-center gap-2 rounded-[4px] bg-[#111111] px-4 py-2.5 text-xs font-sans font-medium text-white transition-all hover:bg-[#2A2A2A] active:scale-[0.98] shadow-[0_1px_2px_rgba(0,0,0,0.05)]"
-            >
-              <span>{personalInfo.ctaLabel}</span>
-              <ArrowDown size={13} weight="bold" />
-            </a>
-
-            <a
-              href={`mailto:${email}`}
-              onClick={handleEmailClick}
-              aria-label={`Send direct email to ${email}`}
-              className="inline-flex items-center gap-2 rounded-[4px] border border-[#EAEAEA] bg-[#FBFBFA] px-4 py-2.5 text-xs font-sans font-medium text-[#111111] transition-all hover:bg-[#F0F0EE] active:scale-[0.98]"
-            >
-              {copied ? (
-                <>
-                  <Check size={13} weight="bold" className="text-[#346538]" />
-                  <span className="text-[#346538]">Opening Mail Client • Copied</span>
-                </>
-              ) : (
-                <>
-                  <EnvelopeSimple size={13} weight="regular" />
-                  <span>{email}</span>
-                </>
-              )}
-            </a>
-
-            <div className="flex items-center gap-2 ml-auto">
-              <a
-                href={personalInfo.github}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex h-9 w-9 items-center justify-center rounded-[4px] border border-[#EAEAEA] bg-[#FFFFFF] text-[#111111] transition-all hover:bg-[#F7F6F3] active:scale-[0.96]"
-                aria-label="GitHub Profile"
-              >
-                <GithubLogo size={16} weight="regular" />
-              </a>
-
-              <a
-                href={personalInfo.instagram}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex h-9 w-9 items-center justify-center rounded-[4px] border border-[#EAEAEA] bg-[#FFFFFF] text-[#111111] transition-all hover:bg-[#F7F6F3] active:scale-[0.96]"
-                aria-label="Instagram Profile"
-              >
-                <InstagramLogo size={16} weight="regular" />
-              </a>
-
-              <a
-                href={`mailto:${email}`}
-                onClick={handleEmailClick}
-                className="inline-flex h-9 w-9 items-center justify-center rounded-[4px] border border-[#EAEAEA] bg-[#FFFFFF] text-[#111111] transition-all hover:bg-[#F7F6F3] active:scale-[0.96]"
-                aria-label="Send direct email"
-                title={copied ? "Email copied to clipboard" : `Send email to ${email}`}
-              >
-                {copied ? (
-                  <Check size={16} weight="bold" className="text-[#346538]" />
-                ) : (
-                  <EnvelopeSimple size={16} weight="regular" />
-                )}
-              </a>
-            </div>
-          </div>
-        </div>
-
-        {/* Micro-dossier Quick Metrics Bar (Anchored at Bottom of Screen) */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 border-t border-[#EAEAEA] pt-4 sm:pt-6 font-sans text-xs mt-auto" aria-label="Quick profile facts">
-          {personalInfo.quickFacts.map((fact, i) => {
-            const last = i === personalInfo.quickFacts.length - 1;
-            return (
-              <div
-                key={`${fact.label}-${i}`}
-                className={`py-2 ${i % 2 === 0 ? "pr-4 border-r border-[#EAEAEA]" : "pl-4"} sm:px-4 ${i === 0 ? "sm:pl-0" : ""} ${last ? "sm:pr-0" : "sm:border-r sm:border-[#EAEAEA]"}`}
-              >
-                <span className="text-[#525252] block font-sans text-[11px] font-medium uppercase tracking-wider mb-0.5">{fact.label}</span>
-                <span className="text-[#111111] font-medium text-[13px]">{fact.value}</span>
-              </div>
-            );
-          })}
+          <p className="sr-only">
+            {personalInfo.name} — {personalInfo.role}. {personalInfo.headline}{" "}
+            {personalInfo.bio}
+          </p>
         </div>
       </div>
     </section>

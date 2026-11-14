@@ -3,24 +3,15 @@
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowsOut, X } from "@phosphor-icons/react";
-import { WORKSPACE_SETUP } from "@/data/portfolio";
-import { usePortfolio } from "@/components/portfolio-provider";
-import {
-  Reveal,
-  StaggerContainer,
-  StaggerItem,
-  useStickyBottomPin,
-} from "@/components/motion-wrapper";
+import { X } from "@phosphor-icons/react";
+import { Reveal, useStickyBottomPin } from "@/components/motion-wrapper";
 
 export function Workspace() {
-  const { data } = usePortfolio();
-  const setup = data.workspaceSetup ?? WORKSPACE_SETUP;
   const [modalOpen, setModalOpen] = useState(false);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const sectionRef = useRef<HTMLElement>(null);
 
-  useStickyBottomPin(sectionRef, setup);
+  useStickyBottomPin(sectionRef);
 
   // Close the lightbox with Escape, lock background scroll, and move focus to the dialog when opened
   useEffect(() => {
@@ -39,93 +30,60 @@ export function Workspace() {
   }, [modalOpen]);
 
   return (
-    <section ref={sectionRef} id="workspace" className="pt-8 md:pt-12 pb-24 md:pb-28 border-b border-[#EAEAEA] bg-[#FBFBFA] md:sticky md:top-[calc(100dvh-1327px)]">
+    <section
+      ref={sectionRef}
+      id="workspace"
+      className="dark-section pt-20 md:pt-28 pb-16 md:pb-24 border-b border-[#222222] bg-[#111111] text-[#FAFAFA] md:sticky md:top-[calc(100dvh-1327px)]"
+    >
       <div className="mx-auto max-w-5xl px-6 sm:px-8">
-        {/* Section Header */}
+        {/* Centered Editorial Header crowning the Studio Setup */}
         <Reveal>
-          <div className="mb-14 max-w-2xl">
+          <div className="mx-auto max-w-3xl text-center">
             <h2
-              className="text-3xl sm:text-4xl font-serif text-[#111111] tracking-[-0.02em] mb-4"
+              className="text-3xl sm:text-5xl font-serif text-[#FFFFFF] tracking-[-0.025em] leading-[1.08] mb-3.5"
               style={{ fontFamily: "var(--font-newsreader), Georgia, serif" }}
             >
-              Engineering Studio & Operational Setup
+              Engineering Studio &amp; Operational Setup
             </h2>
-            <p className="text-sm sm:text-base text-[#555555] font-sans">
+            <p className="text-xs sm:text-sm text-[#A3A3A3] font-sans max-w-xl mx-auto leading-relaxed">
               A deliberate workspace built for sustained focus, rapid prototyping, and architectural
               precision. Combining ergonomic hardware with strict software tooling.
             </p>
           </div>
         </Reveal>
 
-        {/* Editorial Photo Display with Faux-OS Window Chrome */}
-        <Reveal delay={0.1}>
-          <div className="mb-14 rounded-[10px] border border-[#EAEAEA] bg-[#FFFFFF] overflow-hidden shadow-[0_2px_8px_rgba(0,0,0,0.02)]">
-            <div className="flex items-center justify-between border-b border-[#EAEAEA] bg-[#FFFFFF] px-4 py-2.5">
-              <div className="flex items-center gap-1.5">
-                <span className="h-2.5 w-2.5 rounded-full bg-[#E5E5E5] inline-block"></span>
-                <span className="h-2.5 w-2.5 rounded-full bg-[#E5E5E5] inline-block"></span>
-                <span className="h-2.5 w-2.5 rounded-full bg-[#E5E5E5] inline-block"></span>
-              </div>
-              <span className="font-mono text-xs text-[#555555]">
-                workspace-environment.raw · studio-interior [calm focus]
-              </span>
-              <button
-                type="button"
-                onClick={() => setModalOpen(true)}
-                data-cursor-label="Enlarge"
-                className="font-sans text-xs font-medium text-[#525252] hover:text-[#111111] flex items-center gap-1 transition-colors"
-                aria-label="Enlarge workspace photo"
-              >
-                <ArrowsOut size={12} weight="bold" />
-                <span className="hidden sm:inline">Enlarge</span>
-              </button>
-            </div>
-
+        {/* Transparent Rear-View Composite Stage seamlessly integrated onto #111111 */}
+        <Reveal delay={0.08}>
+          <div className="relative mx-auto mt-6 sm:mt-8 max-w-4xl">
+            {/* Subtle ambient studio key light behind subject & display */}
             <div
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_62%_50%_at_50%_46%,rgba(255,255,255,0.065),transparent_72%)]"
+            />
+
+            <button
+              type="button"
               onClick={() => setModalOpen(true)}
               data-cursor-label="Enlarge"
-              className="relative aspect-[16/9] w-full bg-[#F7F6F3] cursor-pointer overflow-hidden"
+              aria-label="Enlarge Joshua Abdiel engineering studio setup view"
+              className="relative block w-full aspect-[1159/667] overflow-hidden border-0 bg-transparent p-0 focus-visible:outline-white cursor-pointer"
             >
               <Image
-                src="/images/workspace/setup.png"
-                alt="Joshua Abdiel engineering desk and workspace setup"
+                src="/images/workspace/setup-studio.png"
+                alt="Rear view of Joshua Abdiel seated at his engineering desk and operational setup"
                 fill
-                className="object-cover"
-                sizes="(max-width: 1024px) 100vw, 1024px"
+                className="object-contain object-bottom"
+                sizes="(max-width: 896px) 100vw, 896px"
                 priority={false}
               />
-              <div className="absolute inset-0 bg-[#111111]/[0.02] pointer-events-none"></div>
-            </div>
+              {/* Subtle bottom dissolve so chair base anchors organically into #111111 */}
+              <div
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-x-0 bottom-0 h-14 bg-gradient-to-t from-[#111111] via-[#111111]/60 to-transparent"
+              />
+            </button>
           </div>
         </Reveal>
-
-        {/* Setup Inventory Grid with Stagger */}
-        <StaggerContainer className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {setup.map((group) => (
-            <StaggerItem key={group.category}>
-              <div className="h-full rounded-[8px] border border-[#EAEAEA] bg-[#FFFFFF] p-6 flex flex-col justify-between transition-all duration-200 hover:border-[#CCCCCC]">
-                <div>
-                  <h3 className="font-sans text-xs uppercase tracking-wider text-[#111111] font-semibold mb-4 pb-2 border-b border-[#EAEAEA]">
-                    {group.category}
-                  </h3>
-
-                  <div className="space-y-4">
-                    {group.items.map((item) => (
-                      <div key={item.name} className="text-xs sm:text-[13px]">
-                        <span className="font-medium text-[#111111] block mb-0.5 font-sans">
-                          {item.name}
-                        </span>
-                        <span className="font-sans text-xs text-[#555555] leading-relaxed block">
-                          {item.spec}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </StaggerItem>
-          ))}
-        </StaggerContainer>
       </div>
 
       {/* Lightbox / Modal with AnimatePresence */}
@@ -137,7 +95,7 @@ export function Workspace() {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
             onClick={() => setModalOpen(false)}
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 sm:p-8"
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 sm:p-8"
           >
             <motion.div
               initial={{ scale: 0.96, opacity: 0 }}
@@ -148,10 +106,10 @@ export function Workspace() {
               role="dialog"
               aria-modal="true"
               aria-label="Workspace photo enlarged view"
-              className="relative max-w-5xl w-full rounded-[10px] border border-[#EAEAEA] bg-[#FFFFFF] overflow-hidden shadow-2xl"
+              className="dark-section relative max-w-4xl w-full rounded-[10px] border border-[#262626] bg-[#111111] overflow-hidden"
             >
-              <div className="flex items-center justify-between border-b border-[#EAEAEA] bg-[#FFFFFF] px-4 py-3">
-                <span className="font-mono text-xs text-[#111111]">
+              <div className="flex items-center justify-between border-b border-[#262626] bg-[#111111] px-4 py-3">
+                <span className="font-mono text-xs text-[#FAFAFA]">
                   Joshua Abdiel | Physical Workspace Environment
                 </span>
                 <button
@@ -159,16 +117,16 @@ export function Workspace() {
                   type="button"
                   onClick={() => setModalOpen(false)}
                   aria-label="Close enlarged workspace photo"
-                  className="p-1 rounded hover:bg-[#F7F6F3] text-[#111111] transition-colors"
+                  className="p-1 rounded hover:bg-[#222222] text-[#FAFAFA] transition-colors"
                 >
                   <X size={18} weight="bold" />
                 </button>
               </div>
 
-              <div className="relative aspect-[16/9] w-full bg-[#000000]">
+              <div className="relative aspect-[1159/667] w-full bg-[#111111] p-4 sm:p-8">
                 <Image
-                  src="/images/workspace/setup.png"
-                  alt="Joshua Abdiel engineering desk and workspace setup full view"
+                  src="/images/workspace/setup-studio.png"
+                  alt="Rear view of Joshua Abdiel seated at his engineering desk and operational setup"
                   fill
                   className="object-contain"
                   sizes="100vw"

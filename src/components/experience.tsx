@@ -83,6 +83,7 @@ export function Experience() {
                                 href={exp.imageLink}
                                 target="_blank"
                                 rel="noopener noreferrer"
+                                data-link-fill="off"
                                 data-cursor-label="Open link"
                                 aria-label={`Open link for ${exp.company}`}
                                 className="group/fig relative block overflow-hidden rounded-[8px] border border-[#EAEAEA] bg-[#F7F6F3] transition-colors hover:border-[#CCCCCC]"
@@ -117,11 +118,11 @@ export function Experience() {
                           </figure>
                         )}
 
-                        <div className="flex flex-wrap gap-1.5 font-sans text-xs text-[#4A4A4A]">
+                        <div className="flex flex-wrap gap-1.5 font-sans text-xs">
                           {exp.technologies.map((tech) => (
                             <span
                               key={tech}
-                              className="rounded bg-[#F7F6F3] border border-[#EAEAEA] px-2.5 py-1"
+                              className="rounded border border-[#111111] bg-[#111111] px-2.5 py-1 text-[#FFFFFF]"
                             >
                               {tech}
                             </span>
@@ -132,11 +133,6 @@ export function Experience() {
 
                     {galleryFrames.length > 0 && (
                       <div className="mt-8">
-                        <div className="mb-3 flex items-center justify-between font-mono text-[11px] uppercase tracking-[0.06em] text-[#787774]">
-                          <span>Field Documentation · {exp.company}</span>
-                          <span>{String(galleryFrames.length).padStart(2, "0")} Frames</span>
-                        </div>
-
                         <div
                           className={`grid grid-cols-2 gap-3 md:gap-3.5 ${
                             galleryFrames.length >= 5 ? "md:grid-cols-5" : "md:grid-cols-4"
@@ -155,16 +151,6 @@ export function Experience() {
                                   className="h-full w-full object-cover"
                                 />
                               </div>
-                              <figcaption className="flex items-center justify-between gap-2 border-t border-[#EAEAEA] bg-white px-2.5 py-2 font-mono text-[10px] uppercase tracking-[0.05em] text-[#616161]">
-                                <span className="shrink-0 whitespace-nowrap font-semibold text-[#111111]">
-                                  Fig. {String(index + 1).padStart(2, "0")}
-                                </span>
-                                {frame.caption && (
-                                  <span className="whitespace-nowrap truncate text-[#787774]">
-                                    {frame.caption}
-                                  </span>
-                                )}
-                              </figcaption>
                             </figure>
                           ))}
                         </div>
@@ -210,6 +196,7 @@ export function Experience() {
                             href={edu.imageLink}
                             target="_blank"
                             rel="noopener noreferrer"
+                            data-link-fill="off"
                             data-cursor-label="Open link"
                             aria-label={`Open link for ${edu.institution}`}
                             className="group/fig relative block overflow-hidden rounded-[8px] border border-[#EAEAEA] bg-[#F7F6F3] transition-colors hover:border-[#CCCCCC]"

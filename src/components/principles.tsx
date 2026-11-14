@@ -22,7 +22,7 @@ export function Principles() {
       <div className="mx-auto max-w-5xl px-6 sm:px-8">
         {/* Single one-shot entrance: header + rows reveal together, at once */}
         <Reveal>
-          <div className="mb-14 max-w-2xl">
+          <div className="mb-14">
             <h2
               className="text-3xl sm:text-4xl font-serif text-[#111111] tracking-[-0.02em] mb-4"
               style={{ fontFamily: "var(--font-newsreader), Georgia, serif" }}
@@ -51,22 +51,24 @@ export function Principles() {
                     aria-expanded={isExpanded}
                     aria-controls={`principle-panel-${principle.number}`}
                     aria-label={`${isExpanded ? "Collapse" : "Expand"} principle ${principle.number}: ${principle.title}`}
-                  className={`w-full text-left py-7 -mx-4 px-4 rounded-[6px] transition-colors cursor-pointer ${
+                  className={`group/row w-full text-left py-7 -mx-4 px-4 rounded-[6px] transition-colors cursor-pointer ${
                     isExpanded ? "bg-[#FBFBFA]" : "hover:bg-[#FDFDFD]"
                   }`}
                 >
-                  <div className="grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-8 items-start">
-                    <div className="md:col-span-2 font-mono text-xs text-[#616161] flex items-center gap-2">
-                      <span className="font-semibold text-[#111111]">[{principle.number}]</span>
-                      <motion.span
-                        animate={{ rotate: isExpanded ? 90 : 0 }}
-                        transition={{ duration: 0.18 }}
+                  <div className="grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-8 items-start md:items-stretch">
+                    <div className="md:col-span-2 flex items-center md:self-stretch select-none">
+                      <span
+                        className={`font-mono text-5xl sm:text-6xl md:text-[76px] font-light leading-[0.82] tracking-[-0.06em] tabular-nums transition-colors duration-200 ${
+                          isExpanded
+                            ? "text-[#111111]"
+                            : "text-[#C4C3BE] group-hover/row:text-[#787774]"
+                        }`}
                       >
-                        <CaretRight size={12} weight="bold" className="text-[#616161]" />
-                      </motion.span>
+                        {principle.number}
+                      </span>
                     </div>
 
-                    <div className="md:col-span-4">
+                    <div className="md:col-span-4 flex items-start justify-between gap-2">
                       <h3
                         className={`text-lg font-serif transition-colors tracking-tight ${
                           isExpanded ? "text-[#111111] font-medium" : "text-[#444444]"
@@ -75,6 +77,13 @@ export function Principles() {
                       >
                         {principle.title}
                       </h3>
+                      <motion.span
+                        animate={{ rotate: isExpanded ? 90 : 0 }}
+                        transition={{ duration: 0.18 }}
+                        className="mt-1.5 shrink-0"
+                      >
+                        <CaretRight size={12} weight="bold" className="text-[#616161]" />
+                      </motion.span>
                     </div>
 
                     <div className="md:col-span-6 text-sm text-[#555555] leading-relaxed">

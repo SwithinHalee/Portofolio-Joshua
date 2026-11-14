@@ -87,8 +87,9 @@ export function Navbar() {
       <Link
         href="/"
         data-navbar-brand-link
+        data-link-fill="off"
         aria-label={`${personalInfo.name} Home`}
-        className={`fixed left-4 sm:left-6 xl:left-4 2xl:left-8 top-4 sm:top-5 xl:top-6 z-40 inline-flex items-center p-0 border-0 bg-transparent mix-blend-difference antialiased shadow-none font-sans font-medium tracking-[-0.025em] text-[#FFFFFF] transition-colors duration-200 hover:text-[#FFFFFF]/70 ${
+        className={`fixed left-4 sm:left-6 xl:left-4 2xl:left-8 top-4 sm:top-5 xl:top-6 z-40 inline-flex items-center p-0 border-0 bg-transparent mix-blend-difference antialiased shadow-none font-sans font-medium tracking-[-0.025em] text-[#FFFFFF] ${
           isBrandVisible ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
         }`}
       >
@@ -104,7 +105,7 @@ export function Navbar() {
       <nav
         aria-label="Primary actions"
         data-navbar-chrome
-        className={`fixed right-4 sm:right-6 2xl:right-8 top-4 sm:top-5 xl:top-[27px] z-50 flex items-center gap-5 sm:gap-6 bg-transparent mix-blend-difference antialiased transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+        className={`fixed -mr-1.5 right-4 sm:right-6 2xl:right-8 top-4 sm:top-5 xl:top-[27px] z-50 flex items-center gap-2 sm:gap-3 bg-transparent mix-blend-difference antialiased transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
           isChromeVisible
             ? "opacity-100 translate-y-0 pointer-events-auto"
             : "opacity-0 -translate-y-1 pointer-events-none"
@@ -112,10 +113,10 @@ export function Navbar() {
       >
         <Link
           href="/archive"
-          className={`inline-flex items-center p-0 border-0 bg-transparent shadow-none font-sans text-[13px] leading-[1.15] tracking-[-0.01em] transition-colors duration-200 active:scale-[0.98] ${
+          className={`link-hug rounded-[2px] -my-[0.25em] border-0 bg-transparent shadow-none font-sans text-[13px] tracking-[-0.01em] transition-colors duration-200 active:scale-[0.98] ${
             isArchiveActive
               ? "text-[#FFFFFF] font-medium underline underline-offset-4 decoration-[1.5px]"
-              : "text-[#FFFFFF]/65 hover:text-[#FFFFFF] font-normal"
+              : "text-[#FFFFFF]/65 font-normal"
           }`}
         >
           Archive
@@ -124,10 +125,10 @@ export function Navbar() {
         <Link
           href="/#contact"
           onClick={handleContactClick}
-          className={`inline-flex items-center gap-1 p-0 border-0 bg-transparent shadow-none font-sans text-[13px] leading-[1.15] tracking-[-0.01em] transition-colors duration-200 active:scale-[0.98] ${
+          className={`link-hug gap-1 rounded-[2px] -my-[0.25em] border-0 bg-transparent shadow-none font-sans text-[13px] tracking-[-0.01em] transition-colors duration-200 active:scale-[0.98] ${
             isContactHighlighted
               ? "text-[#FFFFFF] font-medium underline underline-offset-4 decoration-[1.5px]"
-              : "text-[#FFFFFF]/65 hover:text-[#FFFFFF] font-normal"
+              : "text-[#FFFFFF]/65 font-normal"
           }`}
         >
           <span>Contact</span>

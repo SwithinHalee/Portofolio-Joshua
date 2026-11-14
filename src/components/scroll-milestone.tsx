@@ -253,6 +253,7 @@ export function ScrollMilestone() {
 
   const activeIndex = MILESTONES.findIndex((m) => m.id === activeId);
   const currentIdx = activeIndex === -1 ? 0 : activeIndex;
+  const isSidePanelVisible = isChromeVisible && activeId !== "hero";
 
   const scrollTo = (id: string) => {
     scrollWithWeight(() => {
@@ -268,9 +269,10 @@ export function ScrollMilestone() {
       {/* 1. Desktop & Widescreen Milestone Rail (Native Real-Time Pixel-Level Difference Blending) */}
       <nav
         aria-label="Document Section Milestones"
+        aria-hidden={!isSidePanelVisible}
         data-navbar-chrome
         className={`fixed left-4 2xl:left-8 top-1/2 -translate-y-1/2 z-40 hidden xl:flex flex-col items-start select-none py-2 bg-transparent mix-blend-difference transition-opacity duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
-          isChromeVisible ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+          isSidePanelVisible ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
         }`}
       >
         <div className="flex flex-col items-start group">
@@ -308,31 +310,47 @@ export function ScrollMilestone() {
                   >
                     <button
                       type="button"
+                      tabIndex={isSidePanelVisible ? 0 : -1}
                       onClick={() => scrollTo(item.id)}
                       aria-current={isActive ? "location" : undefined}
                       className="group/btn flex items-center gap-3 text-left focus:outline-none focus-visible:ring-1 focus-visible:ring-white rounded py-0.5"
                       aria-label={`Scroll to ${item.fullLabel}`}
                     >
-                      {/* Node Bullet / Marker */}
+                      {/* Node Bullet / Marker (true-circle SVG prevents subpixel oval distortion) */}
                       <div
                         ref={(el) => {
                           dotRefs.current[idx] = el;
                         }}
-                        className="relative flex items-center justify-center w-5 h-5 flex-shrink-0"
+                        className="relative z-10 flex h-5 w-5 shrink-0 aspect-square items-center justify-center"
                       >
-                        <div
-                          className={`rounded-full transition-all duration-150 ease-out z-10 flex items-center justify-center ${
-                            isActive
-                              ? "w-3.5 h-3.5 bg-white ring-2 ring-white/55 scale-100"
-                              : isPassed
-                              ? "w-2.5 h-2.5 bg-white"
-                              : "w-2.5 h-2.5 border border-white/75 bg-black group-hover/btn:border-white"
-                          }`}
+                        <svg
+                          viewBox="0 0 20 20"
+                          width={20}
+                          height={20}
+                          aria-hidden="true"
+                          shapeRendering="geometricPrecision"
+                          className="block h-5 w-5 shrink-0"
                         >
-                          {isActive && (
-                            <span className="w-1.5 h-1.5 rounded-full bg-black block" />
+                          {isActive ? (
+                            <>
+                              <circle cx="10" cy="10" r="8.5" fill="rgba(255, 255, 255, 0.48)" />
+                              <circle cx="10" cy="10" r="6.5" fill="#FFFFFF" />
+                              <circle cx="10" cy="10" r="2.75" fill="#000000" />
+                            </>
+                          ) : isPassed ? (
+                            <circle cx="10" cy="10" r="5" fill="#FFFFFF" />
+                          ) : (
+                            <circle
+                              cx="10"
+                              cy="10"
+                              r="4.5"
+                              fill="#000000"
+                              stroke="rgba(255, 255, 255, 0.75)"
+                              strokeWidth="1"
+                              className="transition-colors duration-150 group-hover/btn:stroke-white"
+                            />
                           )}
-                        </div>
+                        </svg>
                       </div>
 
                       {/* Number Tag */}
@@ -372,13 +390,15 @@ export function ScrollMilestone() {
       {/* 2. Mobile & Tablet Minimal Floating Status */}
       <aside
         aria-label="Mobile reading progress"
+        aria-hidden={!isSidePanelVisible}
         data-navbar-chrome
         className={`fixed bottom-4 left-4 z-40 xl:hidden select-none transition-opacity duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
-          isChromeVisible ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+          isSidePanelVisible ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
         }`}
       >
         <button
           type="button"
+          tabIndex={isSidePanelVisible ? 0 : -1}
           onClick={() => {
             const nextIdx = (currentIdx + 1) % MILESTONES.length;
             scrollTo(MILESTONES[nextIdx].id);

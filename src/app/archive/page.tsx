@@ -24,7 +24,7 @@ const ARCHIVE_ITEMS: ArchiveEntry[] = [
     category: "Climate Tech / Web Platform",
     context: "CarbonEthics (Internship)",
     tech: ["Next.js", "TypeScript", "Tailwind CSS", "TanStack Query", "REST API"],
-    link: "https://web-staging.carbonethics.co/",
+    link: "https://www.carbonethics.co/",
     slug: "carbonethics-platform",
   },
   {
@@ -96,7 +96,7 @@ export default function ArchivePage() {
           <div className="mb-10">
             <Link
               href="/"
-              className="inline-flex items-center gap-2 font-sans text-xs font-medium text-[#525252] hover:text-[#111111] transition-colors"
+              className="link-hug gap-2 rounded-[2px] -mx-1.5 font-sans text-xs font-medium text-[#525252]"
             >
               <ArrowLeft size={13} weight="bold" />
               <span>Return to Portfolio Home</span>
@@ -200,9 +200,9 @@ export default function ArchivePage() {
                     </td>
 
                     <td className="py-4 pr-4 align-top">
-                      <div className="font-sans font-medium text-sm text-[#111111] group-hover:text-[#444444]">
+                      <div className="font-sans font-medium text-sm text-[#111111]">
                         {item.slug ? (
-                          <Link href={`/work/${item.slug}`} className="hover:underline">
+                          <Link href={`/work/${item.slug}`} className="link-hug-inline inline rounded-[2px]">
                             {item.title}
                           </Link>
                         ) : (
@@ -246,11 +246,11 @@ export default function ArchivePage() {
                     </td>
 
                     <td className="py-4 text-right align-top">
-                      <div className="flex items-center justify-end gap-3">
+                      <div className="flex items-center justify-end gap-1.5">
                         {item.slug && (
                           <Link
                             href={`/work/${item.slug}`}
-                            className="text-[#111111] font-medium hover:underline text-xs whitespace-nowrap"
+                            className="link-hug rounded-[2px] text-[#111111] font-medium text-xs whitespace-nowrap"
                           >
                             Case Study
                           </Link>
@@ -260,7 +260,7 @@ export default function ArchivePage() {
                             href={item.github}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-[#616161] hover:text-[#111111]"
+                            className="inline-flex items-center justify-center rounded-[2px] p-1 text-[#616161]"
                             title="GitHub Repo"
                           >
                             <GithubLogo size={14} weight="regular" />
@@ -271,7 +271,7 @@ export default function ArchivePage() {
                             href={item.link}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-[#616161] hover:text-[#111111]"
+                            className="inline-flex items-center justify-center rounded-[2px] p-1 text-[#616161]"
                             title="Live Site"
                           >
                             <Globe size={14} weight="regular" />
@@ -282,7 +282,7 @@ export default function ArchivePage() {
                             href={item.download}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-[#616161] hover:text-[#111111]"
+                            className="inline-flex items-center justify-center rounded-[2px] p-1 text-[#616161]"
                             title="Download APK"
                           >
                             <DownloadSimple size={14} weight="regular" />

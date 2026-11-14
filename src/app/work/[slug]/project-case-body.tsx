@@ -57,14 +57,14 @@ export function ProjectCaseBody({ slug, initialProject, initialIndex, initialPre
           <div className="flex flex-wrap gap-2">
             <Link
               href="/#projects"
-              className="inline-flex items-center gap-2 rounded-[4px] bg-[#111111] px-4 py-2.5 font-mono text-xs text-white transition-all hover:bg-[#2A2A2A] active:scale-[0.98]"
+              className="inline-flex items-center gap-2 rounded-[4px] bg-[#111111] px-4 py-2.5 font-mono text-xs text-white active:scale-[0.98]"
             >
               <ArrowLeft size={13} weight="bold" />
               <span>Return to Selected Works</span>
             </Link>
             <Link
               href="/admin"
-              className="inline-flex items-center gap-2 rounded-[4px] border border-[#EAEAEA] bg-[#FBFBFA] px-4 py-2.5 font-mono text-xs text-[#111111] transition-all hover:bg-[#F0F0EE] active:scale-[0.98]"
+              className="inline-flex items-center gap-2 rounded-[4px] border border-[#EAEAEA] bg-[#FBFBFA] px-4 py-2.5 font-mono text-xs text-[#111111] active:scale-[0.98]"
             >
               <span>Open Portfolio Studio</span>
             </Link>
@@ -91,7 +91,7 @@ export function ProjectCaseBody({ slug, initialProject, initialIndex, initialPre
         <div className="mb-10">
           <Link
             href="/#projects"
-            className="inline-flex items-center gap-2 font-sans text-xs font-medium text-[#525252] hover:text-[#111111] transition-colors"
+            className="link-hug gap-2 rounded-[2px] -mx-1.5 font-sans text-xs font-medium text-[#525252]"
           >
             <ArrowLeft size={13} weight="bold" />
             <span>Return to Selected Works Index</span>
@@ -134,13 +134,13 @@ export function ProjectCaseBody({ slug, initialProject, initialIndex, initialPre
               ))}
             </div>
             {(project.githubUrl || project.liveUrl || project.downloadUrl) && (
-              <div className="flex shrink-0 flex-wrap items-center gap-3 border-t border-[#EAEAEA] pt-3 md:justify-end md:border-t-0 md:pt-0">
+              <div className="flex shrink-0 flex-wrap items-center gap-2 border-t border-[#EAEAEA] pt-3 md:justify-end md:border-t-0 md:pt-0">
                 {project.githubUrl && (
                   <a
                     href={project.githubUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex shrink-0 items-center gap-1 whitespace-nowrap font-medium text-[#111111] hover:underline"
+                    className="link-hug shrink-0 gap-1 whitespace-nowrap rounded-[2px] -my-[0.25em] font-medium text-[#111111]"
                   >
                     <GithubLogo size={13} weight="bold" />
                     <span>Repo</span>
@@ -151,7 +151,7 @@ export function ProjectCaseBody({ slug, initialProject, initialIndex, initialPre
                     href={project.liveUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex shrink-0 items-center gap-1 whitespace-nowrap font-medium text-[#111111] hover:underline"
+                    className="link-hug shrink-0 gap-1 whitespace-nowrap rounded-[2px] -my-[0.25em] font-medium text-[#111111]"
                   >
                     <Globe size={13} weight="bold" />
                     <span>Live</span>
@@ -163,7 +163,7 @@ export function ProjectCaseBody({ slug, initialProject, initialIndex, initialPre
                     href={project.downloadUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-[4px] bg-[#111111] px-2.5 py-1.5 font-medium leading-none text-white transition-colors hover:bg-[#2A2A2A] hover:no-underline"
+                    className="inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-[4px] bg-[#111111] px-2.5 py-1.5 font-medium leading-none text-white"
                   >
                     <DownloadSimple size={13} weight="bold" />
                     <span>Download APK</span>
@@ -263,18 +263,26 @@ export function ProjectCaseBody({ slug, initialProject, initialIndex, initialPre
           <div className="pt-12 grid grid-cols-2 gap-4 font-sans text-xs">
             <Link
               href={`/work/${prevProject.slug}`}
-              className="rounded-[6px] border border-[#EAEAEA] p-4 hover:bg-[#FBFBFA] transition-colors"
+              className="group rounded-[6px] border border-[#EAEAEA] p-4"
             >
-              <span className="text-[#525252] block text-[11px] font-medium tracking-wider uppercase mb-1">PREVIOUS WORK</span>
-              <span className="font-serif text-base font-medium text-[#111111] truncate block">{prevProject.title}</span>
+              <span className="text-[#525252] transition-colors duration-300 group-hover:text-[#CCCCCC] group-focus-visible:text-[#CCCCCC] block text-[11px] font-medium tracking-wider uppercase mb-1">
+                PREVIOUS WORK
+              </span>
+              <span className="font-serif text-base font-medium text-[#111111] transition-colors duration-300 group-hover:text-[#FFFFFF] group-focus-visible:text-[#FFFFFF] truncate block">
+                {prevProject.title}
+              </span>
             </Link>
 
             <Link
               href={`/work/${nextProject.slug}`}
-              className="rounded-[6px] border border-[#EAEAEA] p-4 hover:bg-[#FBFBFA] transition-colors text-right"
+              className="group rounded-[6px] border border-[#EAEAEA] p-4 text-right"
             >
-              <span className="text-[#525252] block text-[11px] font-medium tracking-wider uppercase mb-1">NEXT WORK</span>
-              <span className="font-serif text-base font-medium text-[#111111] truncate block">{nextProject.title}</span>
+              <span className="text-[#525252] transition-colors duration-300 group-hover:text-[#CCCCCC] group-focus-visible:text-[#CCCCCC] block text-[11px] font-medium tracking-wider uppercase mb-1">
+                NEXT WORK
+              </span>
+              <span className="font-serif text-base font-medium text-[#111111] transition-colors duration-300 group-hover:text-[#FFFFFF] group-focus-visible:text-[#FFFFFF] truncate block">
+                {nextProject.title}
+              </span>
             </Link>
           </div>
         )}

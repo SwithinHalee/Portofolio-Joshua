@@ -253,7 +253,10 @@ export function WeightedScroll() {
             currentY = window.scrollY;
             lastAppliedY = window.scrollY;
             lastDocH = docH;
-            if (!guided) {
+            if (guided) {
+              guided.startY = window.scrollY;
+              guided.startTime = 0;
+            } else {
               targetY = Math.max(0, Math.min(targetY + drift, getMaxScroll()));
             }
           } else {

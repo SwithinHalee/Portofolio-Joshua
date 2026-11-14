@@ -35,7 +35,7 @@ export default function PrivacyPage() {
           Contact for privacy matters:{" "}
           <a
             href={`mailto:${PERSONAL_INFO.email}?subject=Privacy%20request`}
-            className="font-medium text-[#111111] underline underline-offset-4"
+            className="link-hug-inline rounded-[2px] font-medium text-[#111111] underline underline-offset-4"
           >
             {PERSONAL_INFO.email}
           </a>
@@ -104,7 +104,7 @@ export default function PrivacyPage() {
           consent to. See the dedicated{" "}
           <a
             href="/cookies"
-            className="font-medium text-[#111111] underline underline-offset-4"
+            className="link-hug-inline rounded-[2px] font-medium text-[#111111] underline underline-offset-4"
           >
             Cookie Policy
           </a>{" "}
@@ -158,7 +158,7 @@ export default function PrivacyPage() {
           To exercise any right, email{" "}
           <a
             href={`mailto:${PERSONAL_INFO.email}?subject=Data%20rights%20request`}
-            className="font-medium text-[#111111] underline underline-offset-4"
+            className="link-hug-inline rounded-[2px] font-medium text-[#111111] underline underline-offset-4"
           >
             {PERSONAL_INFO.email}
           </a>{" "}

@@ -129,13 +129,14 @@ export function sanitizePortfolio(raw: unknown): PortfolioData | null {
         : migrated !== img
           ? { ...p, image: migrated }
           : p;
-      // Staging move: old production URL persisted in stored copies.
+      // Migrate legacy CarbonEthics URLs persisted in stored copies to www.carbonethics.co.
       if (
         (next.id === "carbonethics-platform" || next.slug === "carbonethics-platform") &&
         typeof next.liveUrl === "string" &&
-        next.liveUrl.includes("carbonethics.org")
+        (next.liveUrl.includes("carbonethics.org") ||
+          next.liveUrl.includes("web-staging.carbonethics.co"))
       ) {
-        return { ...next, liveUrl: "https://web-staging.carbonethics.co/" };
+        return { ...next, liveUrl: "https://www.carbonethics.co/" };
       }
       // Demo + APK links added later: stored copies predate them.
       if (next.id === "pokemon-explorer" || next.slug === "pokemon-explorer") {
@@ -347,7 +348,7 @@ export function exportPortfolioTS(data: PortfolioData): string {
         `  {\n    title: ${tsString(c.title)},\n    description: ${tsString(c.description)},\n    skills: [\n${c.skills
           .map(
             (s) =>
-              `      { name: ${tsString(s.name)}, detail: ${tsString(s.detail)}${s.kbd ? `, kbd: ${tsString(s.kbd)}` : ""}${s.logos && s.logos.length > 0 ? `, logos: ${tsStringArray(s.logos, "      ")}` : ""} },`
+              `      { name: ${tsString(s.name)}, detail: ${tsString(s.detail)}${s.kbd ? `, kbd: ${tsString(s.kbd)}` : ""}${s.logos && s.logos.length > 0 ? `, logos: ${tsStringArray(s.logos, "      ")}` : ""}${s.url ? `, url: ${tsString(s.url)}` : ""} },`
           )
           .join("\n")}\n    ],\n  },`
     )
@@ -441,7 +442,7 @@ export interface EducationItem {
 export interface TechCategory {
   title: string;
   description: string;
-  skills: { name: string; detail: string; kbd?: string; logos?: string[] }[];
+  skills: { name: string; detail: string; kbd?: string; logos?: string[]; url?: string }[];
 }
 
 export interface PrincipleItem {

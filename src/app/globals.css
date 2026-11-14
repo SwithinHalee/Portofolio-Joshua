@@ -104,6 +104,11 @@ kbd {
   outline-color: #FFFFFF;
 }
 
+.dark-section [data-theme="light"] :focus-visible,
+[data-theme="light"] :focus-visible {
+  outline-color: #111111;
+}
+
 /* Respect users who request reduced motion (WCAG 2.3.3) */
 @media (prefers-reduced-motion: reduce) {
   html {
@@ -174,7 +179,6 @@ kbd {
 /* Dark Mode Sections Selection (Background white with text black on block highlight) */
 #about ::selection,
 #dossier ::selection,
-#contact ::selection,
 .dark-section ::selection,
 [data-theme="dark"] ::selection {
   background-color: #FFFFFF !important;
@@ -183,9 +187,124 @@ kbd {
 
 #about ::-moz-selection,
 #dossier ::-moz-selection,
-#contact ::-moz-selection,
 .dark-section ::-moz-selection,
 [data-theme="dark"] ::-moz-selection {
   background-color: #FFFFFF !important;
   color: #0E0E0E !important;
+}
+
+.dark-section [data-theme="light"] ::selection,
+[data-theme="light"] ::selection {
+  background-color: #111111 !important;
+  color: #FFFFFF !important;
+}
+
+.dark-section [data-theme="light"] ::-moz-selection,
+[data-theme="light"] ::-moz-selection {
+  background-color: #111111 !important;
+  color: #FFFFFF !important;
+}
+
+/* Universal bottom-to-top fill-up hover animation across site links */
+a[href]:not([data-link-fill="off"]):not(.sr-only),
+[data-link-fill="on"] {
+  --link-fill-bg: #111111;
+  --link-fill-ink: #FFFFFF;
+  --link-fill-border: #111111;
+  background-image: linear-gradient(var(--link-fill-bg), var(--link-fill-bg));
+  background-repeat: no-repeat;
+  background-position: 0% 100%;
+  background-size: 100% 0%;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+  transition:
+    background-size 500ms cubic-bezier(0.22, 1, 0.36, 1),
+    color 380ms cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 420ms cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 420ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 420ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 200ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Dark sections & dark controls invert to white fill with black ink */
+.dark-section a[href]:not([data-link-fill="off"]),
+.dark-section [data-link-fill="on"],
+[data-theme="dark"] a[href]:not([data-link-fill="off"]),
+[data-theme="dark"] [data-link-fill="on"] {
+  --link-fill-bg: #FFFFFF;
+  --link-fill-ink: #111111;
+  --link-fill-border: #FFFFFF;
+}
+
+/* Light cards nested inside dark sections revert to black fill with white ink */
+.dark-section [data-theme="light"] a[href]:not([data-link-fill="off"]),
+.dark-section [data-theme="light"] [data-link-fill="on"],
+[data-theme="light"] a[href]:not([data-link-fill="off"]),
+[data-theme="light"] [data-link-fill="on"] {
+  --link-fill-bg: #111111;
+  --link-fill-ink: #FFFFFF;
+  --link-fill-border: #111111;
+}
+
+a[href][class*="bg-[#111111]"]:not([data-link-fill="off"]),
+[data-link-fill="on"][class*="bg-[#111111]"] {
+  --link-fill-bg: #FFFFFF;
+  --link-fill-ink: #111111;
+  --link-fill-border: #111111;
+}
+
+/* Fixed mix-blend-difference navbar auto-inverts cleanly over both light and dark canvases */
+[data-navbar-chrome] a[href]:not([data-link-fill="off"]) {
+  --link-fill-bg: #FFFFFF;
+  --link-fill-ink: #000000;
+  --link-fill-border: transparent;
+}
+
+a[href]:not([data-link-fill="off"]):not(.sr-only):hover,
+a[href]:not([data-link-fill="off"]):not(.sr-only):focus-visible,
+[data-link-fill="on"]:hover,
+[data-link-fill="on"]:focus-visible {
+  background-size: 100% 100%;
+  color: var(--link-fill-ink);
+  border-color: var(--link-fill-border);
+  text-decoration-line: none;
+}
+
+a[href][class*="bg-[#111111]"]:not([data-link-fill="off"]):hover,
+a[href][class*="bg-[#111111]"]:not([data-link-fill="off"]):focus-visible,
+[data-link-fill="on"][class*="bg-[#111111]"]:hover,
+[data-link-fill="on"][class*="bg-[#111111]"]:focus-visible {
+  box-shadow: inset 0 0 0 1px #111111;
+}
+
+@layer components {
+  .link-hug {
+    display: inline-flex;
+    align-items: center;
+    line-height: 1;
+    padding-block: 0.25em;
+    padding-inline: 0.375rem;
+  }
+
+  .link-hug-serif {
+    padding-top: 0.1em;
+    padding-bottom: 0;
+    padding-inline: 0.22em;
+    margin-inline: -0.22em;
+  }
+
+  .link-hug-inline {
+    padding-top: 0.08em;
+    padding-bottom: 0;
+    padding-inline: 0.25rem;
+    margin-inline: -0.25rem;
+  }
+
+  @supports (text-box-trim: trim-both) {
+    .link-hug,
+    .link-hug > span {
+      text-box-trim: trim-both;
+      text-box-edge: cap alphabetic;
+    }
+  }
 }

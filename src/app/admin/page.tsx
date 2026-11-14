@@ -1449,6 +1449,30 @@ export default function AdminPage() {
                               />
                             </div>
                             <input
+                              value={s.url ?? ""}
+                              type="url"
+                              placeholder="Docs / homepage URL (e.g. https://tailwindcss.com/docs)"
+                              aria-label={`Skill ${sIdx + 1} documentation URL`}
+                              onChange={(e) =>
+                                update((p) => ({
+                                  ...p,
+                                  techCategories: p.techCategories.map((c, i) =>
+                                    i === selectedCategoryIdx
+                                      ? {
+                                          ...c,
+                                          skills: c.skills.map((sk, k) =>
+                                            k === sIdx
+                                              ? { ...sk, url: e.target.value.trim() || undefined }
+                                              : sk
+                                          ),
+                                        }
+                                      : c
+                                  ),
+                                }))
+                              }
+                              className={`${textInputClass(true)} mt-2`}
+                            />
+                            <input
                               value={(s.logos ?? []).join(", ")}
                               placeholder="Logo slugs, comma separated (e.g. typescript, react; empty = monogram)"
                               aria-label={`Skill ${sIdx + 1} logo slugs`}

@@ -27,7 +27,7 @@ export function LegalLayout({
           <div className="mb-10">
             <Link
               href="/"
-              className="inline-flex items-center gap-2 font-sans text-xs font-medium text-[#525252] transition-colors hover:text-[#111111]"
+              className="link-hug gap-2 rounded-[2px] -mx-1.5 font-sans text-xs font-medium text-[#525252]"
             >
               <ArrowLeft size={13} weight="bold" aria-hidden="true" />
               <span>Return to Portfolio Home</span>
@@ -41,7 +41,7 @@ export function LegalLayout({
             >
               {title}
             </h1>
-            <p className="mb-6 max-w-[34rem] font-sans text-base leading-relaxed text-[#444444]">
+            <p className="mb-6 font-sans text-base leading-relaxed text-[#444444]">
               {description}
             </p>
             <div className="flex flex-wrap items-center gap-2 font-sans text-xs text-[#525252]">
@@ -57,11 +57,11 @@ export function LegalLayout({
             </div>
           </div>
 
-          <article className="max-w-[31rem] space-y-10 font-sans text-[15px] leading-relaxed text-[#333333]">
+          <article className="space-y-10 font-sans text-[15px] leading-relaxed text-[#333333]">
             {children}
           </article>
 
-          <div className="mt-14 max-w-[31rem] rounded-[6px] border border-[#EAEAEA] bg-[#FBFBFA] p-5">
+          <div className="mt-14 rounded-[6px] border border-[#EAEAEA] bg-[#FBFBFA] p-5">
             <h2 className="mb-2 font-sans text-xs font-semibold uppercase tracking-wider text-[#111111]">
               Questions about this page?
             </h2>
@@ -72,7 +72,7 @@ export function LegalLayout({
             </p>
             <a
               href={`mailto:${PERSONAL_INFO.email}?subject=Question%20about%20site%20policy`}
-              className="inline-flex items-center gap-2 rounded-[4px] bg-[#111111] px-4 py-2.5 font-sans text-xs font-medium text-white transition-all hover:bg-[#2A2A2A] active:scale-[0.98]"
+              className="inline-flex items-center gap-2 rounded-[4px] bg-[#111111] px-4 py-2.5 font-sans text-xs font-medium text-white active:scale-[0.98]"
             >
               <span>Email: {PERSONAL_INFO.email}</span>
             </a>

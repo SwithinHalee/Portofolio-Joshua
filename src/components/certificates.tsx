@@ -61,7 +61,7 @@ export function CertificatesSection() {
     >
       <div className="mx-auto max-w-5xl px-6 sm:px-8">
         <Reveal>
-          <div className="mb-12 max-w-2xl">
+          <div className="mb-12">
             <h2
               className="text-3xl sm:text-4xl font-serif text-[#111111] tracking-[-0.02em] mb-4"
               style={{ fontFamily: "var(--font-newsreader), Georgia, serif" }}
@@ -123,7 +123,7 @@ export function CertificatesSection() {
                     href={cert.pdfHref}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 rounded-[4px] bg-[#111111] px-3.5 py-2 font-sans text-xs font-semibold text-white transition-colors hover:bg-[#2A2A2A] active:scale-[0.98]"
+                    className="inline-flex items-center gap-1.5 rounded-[4px] bg-[#111111] px-3.5 py-2 font-sans text-xs font-semibold text-white active:scale-[0.98]"
                   >
                     <SealCheck size={13} weight="bold" />
                     <span>View Certificate (PDF)</span>

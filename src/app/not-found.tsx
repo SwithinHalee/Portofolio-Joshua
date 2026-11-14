@@ -28,42 +28,46 @@ export default function NotFound() {
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
             <Link
               href="/"
-              className="group rounded-[8px] border border-[#111111] bg-[#111111] p-5 text-white transition-all hover:bg-[#2A2A2A] active:scale-[0.99]"
+              className="group rounded-[8px] border border-[#111111] bg-[#111111] p-5 text-white active:scale-[0.99]"
             >
-              <span className="mb-1 flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-wider text-[#CCCCCC]">
+              <span className="mb-1 flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-wider text-[#CCCCCC] transition-colors duration-300 group-hover:text-[#525252] group-focus-visible:text-[#525252]">
                 <ArrowLeft size={12} weight="bold" />
                 <span>Ref 01</span>
               </span>
               <span className="block font-serif text-lg">Return to index</span>
-              <span className="mt-1 block font-sans text-xs text-[#CCCCCC]">
+              <span className="mt-1 block font-sans text-xs text-[#CCCCCC] transition-colors duration-300 group-hover:text-[#525252] group-focus-visible:text-[#525252]">
                 Homepage dossier
               </span>
             </Link>
 
             <Link
               href="/#projects"
-              className="group rounded-[8px] border border-[#EAEAEA] bg-[#FBFBFA] p-5 transition-colors hover:border-[#CCCCCC] hover:bg-[#F0F0EE]"
+              className="group rounded-[8px] border border-[#EAEAEA] bg-[#FBFBFA] p-5"
             >
-              <span className="mb-1 flex items-center justify-between font-mono text-[11px] uppercase tracking-wider text-[#525252]">
+              <span className="mb-1 flex items-center justify-between font-mono text-[11px] uppercase tracking-wider text-[#525252] transition-colors duration-300 group-hover:text-[#CCCCCC] group-focus-visible:text-[#CCCCCC]">
                 <span>Ref 02</span>
                 <ArrowUpRight size={12} weight="bold" />
               </span>
-              <span className="block font-serif text-lg text-[#111111]">Selected works</span>
-              <span className="mt-1 block font-sans text-xs text-[#525252]">
+              <span className="block font-serif text-lg text-[#111111] transition-colors duration-300 group-hover:text-[#FFFFFF] group-focus-visible:text-[#FFFFFF]">
+                Selected works
+              </span>
+              <span className="mt-1 block font-sans text-xs text-[#525252] transition-colors duration-300 group-hover:text-[#CCCCCC] group-focus-visible:text-[#CCCCCC]">
                 Engineering case index
               </span>
             </Link>
 
             <Link
               href="/archive"
-              className="group rounded-[8px] border border-[#EAEAEA] bg-[#FBFBFA] p-5 transition-colors hover:border-[#CCCCCC] hover:bg-[#F0F0EE]"
+              className="group rounded-[8px] border border-[#EAEAEA] bg-[#FBFBFA] p-5"
             >
-              <span className="mb-1 flex items-center justify-between font-mono text-[11px] uppercase tracking-wider text-[#525252]">
+              <span className="mb-1 flex items-center justify-between font-mono text-[11px] uppercase tracking-wider text-[#525252] transition-colors duration-300 group-hover:text-[#CCCCCC] group-focus-visible:text-[#CCCCCC]">
                 <span>Ref 03</span>
                 <ArrowUpRight size={12} weight="bold" />
               </span>
-              <span className="block font-serif text-lg text-[#111111]">Full archive</span>
-              <span className="mt-1 block font-sans text-xs text-[#525252]">
+              <span className="block font-serif text-lg text-[#111111] transition-colors duration-300 group-hover:text-[#FFFFFF] group-focus-visible:text-[#FFFFFF]">
+                Full archive
+              </span>
+              <span className="mt-1 block font-sans text-xs text-[#525252] transition-colors duration-300 group-hover:text-[#CCCCCC] group-focus-visible:text-[#CCCCCC]">
                 Chronological record
               </span>
             </Link>
