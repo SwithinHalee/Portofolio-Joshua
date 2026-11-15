@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { isAuthenticated } from "@/lib/admin-auth";
+import { ADMIN_DISABLED, isAuthenticated } from "@/lib/admin-auth";
 import { getGlobalPortfolio, isRedisConfigured, setGlobalPortfolio } from "@/lib/portfolio-server";
 
 export const runtime = "nodejs";
@@ -15,6 +15,9 @@ export async function GET() {
 }
 
 export async function PUT(req: Request) {
+  if (ADMIN_DISABLED) {
+    return NextResponse.json({ error: "Admin page is disabled." }, { status: 403 });
+  }
   const authed = await isAuthenticated();
   if (!authed) {
     return NextResponse.json({ error: "Unauthorized. Please log in as admin." }, { status: 401 });

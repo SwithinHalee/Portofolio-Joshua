@@ -246,7 +246,7 @@ export function Hero() {
       onPointerEnter={handlePointerMove}
       onPointerMove={handlePointerMove}
       onPointerLeave={handlePointerLeave}
-      className="relative flex min-h-[100dvh] flex-col justify-center overflow-hidden border-b border-[#EAEAEA] bg-[#F5F4EF] pt-16 pb-6 sm:pt-20 sm:pb-8 xl:pt-[76px]"
+      className="relative flex min-h-[100svh] sm:min-h-[100dvh] flex-col justify-center overflow-hidden border-b border-[#EAEAEA] bg-[#FFFFFF] pt-16 pb-6 sm:pt-20 sm:pb-8 xl:pt-[76px]"
     >
       {/* Central Interactive Glyph Matrix + Monumental Roman/Italic Serif Display */}
       <div
@@ -264,14 +264,14 @@ export function Hero() {
             className="font-serif text-[clamp(3.15rem,11.5vw,8.5rem)] leading-[0.95] tracking-[-0.03em] text-[#111111]"
             style={{
               fontFamily: "var(--font-newsreader), Georgia, serif",
-              textShadow: "0 0 28px rgba(245, 244, 239, 0.72)",
+              textShadow: "0 0 28px rgba(255, 255, 255, 0.72)",
             }}
           >
             <span className="font-semibold not-italic">Type</span>{" "}
             <span className="font-normal italic tracking-[-0.025em]">Systems</span>
           </h1>
           <p className="sr-only">
-            {personalInfo.name} — {personalInfo.role}. {personalInfo.headline}{" "}
+            {personalInfo.name}, {personalInfo.role}. {personalInfo.headline}{" "}
             {personalInfo.bio}
           </p>
         </div>

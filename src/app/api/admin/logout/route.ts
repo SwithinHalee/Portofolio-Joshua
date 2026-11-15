@@ -4,7 +4,7 @@ import { ADMIN_COOKIE_NAME } from "@/lib/admin-auth";
 export const runtime = "nodejs";
 
 export async function POST() {
-  const res = NextResponse.json({ success: true });
+  const res = NextResponse.json({ error: "Admin page is disabled." }, { status: 404 });
   res.cookies.set({
     name: ADMIN_COOKIE_NAME,
     value: "",

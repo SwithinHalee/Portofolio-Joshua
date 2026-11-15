@@ -1,4 +1,4 @@
-﻿# Joshua Portfolio — AGENTS.md
+﻿# Joshua Portfolio: AGENTS.md
 > Master Directive & Taste Protocol for Autonomous Coding Agents
 > Derived from [Leonxlnx/taste-skill](https://github.com/Leonxlnx/taste-skill) (`skills-lock.json`)
 
@@ -8,7 +8,7 @@
 
 - **Project**: Joshua's Personal Portfolio & Engineering Showcase (`portofolio-joshua`).
 - **Archetype**: Premium Utilitarian Minimalism & Editorial Portfolio (Document / Archive Style).
-- **Core Narrative Spine**: *Archive / Dossier* & *Precision Instrument* — celebrating deliberate craft, high-caliber engineering, technical rigor, and tasteful restrained aesthetics.
+- **Core Narrative Spine**: *Archive / Dossier* & *Precision Instrument*, celebrating deliberate craft, high-caliber engineering, technical rigor, and tasteful restrained aesthetics.
 - **Governing Skills** (from `.agents/` and `skills-lock.json`):
   1. `minimalist-ui` (Leonxlnx/taste-skill: `skills/minimalist-skill/SKILL.md`)
   2. `imagegen-frontend-web` (Leonxlnx/taste-skill: `skills/imagegen-frontend-web/SKILL.md`)
@@ -22,7 +22,8 @@ Any agent generating UI, copy, markup, or style rules must strictly enforce thes
 
 ### A. Typography & Text Banned
 - ❌ **NO generic web fonts**: Never use `Inter`, `Roboto`, `Open Sans`, or `Arial`.
-- ❌ **NO AI Copywriting Clichés**: Strictly banned words: `"Elevate"`, `"Seamless"`, `"Unleash"`, `"Next-Gen"`, `"Game-changer"`, `"Delve"`, `"Transformative"`, `"Passionate engineer crafting digital experiences"`. Write concise, honest, human, and technically grounded copy.
+- ❌ **NO AI Copywriting Clichés & Anti-Slop**: Strictly banned words: `"Elevate"`, `"Seamless"`, `"Unleash"`, `"Next-Gen"`, `"Game-changer"`, `"Delve"`, `"Transformative"`, `"Passionate engineer crafting digital experiences"`. Avoid formulaic AI phrasing such as contrast-pair clichés (`"Not just X, it's Y"`), inflated triads, or hollow filler. Write concise, honest, human, and technically grounded copy.
+- ❌ **NO Em-Dashes (`U+2014`)**: Never use the em-dash character (`U+2014`, `&mdash;`, or literal em-dash punctuation) anywhere in copy, headings, labels, ARIA text, code comments, or metadata. Use commas, periods, colons, parentheses, middle dots, or standard hyphens instead.
 - ❌ **NO Emojis**: Never use emojis anywhere in UI, navigation, tags, code, or headings (e.g. 🚀, 💻, ✨, 🔥). Use custom SVG primitives, Phosphor icons, or Radix icons.
 - ❌ **NO Placeholder Slop**: Never use `"John Doe"`, `"Acme Corp"`, `"Lorem Ipsum"`, or `"Project 1"`. Always write realistic, contextual, production-level project information.
 
@@ -88,7 +89,7 @@ Extreme typographic contrast between high-editorial headings, disciplined functi
 
 1. **Top Bar / Navigation**:
    - Fixed or sticky, ultra-minimalist, border-b `1px solid #EAEAEA`, subtle backdrop blur (`bg-white/80 backdrop-blur-md`).
-   - Left: Name & Location/Time (e.g. `Joshua — Jakarta, ID [19:04 WIB]`).
+   - Left: Name & Location/Time (e.g. `Joshua | Jakarta, ID [19:04 WIB]`).
    - Right: Clean anchor links (`Work`, `About`, `Writing / Notes`, `Colophon`, `Contact / Status`).
 2. **Hero Section (Mini Minimalist or Off-Grid Editorial)**:
    - Strong editorial headline (5–9 words), no generic fluff.

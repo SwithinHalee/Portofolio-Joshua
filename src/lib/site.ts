@@ -12,7 +12,7 @@ export const SITE_URL =
 export const SITE_NAME = "Joshua Abdiel";
 export const SITE_TAGLINE = "Frontend Engineer & Information Systems";
 export const SITE_DESCRIPTION =
-  "Personal engineering portfolio and technical dossier of Joshua Abdiel, frontend engineer and Information Systems student at Universitas Tarumanagara, currently building climate-tech interfaces at CarbonEthics.";
+  "Personal engineering portfolio and technical dossier of Joshua Abdiel, frontend engineer and Information Systems student at Tarumanagara University, currently building climate-tech interfaces at CarbonEthics.";
 export const SITE_LOCALE = "en_US";
 export const SITE_GITHUB = "https://github.com/SwithinHalee";
 export const SITE_INSTAGRAM = "https://www.instagram.com/abd.joshua?dlrf=MmlsaGp4NmJydHlp";

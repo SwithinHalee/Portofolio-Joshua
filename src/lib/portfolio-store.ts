@@ -120,15 +120,26 @@ export function sanitizePortfolio(raw: unknown): PortfolioData | null {
     if (!Array.isArray(data.techCategories)) return null;
     // Shallow-validate, then deep-merge over defaults so missing keys can't crash the site.
     // Normalize project images: empty/invalid src crashes next/image ("Failed to construct 'URL'").
-    const projects = (data.projects as ProjectItem[]).map((p) => {
+    const mappedProjects = (data.projects as ProjectItem[]).map((p) => {
       const img = typeof p.image === "string" ? p.image.trim() : "";
       const migrated = MIGRATED_PROJECT_IMAGES[img] ?? img;
       const valid = migrated.startsWith("/") || migrated.startsWith("https://") || migrated.startsWith("http://");
-      const next: ProjectItem = !valid
+      let next: ProjectItem = !valid
         ? { ...p, image: "/images/projects/pokemon-app.jpg" }
         : migrated !== img
           ? { ...p, image: migrated }
           : p;
+      const previewImg = typeof next.previewImage === "string" ? next.previewImage.trim() : "";
+      if (
+        next.previewImage !== undefined &&
+        !previewImg.startsWith("/") &&
+        !previewImg.startsWith("https://") &&
+        !previewImg.startsWith("http://")
+      ) {
+        const rest = { ...next };
+        delete rest.previewImage;
+        next = rest;
+      }
       // Migrate legacy CarbonEthics URLs persisted in stored copies to www.carbonethics.co.
       if (
         (next.id === "carbonethics-platform" || next.slug === "carbonethics-platform") &&
@@ -151,32 +162,168 @@ export function sanitizePortfolio(raw: unknown): PortfolioData | null {
       }
       return next;
     });
+    const hasStatshark = mappedProjects.some(
+      (p) => p.id === "statshark-exporter" || p.slug === "statshark-exporter"
+    );
+    const statsharkDefault = PROJECTS.find((p) => p.id === "statshark-exporter");
+    let projects =
+      !hasStatshark && statsharkDefault
+        ? (() => {
+            const updated = mappedProjects.map((p) => {
+              if (p.id === "xpense-ledger" || p.slug === "xpense-ledger") {
+                return { ...p, gridSpan: "col-span-12 lg:col-span-5" as const };
+              }
+              if (p.id === "gns3-data-sharing" || p.slug === "gns3-data-sharing") {
+                return { ...p, gridSpan: "col-span-12 lg:col-span-7" as const };
+              }
+              return p;
+            });
+            const ceIdx = updated.findIndex(
+              (p) => p.id === "carbonethics-platform" || p.slug === "carbonethics-platform"
+            );
+            updated.splice(ceIdx >= 0 ? ceIdx + 1 : 0, 0, statsharkDefault);
+            return updated;
+          })()
+        : mappedProjects;
+    const youtubeDefault = PROJECTS.find((p) => p.id === "swithinhalee-youtube");
+    const hasYoutubeProject = projects.some(
+      (p) => p.id === "swithinhalee-youtube" || p.slug === "swithinhalee-youtube"
+    );
+    if (!hasYoutubeProject && youtubeDefault) {
+      projects = [...projects, youtubeDefault];
+    } else if (youtubeDefault) {
+      projects = projects.map((p) => {
+        if (p.id !== "swithinhalee-youtube" && p.slug !== "swithinhalee-youtube") return p;
+        const usesRetiredAiImage = p.image.trim() === "/images/projects/swithinhalee-youtube.jpg";
+        if (usesRetiredAiImage) return youtubeDefault;
+        return p.videoGallery?.length ? p : { ...p, videoGallery: youtubeDefault.videoGallery };
+      });
+    }
+    const filterValidGallery = (gallery: unknown): ExperienceGalleryItem[] =>
+      Array.isArray(gallery)
+        ? gallery.filter(
+            (item): item is ExperienceGalleryItem =>
+              isObject(item) &&
+              typeof item.src === "string" &&
+              (item.src.trim().startsWith("/") ||
+                item.src.trim().startsWith("https://") ||
+                item.src.trim().startsWith("http://"))
+          )
+        : [];
+
+    const normalizeInstitutionName = (value: string): string =>
+      value.replace(/Universitas Tarumanagara/gi, "Tarumanagara University");
+    const normalizeRoleTitle = (value: string): string =>
+      value.replace(/Frontend Engineering/gi, "Frontend Developer");
+
+    projects = projects.map((p) => ({
+      ...p,
+      caseStudy: {
+        ...p.caseStudy,
+        role: normalizeRoleTitle(p.caseStudy.role),
+      },
+    }));
+
     const experiences = Array.isArray(data.experiences)
       ? (data.experiences as ExperienceItem[]).map((exp) => {
-          const validGallery = Array.isArray(exp.gallery)
-            ? exp.gallery.filter(
-                (item): item is ExperienceGalleryItem =>
-                  isObject(item) &&
-                  typeof item.src === "string" &&
-                  (item.src.trim().startsWith("/") ||
-                    item.src.trim().startsWith("https://") ||
-                    item.src.trim().startsWith("http://"))
-              )
-            : [];
-          if (validGallery.length > 0) {
-            return { ...exp, gallery: validGallery };
+          const role = normalizeRoleTitle(exp.role);
+          const isCarbonEthics = exp.company.trim().toLowerCase() === "carbonethics";
+          const normalizedPeriod = exp.period
+            .trim()
+            .toLowerCase()
+            .replace(/[\u2013\u2014]/g, "-")
+            .replace(/\s+/g, " ");
+          const period =
+            isCarbonEthics &&
+            (normalizedPeriod === "feb 2026 - oct 2026" ||
+              normalizedPeriod === "feb 2026 - present")
+              ? "Feb 2026 - Feb 2027"
+              : exp.period;
+          const validGallery = filterValidGallery(exp.gallery);
+          const isLegacyCeGallery =
+            isCarbonEthics &&
+            validGallery.length > 0 &&
+            validGallery.every((item) => item.src.trim() === "/images/experience/carbonethics-team.jpg");
+          if (validGallery.length > 0 && !isLegacyCeGallery) {
+            return { ...exp, role, period, gallery: validGallery };
           }
-          if (exp.company.trim().toLowerCase() === "carbonethics" && EXPERIENCES[0]?.gallery) {
-            return { ...exp, gallery: EXPERIENCES[0].gallery };
+          if (isCarbonEthics && EXPERIENCES[0]?.gallery) {
+            return { ...exp, role, period, gallery: EXPERIENCES[0].gallery };
           }
-          return exp;
+          return { ...exp, role, period };
         })
       : DEFAULT_PORTFOLIO.experiences;
+
+    const education = Array.isArray(data.education)
+      ? (data.education as EducationItem[]).map((edu) => {
+          const institution = normalizeInstitutionName(edu.institution);
+          const validGallery = filterValidGallery(edu.gallery);
+          if (validGallery.length > 0) {
+            return { ...edu, institution, gallery: validGallery };
+          }
+          const instKey = institution.trim().toLowerCase();
+          const defaultMatch = EDUCATION_HISTORY.find(
+            (item) => item.institution.trim().toLowerCase() === instKey && item.gallery?.length
+          );
+          if (defaultMatch?.gallery) {
+            return { ...edu, institution, gallery: defaultMatch.gallery };
+          }
+          return { ...edu, institution };
+        })
+      : DEFAULT_PORTFOLIO.education;
     const rawPersonalInfo: Record<string, unknown> = { ...(data.personalInfo as Record<string, unknown>) };
+    if (typeof rawPersonalInfo.institution === "string") {
+      rawPersonalInfo.institution = normalizeInstitutionName(rawPersonalInfo.institution);
+    }
+    if (typeof rawPersonalInfo.bio === "string") {
+      rawPersonalInfo.bio = normalizeInstitutionName(rawPersonalInfo.bio);
+    }
+    if (typeof rawPersonalInfo.currentRole === "string") {
+      rawPersonalInfo.currentRole = normalizeRoleTitle(rawPersonalInfo.currentRole);
+    }
+    if (typeof rawPersonalInfo.role === "string") {
+      rawPersonalInfo.role = normalizeRoleTitle(rawPersonalInfo.role);
+    }
     // Drop retired LinkedIn key so legacy Redis/localStorage copies migrate cleanly to Instagram.
     delete rawPersonalInfo.linkedin;
     const rawInstagram =
       typeof rawPersonalInfo.instagram === "string" ? rawPersonalInfo.instagram.trim() : "";
+
+    const LEGACY_PRINCIPLE_TITLES = new Set([
+      "type safety as a binding contract",
+      "performance as a core ux feature",
+      "1px border precision & macro-whitespace",
+      "utilitarian clarity over superficial cleverness",
+    ]);
+    const CURRENT_ETHOS_TITLES = new Set(
+      DEFAULT_PORTFOLIO.principles.map((item) => item.title.trim().toLowerCase())
+    );
+    const cleanEmDash = (value: string): string =>
+      value.replace(/\s*\u2014\s*/g, ", ").replace(/,\s*,/g, ",");
+    const rawPrinciples = Array.isArray(data.principles)
+      ? (data.principles as PrincipleItem[])
+      : DEFAULT_PORTFOLIO.principles;
+    const isLegacyPrinciples =
+      rawPrinciples.length > 0 &&
+      rawPrinciples.every((item) => LEGACY_PRINCIPLE_TITLES.has(item.title.trim().toLowerCase()));
+    const isStaleEthosDraft =
+      rawPrinciples.length > 0 &&
+      rawPrinciples.every((item) => CURRENT_ETHOS_TITLES.has(item.title.trim().toLowerCase())) &&
+      rawPrinciples.some(
+        (item) =>
+          item.statement.includes("\u2014") ||
+          item.title.includes("\u2014") ||
+          !item.note
+      );
+    const principles =
+      isLegacyPrinciples || isStaleEthosDraft
+        ? DEFAULT_PORTFOLIO.principles
+        : rawPrinciples.map((item) => ({
+            ...item,
+            title: cleanEmDash(item.title),
+            statement: cleanEmDash(item.statement),
+            ...(item.note ? { note: cleanEmDash(item.note) } : {}),
+          }));
 
     return {
       personalInfo: {
@@ -195,9 +342,9 @@ export function sanitizePortfolio(raw: unknown): PortfolioData | null {
       projects,
       workspaceSetup: Array.isArray(data.workspaceSetup) ? (data.workspaceSetup as SetupItem[]) : DEFAULT_PORTFOLIO.workspaceSetup,
       techCategories: data.techCategories as TechCategory[],
-      principles: Array.isArray(data.principles) ? (data.principles as PrincipleItem[]) : DEFAULT_PORTFOLIO.principles,
+      principles,
       experiences,
-      education: Array.isArray(data.education) ? (data.education as EducationItem[]) : DEFAULT_PORTFOLIO.education,
+      education,
       gallery: Array.isArray(data.gallery)
         ? (data.gallery as GalleryPlate[])
             .filter((g) => !RETIRED_BUNDLED_GALLERY_SRC.has(typeof g.src === "string" ? g.src.trim() : ""))
@@ -292,6 +439,16 @@ function generateProjectTs(p: ProjectItem, indent: string): string {
   lines.push(`${i2}summary: ${tsString(p.summary)},`);
   lines.push(`${i2}description: ${tsString(p.description)},`);
   lines.push(`${i2}image: ${tsString(p.image)},`);
+  if (p.previewImage) lines.push(`${i2}previewImage: ${tsString(p.previewImage)},`);
+  if (p.videoGallery && p.videoGallery.length > 0) {
+    lines.push(`${i2}videoGallery: [`);
+    for (const v of p.videoGallery) {
+      lines.push(
+        `${i3}{ title: ${tsString(v.title)}, videoId: ${tsString(v.videoId)}, thumbnail: ${tsString(v.thumbnail)}, views: ${tsString(v.views)}, duration: ${tsString(v.duration)}, published: ${tsString(v.published)}, url: ${tsString(v.url)} },`
+      );
+    }
+    lines.push(`${i2}],`);
+  }
   lines.push(`${i2}technicalHighlights: ${tsStringArray(p.technicalHighlights, i2)},`);
   if (p.metrics && p.metrics.length > 0) {
     lines.push(`${i2}metrics: [`);
@@ -355,7 +512,8 @@ export function exportPortfolioTS(data: PortfolioData): string {
     .join("\n");
   const principlesTs = data.principles
     .map(
-      (p) => `  {\n    number: ${tsString(p.number)},\n    title: ${tsString(p.title)},\n    statement: ${tsString(p.statement)},\n  },`
+      (p) =>
+        `  {\n    number: ${tsString(p.number)},\n    title: ${tsString(p.title)},\n    statement: ${tsString(p.statement)},${p.note ? `\n    note: ${tsString(p.note)},` : ""}\n  },`
     )
     .join("\n");
   const expTs = data.experiences
@@ -367,7 +525,7 @@ export function exportPortfolioTS(data: PortfolioData): string {
   const eduTs = data.education
     .map(
       (e) =>
-        `  {\n    period: ${tsString(e.period)},\n    degree: ${tsString(e.degree)},\n    institution: ${tsString(e.institution)},\n    details: ${tsString(e.details)},${e.image ? `\n    image: ${tsString(e.image)},` : ""}${e.imageLink ? `\n    imageLink: ${tsString(e.imageLink)},` : ""}${e.imageAlt ? `\n    imageAlt: ${tsString(e.imageAlt)},` : ""}\n  },`
+        `  {\n    period: ${tsString(e.period)},\n    degree: ${tsString(e.degree)},\n    institution: ${tsString(e.institution)},\n    details: ${tsString(e.details)},${e.image ? `\n    image: ${tsString(e.image)},` : ""}${e.imageLink ? `\n    imageLink: ${tsString(e.imageLink)},` : ""}${e.imageAlt ? `\n    imageAlt: ${tsString(e.imageAlt)},` : ""}${e.gallery && e.gallery.length > 0 ? `\n    gallery: [\n${e.gallery.map((g) => `      { src: ${tsString(g.src)}, alt: ${tsString(g.alt)}${g.caption ? `, caption: ${tsString(g.caption)}` : ""} },`).join("\n")}\n    ],` : ""}\n  },`
     )
     .join("\n");
   const galleryTs = data.gallery
@@ -437,6 +595,7 @@ export interface EducationItem {
   image?: string;
   imageLink?: string;
   imageAlt?: string;
+  gallery?: ExperienceGalleryItem[];
 }
 
 export interface TechCategory {

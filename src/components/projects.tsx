@@ -7,6 +7,8 @@ import {
   ArrowRight,
   ArrowUpRight,
   CaretDown,
+  CaretLeft,
+  CaretRight,
   DownloadSimple,
   GithubLogo,
   Globe,
@@ -30,8 +32,89 @@ const VIEW_MODES: { id: ViewMode; label: string; icon: PhosphorIcon }[] = [
   { id: "list", label: "Index list", icon: ListBullets },
 ];
 
+const PROJECTS_PER_PAGE = 5;
+
 function projectYear(project: ProjectItem): string {
   return project.caseStudy.timeline.match(/\d{4}/)?.[0] ?? "-";
+}
+
+function padTwo(n: number): string {
+  return String(n).padStart(2, "0");
+}
+
+function ProjectsPagination({
+  currentPage,
+  totalPages,
+  onPageChange,
+  placement,
+}: {
+  currentPage: number;
+  totalPages: number;
+  onPageChange: (page: number) => void;
+  placement: "bottom" | "inline";
+}) {
+  if (totalPages <= 1) return null;
+
+  const pages = Array.from({ length: totalPages }, (_, idx) => idx + 1);
+  const isInline = placement === "inline";
+  const buttonHeight = isInline ? "h-7 sm:h-8" : "h-9 sm:h-8";
+  const pageSize = isInline ? "h-7 min-w-7 sm:h-8 sm:min-w-8" : "h-9 min-w-9 sm:h-8 sm:min-w-8";
+  const navPad = isInline ? "px-1.5 sm:px-2.5" : "px-3 sm:px-2.5";
+
+  return (
+    <nav
+      aria-label={`Projects pagination (${placement})`}
+      className={
+        isInline
+          ? "flex shrink-0 items-center font-sans"
+          : "flex flex-wrap items-center justify-center sm:justify-end gap-2 mt-10 border-t border-[#EAEAEA] pt-6 font-sans"
+      }
+    >
+      <div className="flex flex-wrap items-center justify-center gap-0.5 sm:gap-1">
+        <button
+          type="button"
+          onClick={() => onPageChange(currentPage - 1)}
+          disabled={currentPage <= 1}
+          aria-label="Previous projects page"
+          className={`inline-flex ${buttonHeight} items-center gap-1 rounded-[14px] border-0 bg-transparent ${navPad} font-mono text-xs text-[#6B6B6B] transition-colors hover:text-[#111111] disabled:cursor-not-allowed disabled:opacity-35 disabled:hover:text-[#6B6B6B] active:scale-[0.98] cursor-pointer`}
+        >
+          <CaretLeft size={12} weight="bold" aria-hidden="true" />
+          <span className={isInline ? "hidden sm:inline" : undefined}>Prev</span>
+        </button>
+
+        {pages.map((page) => {
+          const isCurrent = page === currentPage;
+          return (
+            <button
+              key={`${placement}-page-${page}`}
+              type="button"
+              onClick={() => onPageChange(page)}
+              aria-current={isCurrent ? "page" : undefined}
+              aria-label={`Page ${page}`}
+              className={`inline-flex ${pageSize} items-center justify-center rounded-[14px] border-0 px-2 sm:px-2.5 font-mono text-xs tabular-nums transition-colors active:scale-[0.98] cursor-pointer ${
+                isCurrent
+                  ? "bg-[#111111] font-semibold text-[#FFFFFF]"
+                  : "bg-transparent text-[#6B6B6B] hover:text-[#111111]"
+              }`}
+            >
+              {page}
+            </button>
+          );
+        })}
+
+        <button
+          type="button"
+          onClick={() => onPageChange(currentPage + 1)}
+          disabled={currentPage >= totalPages}
+          aria-label="Next projects page"
+          className={`inline-flex ${buttonHeight} items-center gap-1 rounded-[14px] border-0 bg-transparent ${navPad} font-mono text-xs text-[#6B6B6B] transition-colors hover:text-[#111111] disabled:cursor-not-allowed disabled:opacity-35 disabled:hover:text-[#6B6B6B] active:scale-[0.98] cursor-pointer`}
+        >
+          <span className={isInline ? "hidden sm:inline" : undefined}>Next</span>
+          <CaretRight size={12} weight="bold" aria-hidden="true" />
+        </button>
+      </div>
+    </nav>
+  );
 }
 
 export function Projects() {
@@ -41,6 +124,7 @@ export function Projects() {
   const shouldReduceMotion = useReducedMotion();
   const [filterTag, setFilterTag] = useState<string>("ALL");
   const [viewMode, setViewMode] = useState<ViewMode>("grid");
+  const [currentPage, setCurrentPage] = useState<number>(1);
   const [expandedBlueprints, setExpandedBlueprints] = useState<string[]>([]);
 
   const scrollToProjectsTop = () => {
@@ -61,6 +145,7 @@ export function Projects() {
   const handleFilterTagChange = (nextTag: string) => {
     if (nextTag === filterTag) return;
     setFilterTag(nextTag);
+    setCurrentPage(1);
     setExpandedBlueprints([]);
     scrollToProjectsTop();
   };
@@ -75,7 +160,7 @@ export function Projects() {
     );
   };
 
-  const allTags = ["ALL", "Next.js", "TypeScript", "React", "Tailwind CSS", "Systems / GNS3"];
+  const allTags = ["ALL", "Next.js", "TypeScript", "React", "Python", "Tailwind CSS", "Systems / GNS3"];
 
   const filteredProjects =
     filterTag === "ALL"
@@ -86,8 +171,21 @@ export function Projects() {
             : p.tags.includes(filterTag)
         );
 
+  const totalPages = Math.max(1, Math.ceil(filteredProjects.length / PROJECTS_PER_PAGE));
+  const safePage = Math.min(currentPage, totalPages);
+  const startIndex = (safePage - 1) * PROJECTS_PER_PAGE;
+  const paginatedProjects = filteredProjects.slice(startIndex, startIndex + PROJECTS_PER_PAGE);
+
+  const handlePageChange = (nextPage: number) => {
+    const clamped = Math.max(1, Math.min(totalPages, nextPage));
+    if (clamped === safePage) return;
+    setCurrentPage(clamped);
+    setExpandedBlueprints([]);
+    scrollToProjectsTop();
+  };
+
   const hasExpandedBlueprint = expandedBlueprints.some((id) =>
-    filteredProjects.some((p) => p.id === id)
+    paginatedProjects.some((p) => p.id === id)
   );
 
   return (
@@ -100,9 +198,9 @@ export function Projects() {
       <div className="sticky top-0 z-20 bg-[#FFFFFF]/95 backdrop-blur-md pt-14 sm:pt-16 xl:pt-10 pb-3">
         <div className="mx-auto max-w-5xl px-6 sm:px-8">
           <Reveal>
-            <div className="flex items-end justify-between gap-4 mb-3">
+            <div className="flex items-end justify-between gap-3 sm:gap-4 mb-3">
               <h2
-                className="text-3xl sm:text-4xl font-serif text-[#111111] tracking-[-0.02em]"
+                className="text-[24px] leading-[1.15] sm:text-4xl font-serif text-[#111111] tracking-[-0.02em]"
                 style={{ fontFamily: "var(--font-newsreader), Georgia, serif" }}
               >
                 Architected for Performance & Utility
@@ -111,7 +209,7 @@ export function Projects() {
               <div
                 role="group"
                 aria-label="Change projects layout"
-                className="flex shrink-0 items-center gap-2.5 pb-0.5"
+                className="flex shrink-0 items-center gap-2 sm:gap-2.5 pb-0.5"
               >
                 {VIEW_MODES.map((mode) => {
                   const isSelected = viewMode === mode.id;
@@ -142,54 +240,65 @@ export function Projects() {
               </div>
             </div>
 
-            <LayoutGroup id="project-category-tabs">
-              <motion.div
-                layoutScroll
-                role="group"
-                aria-label="Filter projects by technology"
-                className="flex max-w-full scroll-auto items-center gap-1 overflow-x-auto whitespace-nowrap px-1 -mx-1 py-1.5 -my-1.5 font-sans"
-              >
-                {allTags.map((tag) => {
-                  const isSelected = filterTag === tag;
-                  return (
-                    <button
-                      key={tag}
-                      type="button"
-                      onClick={() => handleFilterTagChange(tag)}
-                      aria-pressed={isSelected}
-                      aria-label={`Show ${tag === "ALL" ? "all projects" : `${tag} projects`}`}
-                      className={`group/tab relative shrink-0 px-3.5 py-1.5 border-0 bg-transparent rounded-[14px] text-[13px] leading-4 tracking-[-0.01em] font-medium transition-colors duration-200 cursor-pointer ${
-                        isSelected
-                          ? "text-[#FFFFFF]"
-                          : "text-[#6B6B6B] hover:text-[#111111]"
-                      }`}
-                    >
-                      {isSelected && (
-                        <motion.span
-                          layoutId="project-category-pill"
-                          aria-hidden="true"
-                          style={{ borderRadius: 14 }}
-                          transition={
-                            shouldReduceMotion
-                              ? { duration: 0 }
-                              : {
-                                  type: "spring",
-                                  stiffness: 380,
-                                  damping: 32,
-                                  mass: 0.8,
-                                }
-                          }
-                          className="pointer-events-none absolute inset-0 bg-[#111111] rounded-[14px]"
-                        />
-                      )}
-                      <span className="relative z-10 inline-block transition-transform duration-150 group-active/tab:scale-[0.97]">
-                        {tag}
-                      </span>
-                    </button>
-                  );
-                })}
-              </motion.div>
-            </LayoutGroup>
+            <div className="flex items-center justify-between gap-2 sm:gap-4">
+              <div className="min-w-0 flex-1">
+                <LayoutGroup id="project-category-tabs">
+                  <motion.div
+                    layoutScroll
+                    role="group"
+                    aria-label="Filter projects by technology"
+                    className="flex max-w-full scroll-auto items-center gap-1 overflow-x-auto whitespace-nowrap px-1 -mx-1 py-1.5 -my-1.5 font-sans"
+                  >
+                    {allTags.map((tag) => {
+                      const isSelected = filterTag === tag;
+                      return (
+                        <button
+                          key={tag}
+                          type="button"
+                          onClick={() => handleFilterTagChange(tag)}
+                          aria-pressed={isSelected}
+                          aria-label={`Show ${tag === "ALL" ? "all projects" : `${tag} projects`}`}
+                          className={`group/tab relative shrink-0 px-3.5 py-1.5 border-0 bg-transparent rounded-[14px] text-[13px] leading-4 tracking-[-0.01em] font-medium transition-colors duration-200 cursor-pointer ${
+                            isSelected
+                              ? "text-[#FFFFFF]"
+                              : "text-[#6B6B6B] hover:text-[#111111]"
+                          }`}
+                        >
+                          {isSelected && (
+                            <motion.span
+                              layoutId="project-category-pill"
+                              aria-hidden="true"
+                              style={{ borderRadius: 14 }}
+                              transition={
+                                shouldReduceMotion
+                                  ? { duration: 0 }
+                                  : {
+                                      type: "spring",
+                                      stiffness: 380,
+                                      damping: 32,
+                                      mass: 0.8,
+                                    }
+                              }
+                              className="pointer-events-none absolute inset-0 bg-[#111111] rounded-[14px]"
+                            />
+                          )}
+                          <span className="relative z-10 inline-block transition-transform duration-150 group-active/tab:scale-[0.97]">
+                            {tag}
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </motion.div>
+                </LayoutGroup>
+              </div>
+
+              <ProjectsPagination
+                currentPage={safePage}
+                totalPages={totalPages}
+                onPageChange={handlePageChange}
+                placement="inline"
+              />
+            </div>
           </Reveal>
         </div>
       </div>
@@ -198,7 +307,7 @@ export function Projects() {
         {/* Layout & Category-aware Results Transition */}
         <AnimatePresence mode="wait" initial={false}>
           <motion.div
-            key={`${viewMode}-${filterTag}`}
+            key={`${viewMode}-${filterTag}-${safePage}`}
             initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, y: -4 }}
@@ -214,7 +323,7 @@ export function Projects() {
                   : "flex flex-col border-t border-[#EAEAEA]"
             }
           >
-            {filteredProjects.map((project, idx) =>
+            {paginatedProjects.map((project, idx) =>
               viewMode === "grid" ? (
                 <ProjectCard
                   key={project.id}
@@ -224,13 +333,20 @@ export function Projects() {
                   onBlueprintToggle={handleBlueprintToggle}
                 />
               ) : viewMode === "detail" ? (
-                <ProjectDetailRow key={project.id} project={project} index={idx} />
+                <ProjectDetailRow key={project.id} project={project} index={startIndex + idx} />
               ) : (
-                <ProjectListRow key={project.id} project={project} index={idx} />
+                <ProjectListRow key={project.id} project={project} index={startIndex + idx} />
               )
             )}
           </motion.div>
         </AnimatePresence>
+
+        <ProjectsPagination
+          currentPage={safePage}
+          totalPages={totalPages}
+          onPageChange={handlePageChange}
+          placement="bottom"
+        />
       </div>
     </section>
   );
@@ -294,38 +410,20 @@ function ProjectCard({
             {project.summary}
           </p>
 
-          {/* Seamless Mockup with Faux-OS Window Chrome */}
-          <div className="mb-5 rounded-[8px] border border-[#EAEAEA] bg-[#FBFBFA] overflow-hidden">
-            {/* Window Bar */}
-            <div className="flex items-center justify-between border-b border-[#EAEAEA] bg-[#FFFFFF] px-3.5 py-2 gap-2">
-              <div className="flex items-center gap-1.5 shrink-0">
-                <span className="h-2.5 w-2.5 rounded-full bg-[#E5E5E5] inline-block"></span>
-                <span className="h-2.5 w-2.5 rounded-full bg-[#E5E5E5] inline-block"></span>
-                <span className="h-2.5 w-2.5 rounded-full bg-[#E5E5E5] inline-block"></span>
-              </div>
-              <span className="font-mono text-xs text-[#525252] truncate min-w-0 text-center px-1">
-                {project.title.toLowerCase().replace(/\s+/g, "-")}.app
-              </span>
-              <span className="text-[11px] font-sans font-medium text-[#525252] whitespace-nowrap shrink-0">
-                16:9 PREVIEW
-              </span>
-            </div>
-
-            {/* Clickable Image Container */}
-            <Link
-              href={`/work/${project.slug}`}
-              data-link-fill="off"
-              data-cursor-label="Open case"
-              className="block relative aspect-[16/9] w-full bg-[#F5F5F3] overflow-hidden"
-            >
-              <ProjectMedia
-                src={project.image}
-                alt={`${project.title} interface preview mockup`}
-                sizes={isLarge ? "(max-width: 1024px) 100vw, 1024px" : "(max-width: 1024px) 100vw, 560px"}
-              />
-              <div className="absolute inset-0 bg-[#000000]/[0.015] pointer-events-none"></div>
-            </Link>
-          </div>
+          {/* Plain 16:9 Media Preview */}
+          <Link
+            href={`/work/${project.slug}`}
+            data-link-fill="off"
+            data-cursor-label="Open case"
+            className="mb-5 block relative aspect-[16/9] w-full overflow-hidden rounded-[6px] border border-[#EAEAEA] bg-[#F5F5F3]"
+          >
+            <ProjectMedia
+              src={project.image}
+              poster={project.previewImage}
+              alt={`${project.title} interface preview`}
+              sizes={isLarge ? "(max-width: 1024px) 100vw, 1024px" : "(max-width: 1024px) 100vw, 560px"}
+            />
+          </Link>
         </div>
 
         {/* Bottom Stack: Metrics + Single-hairline Architecture Drawer + Card Footer locked together */}
@@ -516,7 +614,7 @@ function ProjectDetailRow({ project, index }: { project: ProjectItem; index: num
   const year = projectYear(project);
 
   return (
-    <Reveal delay={Math.min(index, 3) * 0.06}>
+    <Reveal delay={Math.min(index % PROJECTS_PER_PAGE, 3) * 0.06}>
       <div className="group grid grid-cols-1 gap-8 rounded-[10px] border border-[#EAEAEA] bg-[#FFFFFF] p-6 transition-colors duration-200 hover:border-[#CCCCCC] sm:p-8 lg:grid-cols-12">
         <div className="lg:col-span-7">
           <div className="mb-4">
@@ -630,37 +728,21 @@ function ProjectDetailRow({ project, index }: { project: ProjectItem; index: num
         </div>
 
         <div className="lg:col-span-5">
-          <div className="overflow-hidden rounded-[8px] border border-[#EAEAEA] bg-[#FBFBFA]">
-            <div className="flex items-center justify-between gap-2 border-b border-[#EAEAEA] bg-[#FFFFFF] px-3.5 py-2">
-              <div className="flex shrink-0 items-center gap-1.5">
-                <span className="inline-block h-2.5 w-2.5 rounded-full bg-[#E5E5E5]"></span>
-                <span className="inline-block h-2.5 w-2.5 rounded-full bg-[#E5E5E5]"></span>
-                <span className="inline-block h-2.5 w-2.5 rounded-full bg-[#E5E5E5]"></span>
-              </div>
-              <span className="min-w-0 flex-1 truncate px-1 text-center font-mono text-xs text-[#525252]">
-                {project.title.toLowerCase().replace(/\s+/g, "-")}.app
-              </span>
-              <span className="shrink-0 whitespace-nowrap font-sans text-[11px] font-medium text-[#525252]">
-                16:9 PREVIEW
-              </span>
-            </div>
-
-            <Link
-              href={`/work/${project.slug}`}
-              data-link-fill="off"
-              className="relative block aspect-[16/9] w-full overflow-hidden bg-[#F5F5F3]"
-            >
-              <ProjectMedia
-                src={project.image}
-                alt={`${project.title} interface preview mockup`}
-                sizes="(max-width: 1024px) 100vw, 560px"
-              />
-              <div className="pointer-events-none absolute inset-0 bg-[#000000]/[0.015]"></div>
-            </Link>
-          </div>
+          <Link
+            href={`/work/${project.slug}`}
+            data-link-fill="off"
+            className="relative block aspect-[16/9] w-full overflow-hidden rounded-[6px] border border-[#EAEAEA] bg-[#F5F5F3]"
+          >
+            <ProjectMedia
+              src={project.image}
+              poster={project.previewImage}
+              alt={`${project.title} interface preview`}
+              sizes="(max-width: 1024px) 100vw, 560px"
+            />
+          </Link>
 
           <div className="mt-2 flex items-center justify-between font-sans text-[11px] font-medium uppercase tracking-wider text-[#525252]">
-            <span>FIG·0{index + 1}</span>
+            <span>FIG·{padTwo(index + 1)}</span>
             <span className="font-mono">{year}</span>
           </div>
         </div>
@@ -673,10 +755,10 @@ function ProjectListRow({ project, index }: { project: ProjectItem; index: numbe
   const year = projectYear(project);
 
   return (
-    <Reveal delay={Math.min(index, 5) * 0.04}>
+    <Reveal delay={Math.min(index % PROJECTS_PER_PAGE, 5) * 0.04}>
       <div className="-mx-2 grid grid-cols-12 items-center gap-x-4 gap-y-2 rounded-[4px] border-b border-[#EAEAEA] px-2 py-4 transition-colors hover:bg-[#FBFBFA]">
         <span className="col-span-2 font-mono text-xs text-[#525252] sm:col-span-1">
-          0{index + 1}
+          {padTwo(index + 1)}
         </span>
 
         <div className="col-span-10 sm:col-span-5 lg:col-span-4">

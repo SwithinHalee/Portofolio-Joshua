@@ -51,7 +51,7 @@ export const metadata: Metadata = {
     "Frontend Developer Tangerang",
     "Frontend Developer Jakarta",
     "Information Systems UNTAR",
-    "Universitas Tarumanagara Sistem Informasi",
+    "Tarumanagara University Information Systems",
     "CarbonEthics frontend",
     "Next.js developer",
     "React TypeScript portfolio",
@@ -116,7 +116,7 @@ function structuredData(): Record<string, unknown> {
         sameAs: [SITE_GITHUB, SITE_INSTAGRAM],
         alumniOf: {
           "@type": "CollegeOrUniversity",
-          name: "Universitas Tarumanagara",
+          name: "Tarumanagara University",
         },
         worksFor: {
           "@type": "Organization",

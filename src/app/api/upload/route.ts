@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { put } from "@vercel/blob";
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
-import { isAuthenticated } from "@/lib/admin-auth";
+import { ADMIN_DISABLED, isAuthenticated } from "@/lib/admin-auth";
 import {
   DB_MAX_BYTES,
   IMAGE_REDIS_PREFIX,
@@ -38,6 +38,9 @@ function toImageId(filename: string): string {
 }
 
 export async function POST(req: Request) {
+  if (ADMIN_DISABLED) {
+    return NextResponse.json({ error: "Admin page is disabled." }, { status: 403 });
+  }
   const authed = await isAuthenticated();
   if (!authed) {
     return NextResponse.json({ error: "Unauthorized. Please log in as admin." }, { status: 401 });

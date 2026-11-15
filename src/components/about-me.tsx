@@ -103,7 +103,7 @@ export function AboutMe() {
           <div className="flex flex-col justify-between lg:col-span-7">
             <Reveal delay={0.05}>
               <h2
-                className="mb-6 whitespace-nowrap font-serif text-[21px] tracking-[-0.025em] leading-[1.15] text-[#FAFAFA] sm:text-[32px] lg:text-[33px]"
+                className="mb-6 font-serif text-[22px] tracking-[-0.025em] leading-[1.15] text-[#FAFAFA] sm:whitespace-nowrap sm:text-[32px] lg:text-[33px]"
                 style={{ fontFamily: "var(--font-newsreader), Georgia, serif" }}
               >
                 The flesh is weak,{" "}
@@ -114,8 +114,8 @@ export function AboutMe() {
 
               <div className="space-y-4 font-sans text-sm leading-relaxed text-[#C8C8C8] sm:text-base max-w-[60ch]">
                 <p>
-                  I am an Information Systems undergraduate at Universitas Tarumanagara and
-                  currently work as a Frontend Engineering Intern at{" "}
+                  I am an Information Systems undergraduate at Tarumanagara University and
+                  currently work as a Frontend Developer Intern at{" "}
                   <span className="font-medium text-[#FFFFFF]">CarbonEthics</span>, building
                   responsive climate-tech workflows, emission calculators, and modular UI token
                   systems.

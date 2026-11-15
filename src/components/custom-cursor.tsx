@@ -43,11 +43,15 @@ let mouseSeen = false;
 let globalPointerListenerAttached = false;
 
 function readPointerCapability(): PointerCapability {
-  const finePointer = window.matchMedia("(pointer: fine)").matches;
+  const hasDesktopViewport = window.matchMedia("(min-width: 768px)").matches;
+  const fineHoverPointer = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  // A physically connected mouse/pen enables the cursor even when the OS
-  // reports a coarse primary pointer (common on touchscreen laptops).
-  return { capable: finePointer || mouseSeen, reducedMotion };
+  // Disable custom cursor completely on mobile/touch viewports; on desktop viewports,
+  // allow a physically connected mouse on touchscreen laptops to enable it.
+  return {
+    capable: hasDesktopViewport && (fineHoverPointer || mouseSeen),
+    reducedMotion,
+  };
 }
 
 function getPointerSnapshot(): PointerCapability {
@@ -73,7 +77,14 @@ function emitPointerChange(): void {
 }
 
 function handleGlobalPointer(e: PointerEvent): void {
-  if (!mouseSeen && (e.pointerType === "mouse" || e.pointerType === "pen")) {
+  if (e.pointerType === "touch") {
+    if (mouseSeen) {
+      mouseSeen = false;
+      emitPointerChange();
+    }
+    return;
+  }
+  if (!mouseSeen && e.pointerType === "mouse") {
     mouseSeen = true;
     emitPointerChange();
   }
@@ -89,13 +100,16 @@ function subscribePointerStore(onChange: () => void): () => void {
     window.addEventListener("pointerdown", handleGlobalPointer, { passive: true });
   }
 
-  const fineQuery = window.matchMedia("(pointer: fine)");
+  const desktopQuery = window.matchMedia("(min-width: 768px)");
+  const fineQuery = window.matchMedia("(hover: hover) and (pointer: fine)");
   const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+  desktopQuery.addEventListener("change", onChange);
   fineQuery.addEventListener("change", onChange);
   motionQuery.addEventListener("change", onChange);
 
   return () => {
     pointerListeners?.delete(onChange);
+    desktopQuery.removeEventListener("change", onChange);
     fineQuery.removeEventListener("change", onChange);
     motionQuery.removeEventListener("change", onChange);
   };

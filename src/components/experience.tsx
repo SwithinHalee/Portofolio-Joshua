@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import { ArrowSquareOut } from "@phosphor-icons/react";
-import { EXPERIENCES, EDUCATION_HISTORY } from "@/data/portfolio";
+import { EXPERIENCES, EDUCATION_HISTORY, type ExperienceGalleryItem } from "@/data/portfolio";
 import { usePortfolio } from "@/components/portfolio-provider";
 import { Reveal, StaggerContainer, StaggerItem, useStackSlide } from "@/components/motion-wrapper";
 
@@ -10,6 +10,42 @@ function validImage(src: string | undefined): src is string {
   if (!src) return false;
   const t = src.trim();
   return t.startsWith("/") || t.startsWith("https://") || t.startsWith("http://");
+}
+
+function EntryGallery({
+  frames,
+  keyPrefix,
+}: {
+  frames: ExperienceGalleryItem[];
+  keyPrefix: string;
+}) {
+  if (frames.length === 0) return null;
+
+  return (
+    <div className="mt-8">
+      <div
+        className={`grid grid-cols-2 gap-3 md:gap-3.5 ${
+          frames.length >= 5 ? "md:grid-cols-5" : "md:grid-cols-4"
+        }`}
+      >
+        {frames.map((frame, index) => (
+          <figure
+            key={`${keyPrefix}-gallery-${index}`}
+            className="overflow-hidden rounded-[6px] border border-[#EAEAEA] bg-[#F7F6F3]"
+          >
+            <div className="aspect-[16/10] w-full overflow-hidden bg-[#EAEAEA]">
+              <img
+                src={frame.src}
+                alt={frame.alt}
+                loading="lazy"
+                className="h-full w-full object-cover"
+              />
+            </div>
+          </figure>
+        ))}
+      </div>
+    </div>
+  );
 }
 
 export function Experience() {
@@ -131,31 +167,7 @@ export function Experience() {
                       </div>
                     </div>
 
-                    {galleryFrames.length > 0 && (
-                      <div className="mt-8">
-                        <div
-                          className={`grid grid-cols-2 gap-3 md:gap-3.5 ${
-                            galleryFrames.length >= 5 ? "md:grid-cols-5" : "md:grid-cols-4"
-                          }`}
-                        >
-                          {galleryFrames.map((frame, index) => (
-                            <figure
-                              key={`${exp.company}-gallery-${index}`}
-                              className="overflow-hidden rounded-[6px] border border-[#EAEAEA] bg-[#F7F6F3]"
-                            >
-                              <div className="aspect-[16/10] w-full overflow-hidden bg-[#EAEAEA]">
-                                <img
-                                  src={frame.src}
-                                  alt={frame.alt}
-                                  loading="lazy"
-                                  className="h-full w-full object-cover"
-                                />
-                              </div>
-                            </figure>
-                          ))}
-                        </div>
-                      </div>
-                    )}
+                    <EntryGallery frames={galleryFrames} keyPrefix={exp.company} />
                   </div>
                 </StaggerItem>
               );
@@ -173,67 +185,74 @@ export function Experience() {
           </Reveal>
 
           <StaggerContainer className="border-t border-[#EAEAEA] divide-y divide-[#EAEAEA]">
-            {education.map((edu) => (
-              <StaggerItem key={edu.institution}>
-                <div className="py-6 grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
-                  <div className="md:col-span-3 font-mono text-xs text-[#616161]">
-                    {edu.period}
-                  </div>
+            {education.map((edu) => {
+              const galleryFrames = (edu.gallery ?? []).filter((frame) => validImage(frame.src));
+              return (
+                <StaggerItem key={edu.institution}>
+                  <div className="py-6">
+                    <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
+                      <div className="md:col-span-3 font-mono text-xs text-[#616161]">
+                        {edu.period}
+                      </div>
 
-                  <div className="md:col-span-9">
-                    <div className="text-base font-medium text-[#111111] mb-1 font-sans">
-                      {edu.institution}
-                    </div>
-                    <div className="text-sm font-sans text-[#4A4A4A] mb-2">{edu.degree}</div>
-                    <p className="text-xs sm:text-sm text-[#555555] leading-relaxed font-sans">
-                      {edu.details}
-                    </p>
+                      <div className="md:col-span-9">
+                        <div className="text-base font-medium text-[#111111] mb-1 font-sans">
+                          {edu.institution}
+                        </div>
+                        <div className="text-sm font-sans text-[#4A4A4A] mb-2">{edu.degree}</div>
+                        <p className="text-xs sm:text-sm text-[#555555] leading-relaxed font-sans">
+                          {edu.details}
+                        </p>
 
-                    {validImage(edu.image) && (
-                      <figure className="mt-4 sm:max-w-md">
-                        {edu.imageLink?.trim() ? (
-                          <a
-                            href={edu.imageLink}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            data-link-fill="off"
-                            data-cursor-label="Open link"
-                            aria-label={`Open link for ${edu.institution}`}
-                            className="group/fig relative block overflow-hidden rounded-[8px] border border-[#EAEAEA] bg-[#F7F6F3] transition-colors hover:border-[#CCCCCC]"
-                          >
-                            <span className="block aspect-[16/10] w-full overflow-hidden">
-                              <img
-                                src={edu.image}
-                                alt={edu.imageAlt?.trim() || `${edu.institution} visual`}
-                                loading="lazy"
-                                className="h-full w-full object-cover grayscale transition-all duration-500 group-hover/fig:scale-[1.02] group-hover/fig:grayscale-0"
-                              />
-                            </span>
-                            <span className="absolute right-2 top-2 inline-flex h-7 w-7 items-center justify-center rounded-[4px] border border-[#EAEAEA] bg-white/90 text-[#111111]">
-                              <ArrowSquareOut size={13} weight="regular" />
-                            </span>
-                          </a>
-                        ) : (
-                          <span className="block overflow-hidden rounded-[8px] border border-[#EAEAEA] bg-[#F7F6F3]">
-                            <span className="block aspect-[16/10] w-full overflow-hidden">
-                              <img
-                                src={edu.image}
-                                alt={edu.imageAlt?.trim() || `${edu.institution} visual`}
-                                loading="lazy"
-                                className="h-full w-full object-cover"
-                              />
-                            </span>
-                          </span>
+                        {validImage(edu.image) && (
+                          <figure className="mt-4 sm:max-w-md">
+                            {edu.imageLink?.trim() ? (
+                              <a
+                                href={edu.imageLink}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                data-link-fill="off"
+                                data-cursor-label="Open link"
+                                aria-label={`Open link for ${edu.institution}`}
+                                className="group/fig relative block overflow-hidden rounded-[8px] border border-[#EAEAEA] bg-[#F7F6F3] transition-colors hover:border-[#CCCCCC]"
+                              >
+                                <span className="block aspect-[16/10] w-full overflow-hidden">
+                                  <img
+                                    src={edu.image}
+                                    alt={edu.imageAlt?.trim() || `${edu.institution} visual`}
+                                    loading="lazy"
+                                    className="h-full w-full object-cover grayscale transition-all duration-500 group-hover/fig:scale-[1.02] group-hover/fig:grayscale-0"
+                                  />
+                                </span>
+                                <span className="absolute right-2 top-2 inline-flex h-7 w-7 items-center justify-center rounded-[4px] border border-[#EAEAEA] bg-white/90 text-[#111111]">
+                                  <ArrowSquareOut size={13} weight="regular" />
+                                </span>
+                              </a>
+                            ) : (
+                              <span className="block overflow-hidden rounded-[8px] border border-[#EAEAEA] bg-[#F7F6F3]">
+                                <span className="block aspect-[16/10] w-full overflow-hidden">
+                                  <img
+                                    src={edu.image}
+                                    alt={edu.imageAlt?.trim() || `${edu.institution} visual`}
+                                    loading="lazy"
+                                    className="h-full w-full object-cover"
+                                  />
+                                </span>
+                              </span>
+                            )}
+                            <figcaption className="pt-1.5 font-sans text-[11px] uppercase tracking-wider text-[#555555]">
+                              Fig · {edu.institution}
+                            </figcaption>
+                          </figure>
                         )}
-                        <figcaption className="pt-1.5 font-sans text-[11px] uppercase tracking-wider text-[#555555]">
-                          Fig · {edu.institution}
-                        </figcaption>
-                      </figure>
-                    )}
+                      </div>
+                    </div>
+
+                    <EntryGallery frames={galleryFrames} keyPrefix={edu.institution} />
                   </div>
-                </div>
-              </StaggerItem>
-            ))}
+                </StaggerItem>
+              );
+            })}
           </StaggerContainer>
         </div>
       </div>

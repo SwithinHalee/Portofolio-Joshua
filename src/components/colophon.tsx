@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import {
   ArrowUpRight,
@@ -21,12 +21,20 @@ export function Colophon() {
   const colophon = data.colophon ?? COLOPHON_SPECS;
   const email = cleanEmail(personalInfo.email);
   const [copied, setCopied] = useState(false);
+  const copyTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (copyTimerRef.current) clearTimeout(copyTimerRef.current);
+    };
+  }, []);
 
   const handleCopyEmail = async () => {
     try {
       await navigator.clipboard.writeText(email);
+      if (copyTimerRef.current) clearTimeout(copyTimerRef.current);
       setCopied(true);
-      setTimeout(() => setCopied(false), 2400);
+      copyTimerRef.current = setTimeout(() => setCopied(false), 1800);
     } catch {
       // Fallback
     }
@@ -76,26 +84,37 @@ export function Colophon() {
                   onClick={handleCopyEmail}
                   type="button"
                   data-link-fill="on"
-                  aria-label="Copy email address to clipboard"
-                  className="link-hug group/btn cursor-pointer gap-2 rounded-[2px] border-0 bg-transparent font-sans text-xs font-medium text-[#525252] shadow-none active:scale-[0.98]"
+                  aria-label={
+                    copied
+                      ? `Copied ${email} to clipboard`
+                      : "Copy email address to clipboard"
+                  }
+                  className={`link-hug group/btn cursor-pointer gap-2 rounded-[2px] border-0 bg-transparent font-sans text-xs font-medium shadow-none transition-colors duration-200 active:scale-[0.98] ${
+                    copied ? "text-[#111111]" : "text-[#525252]"
+                  }`}
                 >
-                  {copied ? (
-                    <>
-                      <Check
-                        size={14}
-                        weight="bold"
-                        className="text-[#166534] transition-colors duration-300 group-hover/btn:text-[#4ADE80] group-focus-visible/btn:text-[#4ADE80]"
-                      />
-                      <span className="text-[#166534] transition-colors duration-300 group-hover/btn:text-[#4ADE80] group-focus-visible/btn:text-[#4ADE80]">
-                        Copied: {email}
-                      </span>
-                    </>
-                  ) : (
-                    <>
-                      <Copy size={14} weight="regular" />
-                      <span>Copy Address ({email})</span>
-                    </>
-                  )}
+                  <span className="relative inline-flex h-[14px] w-[14px] shrink-0 items-center justify-center">
+                    <Copy
+                      size={14}
+                      weight="regular"
+                      aria-hidden="true"
+                      className={`absolute transition-all duration-200 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+                        copied ? "scale-75 opacity-0" : "scale-100 opacity-100"
+                      }`}
+                    />
+                    <Check
+                      size={14}
+                      weight="bold"
+                      aria-hidden="true"
+                      className={`absolute transition-all duration-200 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+                        copied ? "scale-100 opacity-100" : "scale-75 opacity-0"
+                      }`}
+                    />
+                  </span>
+                  <span>Copy Address ({email})</span>
+                  <span className="sr-only" aria-live="polite">
+                    {copied ? "Email address copied to clipboard." : ""}
+                  </span>
                 </button>
 
                 <a

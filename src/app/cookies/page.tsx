@@ -69,17 +69,24 @@ export default function CookiesPage() {
 
       <LegalSection id="local-storage" index="03" title="Local storage and cache">
         <p>
-          This site does not currently persist preferences in{" "}
+          This site does not use{" "}
           <code className="rounded border border-[#EAEAEA] bg-[#F7F6F3] px-1 font-mono text-[13px]">
             localStorage
           </code>{" "}
           or{" "}
           <code className="rounded border border-[#EAEAEA] bg-[#F7F6F3] px-1 font-mono text-[13px]">
             sessionStorage
-          </code>
-          . Your browser may still cache static assets (images, stylesheets) on
-          your own device to load repeat visits faster. That cache lives under
-          your control and can be cleared at any time in your browser settings.
+          </code>{" "}
+          for analytics, tracking, or advertising identifiers. It uses{" "}
+          <code className="rounded border border-[#EAEAEA] bg-[#F7F6F3] px-1 font-mono text-[13px]">
+            sessionStorage
+          </code>{" "}
+          only for temporary client-side navigation state (remembering your
+          scroll position when returning between pages during a tab session),
+          which clears automatically when the tab closes. Your browser may also
+          cache static assets (images, stylesheets) on your own device to load
+          repeat visits faster, and you can clear both storage and cache at any
+          time in your browser settings.
         </p>
       </LegalSection>
 

@@ -16,6 +16,7 @@ html {
   scroll-behavior: smooth;
   background-color: #FFFFFF;
   color: #111111;
+  overflow-x: clip;
 }
 
 /* Pre-hydration veil + centered JA monogram on reload until React SplashIntro
@@ -53,6 +54,7 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   line-height: 1.6;
+  overflow-x: clip;
 }
 
 h1,
@@ -81,15 +83,17 @@ body,
   height: 0;
 }
 
-kbd {
-  font-family: var(--font-jetbrains-mono), monospace;
-  border: 1px solid #EAEAEA;
-  border-radius: 4px;
-  background-color: #F7F6F3;
-  padding: 0.15rem 0.4rem;
-  font-size: 0.75rem;
-  color: #111111;
-  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.04);
+@layer base {
+  kbd {
+    font-family: var(--font-jetbrains-mono), monospace;
+    border: 1px solid #EAEAEA;
+    border-radius: 4px;
+    background-color: #F7F6F3;
+    padding: 0.15rem 0.4rem;
+    font-size: 0.75rem;
+    color: #111111;
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.04);
+  }
 }
 
 /* Visible keyboard focus for all interactive elements (WCAG 2.4.7) */
@@ -134,9 +138,9 @@ kbd {
 }
 
 /* Precision instrument cursor: native pointer is hidden only when the
-   custom cursor has mounted (JS-gated class) on devices with a fine pointer.
+   custom cursor has mounted (JS-gated class) on desktop devices with a fine hoverable pointer.
    Text-entry elements keep their native I-beam for usability. */
-@media (pointer: fine) {
+@media (min-width: 768px) and (hover: hover) and (pointer: fine) {
   .custom-cursor-enabled,
   .custom-cursor-enabled * {
     cursor: none !important;
@@ -275,6 +279,63 @@ a[href][class*="bg-[#111111]"]:not([data-link-fill="off"]):focus-visible,
 [data-link-fill="on"][class*="bg-[#111111]"]:hover,
 [data-link-fill="on"][class*="bg-[#111111]"]:focus-visible {
   box-shadow: inset 0 0 0 1px #111111;
+}
+
+/* Dossier stack rows invert cleanly on desktop hover/focus and mobile tap */
+a[data-dossier-skill] {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+a[data-dossier-skill]:hover,
+a[data-dossier-skill]:focus-visible,
+a[data-dossier-skill]:active {
+  background-size: 100% 100%;
+  color: var(--link-fill-ink);
+  border-color: var(--link-fill-border);
+  text-decoration-line: none;
+}
+
+a[data-dossier-skill]:hover [data-skill-title],
+a[data-dossier-skill]:focus-visible [data-skill-title],
+a[data-dossier-skill]:active [data-skill-title] {
+  color: #111111;
+}
+
+a[data-dossier-skill]:hover [data-skill-detail],
+a[data-dossier-skill]:focus-visible [data-skill-detail],
+a[data-dossier-skill]:active [data-skill-detail] {
+  color: #4A4A4A;
+}
+
+a[data-dossier-skill]:hover [data-skill-kbd],
+a[data-dossier-skill]:focus-visible [data-skill-kbd],
+a[data-dossier-skill]:active [data-skill-kbd] {
+  background-color: #111111;
+  border-color: #111111;
+  color: #FFFFFF;
+}
+
+a[data-dossier-skill]:hover [data-skill-fallback],
+a[data-dossier-skill]:focus-visible [data-skill-fallback],
+a[data-dossier-skill]:active [data-skill-fallback] {
+  color: #111111;
+  transform: scale(1.05);
+}
+
+a[data-dossier-skill]:hover img,
+a[data-dossier-skill]:focus-visible img,
+a[data-dossier-skill]:active img {
+  filter: brightness(0);
+  transform: scale(1.05);
+}
+
+a[data-dossier-skill]:hover [data-skill-arrow],
+a[data-dossier-skill]:focus-visible [data-skill-arrow],
+a[data-dossier-skill]:active [data-skill-arrow] {
+  color: #111111;
+  opacity: 1;
+  transform: translate(0.125rem, -0.125rem);
 }
 
 @layer components {

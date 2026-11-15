@@ -23,10 +23,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   const url = `${SITE_URL}/work/${project.slug}`;
   const isVideo = /\.mp4($|\?)/i.test(project.image.trim());
-  const image = !isVideo && project.image.startsWith("/")
-    ? `${SITE_URL}${project.image}`
-    : !isVideo && project.image.startsWith("http")
-      ? project.image
+  const rawImage = isVideo ? project.previewImage : project.image;
+  const image = rawImage && rawImage.startsWith("/")
+    ? `${SITE_URL}${rawImage}`
+    : rawImage && rawImage.startsWith("http")
+      ? rawImage
       : undefined;
 
   return {

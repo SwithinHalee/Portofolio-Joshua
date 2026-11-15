@@ -11,7 +11,7 @@ interface LegalLayoutProps {
   children: React.ReactNode;
 }
 
-export const LEGAL_LAST_UPDATED = "September 6, 2026";
+export const LEGAL_LAST_UPDATED = "November 15, 2026";
 
 export function LegalLayout({
   eyebrow,
@@ -27,6 +27,8 @@ export function LegalLayout({
           <div className="mb-10">
             <Link
               href="/"
+              scroll={false}
+              data-restore-scroll="true"
               className="link-hug gap-2 rounded-[2px] -mx-1.5 font-sans text-xs font-medium text-[#525252]"
             >
               <ArrowLeft size={13} weight="bold" aria-hidden="true" />
@@ -44,14 +46,14 @@ export function LegalLayout({
             <p className="mb-6 font-sans text-base leading-relaxed text-[#444444]">
               {description}
             </p>
-            <div className="flex flex-wrap items-center gap-2 font-sans text-xs text-[#525252]">
-              <span className="rounded border border-[#EAEAEA] bg-[#F7F6F3] px-2.5 py-1 uppercase tracking-wider">
+            <div className="flex flex-wrap items-center gap-2 font-sans text-xs text-[#FFFFFF]">
+              <span className="rounded border border-[#111111] bg-[#111111] px-2.5 py-1 uppercase tracking-wider text-[#FFFFFF]">
                 {eyebrow}
               </span>
-              <span className="rounded border border-[#EAEAEA] bg-[#F7F6F3] px-2.5 py-1">
+              <span className="rounded border border-[#111111] bg-[#111111] px-2.5 py-1 text-[#FFFFFF]">
                 Last updated: {lastUpdated}
               </span>
-              <span className="rounded border border-[#EAEAEA] bg-[#F7F6F3] px-2.5 py-1">
+              <span className="rounded border border-[#111111] bg-[#111111] px-2.5 py-1 text-[#FFFFFF]">
                 Operator: {PERSONAL_INFO.name}
               </span>
             </div>

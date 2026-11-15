@@ -1,3 +1,13 @@
+export interface ProjectVideoItem {
+  title: string;
+  videoId: string;
+  thumbnail: string;
+  views: string;
+  duration: string;
+  published: string;
+  url: string;
+}
+
 export interface ProjectItem {
   id: string;
   slug: string;
@@ -6,6 +16,10 @@ export interface ProjectItem {
   summary: string;
   description: string;
   image: string;
+  /** Optional static preview/poster image used when `image` points to a video demo. */
+  previewImage?: string;
+  /** Optional showcase of real published video thumbnails and view stats. */
+  videoGallery?: ProjectVideoItem[];
   technicalHighlights: string[];
   metrics?: { label: string; value: string }[];
   tags: string[];
@@ -64,6 +78,8 @@ export interface EducationItem {
   /** Destination opened when the image is clicked. */
   imageLink?: string;
   imageAlt?: string;
+  /** Optional spanning gallery frames rendered beneath this education entry. */
+  gallery?: ExperienceGalleryItem[];
 }
 
 export interface TechCategory {
@@ -76,6 +92,8 @@ export interface PrincipleItem {
   number: string;
   title: string;
   statement: string;
+  /** Optional item-specific context shown when this row is expanded. */
+  note?: string;
 }
 
 export interface SetupItem {
@@ -100,8 +118,8 @@ export const PERSONAL_INFO = {
   name: "Joshua Abdiel",
   callsign: "Josh",
   role: "Frontend Developer & Information System Undergraduate",
-  institution: "Universitas Tarumanagara (UNTAR)",
-  currentRole: "Frontend Engineering Intern at CarbonEthics",
+  institution: "Tarumanagara University (UNTAR)",
+  currentRole: "Frontend Developer Intern at CarbonEthics",
   location: "Tangerang, Banten, Indonesia",
   timezone: "WIB (UTC+7)",
   availability: {
@@ -110,7 +128,7 @@ export const PERSONAL_INFO = {
     visible: true,
   },
   headline: "Engineering deliberate web interfaces with architectural rigor & utilitarian precision.",
-  bio: "Frontend engineer and Information Systems undergraduate at Universitas Tarumanagara. Currently building climate-tech interfaces at CarbonEthics, focusing on web performance, component architecture, and type-safe systems.",
+  bio: "Frontend engineer and Information Systems undergraduate at Tarumanagara University. Currently building climate-tech interfaces at CarbonEthics, focusing on web performance, component architecture, and type-safe systems.",
   heroNote: "UNTAR Information Systems • Class of 2027",
   engagementLabel: "Current Engagement:",
   engagementValue: "Frontend Intern at CarbonEthics",
@@ -159,8 +177,8 @@ export const PROJECTS: ProjectItem[] = [
     },
     caseStudy: {
       clientOrContext: "CarbonEthics (Climate Tech Organization)",
-      timeline: "Feb 2026 - Present",
-      role: "Frontend Engineering Intern",
+      timeline: "Feb 2026 - Feb 2027",
+      role: "Frontend Developer Intern",
       challenge:
         "Carbon footprint calculations require complex input trees (flight distances, vehicle fuel metrics, enterprise consumption) that historically produced heavy client bundle overhead and slow interactive responses.",
       architectureSolution:
@@ -178,6 +196,65 @@ export const PROJECTS: ProjectItem[] = [
         {
           title: "Strict Interface Typing for Emission Factors",
           rationale: "Reduced runtime estimation errors by establishing immutable mathematical conversion types.",
+        },
+      ],
+    },
+  },
+  {
+    id: "statshark-exporter",
+    slug: "statshark-exporter",
+    title: "StatShark War Thunder Exporter",
+    category: "Desktop Utility / Direct API Automation",
+    summary:
+      "High-speed Python desktop utility for War Thunder players that resolves UIDs and extracts vehicle performance records from StatShark in ~1–2s into structured CSV, TXT, and JSON files.",
+    description:
+      "Engineered a standalone Windows desktop exporter (Tkinter + PyInstaller) backed by Chrome DevTools Protocol token capture and TLS-impersonated API requests. Instead of slow DOM scraping, it captures Turnstile verification tokens in a silent off-screen browser, caches tokens with a 20-minute TTL, and parses complete player profiles and per-vehicle statistics directly from StatShark's backend endpoints.",
+    image: "/images/projects/statshark-export.mp4",
+    previewImage: "/images/projects/statshark-exporter.jpg",
+    technicalHighlights: [
+      "Silent CDP (Chrome/Edge WebSocket) token capture with 20-minute TTL caching & 401/406 auto-refresh",
+      "Direct StatShark REST fetching via curl_cffi TLS impersonation (~1–2s full profile turnaround)",
+      "Multi-format batch exporter outputting Realistic & Arcade CSV sheets (17 metrics), Summary TXT, and Raw JSON",
+    ],
+    metrics: [
+      { label: "Fetch Latency", value: "~1–2s Direct API" },
+      { label: "Auth Cache", value: "20m Token TTL" },
+      { label: "Exports", value: "CSV · TXT · JSON" },
+    ],
+    tags: ["Python", "Tkinter", "curl_cffi", "WebSockets / CDP", "PyInstaller", "CSV / JSON"],
+    githubUrl: "https://github.com/SwithinHalee/statshark-exporter",
+    featured: true,
+    gridSpan: "col-span-12 lg:col-span-7",
+    badge: {
+      text: "OPEN SOURCE REPO",
+      variant: "blue",
+    },
+    caseStudy: {
+      clientOrContext: "Open Source Desktop Tooling",
+      timeline: "Oct 2026",
+      role: "Creator & Sole Engineer",
+      challenge:
+        "Inspecting per-vehicle War Thunder statistics on StatShark for squadron audits or spreadsheet analysis requires tedious manual lookups, while automated scrapers face strict Cloudflare Turnstile gates and slow headless page rendering.",
+      architectureSolution:
+        "Decoupled security token acquisition from data retrieval. On token expiry, a headless off-screen browser instance attaches over Chrome DevTools Protocol WebSockets, intercepts the X-Turnstile-Token header, and persists it locally for 20 minutes. Subsequent lookups run on background worker threads calling GetIdByName and makestatrequestbyid directly via curl_cffi.",
+      deliverables: [
+        "17-column Realistic Battles (RB) and Arcade Battles (AB) CSV exports with calculated K/D ratios",
+        "Human-readable Summary TXT digest covering player metadata, ban status, and combat totals",
+        "Complete Raw JSON API payload archival plus persistent %LOCALAPPDATA% save-directory preferences",
+        "Standalone zero-dependency Windows executable (StatShark_Fast_Exporter_GUI.exe) packaged via PyInstaller",
+      ],
+      technicalDecisions: [
+        {
+          title: "CDP Header Interception With 20-Minute Local Cache",
+          rationale: "Captures short-lived Turnstile tokens silently without browser popups and reuses them safely within StatShark's 25-minute server TTL.",
+        },
+        {
+          title: "Direct API Over DOM Automation",
+          rationale: "Replaced multi-second page rendering with TLS-impersonated curl_cffi calls, cutting per-player export latency down to roughly 1–2 seconds.",
+        },
+        {
+          title: "Daemon Worker Threads With Tk Event Marshaling",
+          rationale: "Runs network calls and file I/O on daemon threads while scheduling progress bar and console log updates cleanly back via self.after.",
         },
       ],
     },
@@ -206,7 +283,7 @@ export const PROJECTS: ProjectItem[] = [
     liveUrl: "https://youtube.com/shorts/I1ZCUK5RzLQ?feature=share",
     githubUrl: "https://github.com/SwithinHalee/Xpense",
     featured: true,
-    gridSpan: "col-span-12 lg:col-span-7",
+    gridSpan: "col-span-12 lg:col-span-5",
     badge: {
       text: "OPEN SOURCE REPO",
       variant: "blue",
@@ -322,7 +399,7 @@ export const PROJECTS: ProjectItem[] = [
     tags: ["GNS3", "Computer Networks", "Packet Routing", "VLANs", "Wireshark"],
     githubUrl: "https://github.com/SwithinHalee/Data-Sharing-GNS3",
     featured: true,
-    gridSpan: "col-span-12",
+    gridSpan: "col-span-12 lg:col-span-7",
     badge: {
       text: "SYSTEM ARCHITECTURE",
       variant: "blue",
@@ -348,6 +425,97 @@ export const PROJECTS: ProjectItem[] = [
         {
           title: "Wireshark Protocol Analysis",
           rationale: "Audited TCP handshake efficiency and dropped unauthorized ICMP packets at boundary switches.",
+        },
+      ],
+    },
+  },
+  {
+    id: "swithinhalee-youtube",
+    slug: "swithinhalee-youtube",
+    title: "@SwithinHalee YouTube Lab",
+    category: "Content Creation / Defense & Armored Media",
+    summary:
+      "Long-form YouTube channel (@SwithinHalee) exploring tanks, IFVs, APCs, and Indonesian defense procurement: 13 uploaded video essays accumulating 121.6K total views and 806 subscribers organically.",
+    description:
+      "An independent YouTube content creation project (@SwithinHalee) producing deep-dive Indonesian-language video essays on armored vehicles (Tank, IFV, APC, Alutsista). Across 13 uploads published between June and December 2025, the channel generated 121,672 views (~9.3K average views per upload, ~11m 38s average runtime), testing thumbnail composition, narrative hooks, and topic positioning.",
+    image: "/images/projects/yt-lrwslvYETpI.jpg",
+    videoGallery: [
+      {
+        title: "Tank Boat | Antasena, Inovasi ada, implementasi entah ke mana?",
+        videoId: "lrwslvYETpI",
+        thumbnail: "/images/projects/yt-lrwslvYETpI.jpg",
+        views: "40,562 views",
+        duration: "08:44",
+        published: "Jul 2025",
+        url: "https://www.youtube.com/watch?v=lrwslvYETpI",
+      },
+      {
+        title: "Kenapa Alutsista Indonesia Campur Aduk dari Banyak Negara?",
+        videoId: "MNypwzln0NM",
+        thumbnail: "/images/projects/yt-MNypwzln0NM.jpg",
+        views: "17,943 views",
+        duration: "09:22",
+        published: "Sep 2025",
+        url: "https://www.youtube.com/watch?v=MNypwzln0NM",
+      },
+      {
+        title: "VN12A / ZTZ201 | Tank Baru Dari Negeri Tirai Bambu",
+        videoId: "put_3vFD6MM",
+        thumbnail: "/images/projects/yt-put_3vFD6MM.jpg",
+        views: "17,317 views",
+        duration: "06:35",
+        published: "Aug 2025",
+        url: "https://www.youtube.com/watch?v=put_3vFD6MM",
+      },
+      {
+        title: "Proyek 'Object': Puncak Eksperimen Tank Soviet & Rusia",
+        videoId: "LdcAcJBudmA",
+        thumbnail: "/images/projects/yt-LdcAcJBudmA.jpg",
+        views: "10,532 views",
+        duration: "22:03",
+        published: "Dec 2025",
+        url: "https://www.youtube.com/watch?v=LdcAcJBudmA",
+      },
+    ],
+    technicalHighlights: [
+      "Local Indonesian defense essays (Antasena, Alutsista, Harimau, Scorpion, Leopard 2A4) drive ~72% of total channel views",
+      "Critical question titles and bold real-photo thumbnail composites significantly outperform routine defense news headlines",
+      "Long-form depth (6.5 to 22 min runtimes, 11m 38s mean) sustains organic discovery across 121.6K cumulative views",
+    ],
+    metrics: [
+      { label: "Total Views", value: "121.6K (13 Videos)" },
+      { label: "Subscribers", value: "806 Organic" },
+      { label: "Top Video", value: "40.5K (Antasena)" },
+    ],
+    tags: ["Content Creation", "Video Editing", "YouTube", "Channel Analytics", "Research"],
+    liveUrl: "https://www.youtube.com/@SwithinHalee",
+    featured: false,
+    gridSpan: "col-span-12",
+    badge: {
+      text: "CREATIVE EXPERIMENT",
+      variant: "amber",
+    },
+    caseStudy: {
+      clientOrContext: "Personal Media & Analytics Experiment",
+      timeline: "Jun 2025 - Ongoing",
+      role: "Creator, Scriptwriter & Editor",
+      challenge:
+        "Standing out in a technical defense and armored vehicle niche where generic spec recaps fail to earn clicks, while discovering which topics, thumbnail layouts, and video lengths retain viewers organically from zero subscribers.",
+      architectureSolution:
+        "Published 13 structured video essays between June and December 2025 (~121,672 total views, 806 subscribers) using real archival and defense photography composites paired with crisp two-tone headline typography. Post-upload performance comparisons revealed clear topic and framing signals.",
+      deliverables: [
+        "13 public defense & armored vehicle essays totaling 121,672 views across Jun - Dec 2025",
+        "Consistent visual thumbnail system combining real platform photos, flags, and the (S|H) monogram",
+        "Channel performance audit identifying Indonesian defense procurement & question-led hooks as top growth drivers",
+      ],
+      technicalDecisions: [
+        {
+          title: "Topic Analysis: Local Context Wins (~72% Share)",
+          rationale: "Indonesian defense procurement topics (Tank Boat Antasena: 40.5K, Alutsista Mix: 17.9K, FV101 Scorpion: 9.8K, Kaplan MT: 9.5K, Leopard 2A4: 9.3K) generated ~87K+ views compared to 227 - 335 views on regional news topics like J-10C or LCS Malaysia.",
+        },
+        {
+          title: "Packaging Analysis: Critical Questions Beat News Recaps",
+          rationale: "Open-ended curiosity titles ('...implementasi entah ke mana?', 'Kenapa Alutsista Campur Aduk?', 'Warisan atau beban?') paired with real photo thumbnails consistently yielded 9K - 40K views per essay.",
         },
       ],
     },
@@ -496,34 +664,38 @@ export const TECH_CATEGORIES: TechCategory[] = [
 export const ENGINEERING_PRINCIPLES: PrincipleItem[] = [
   {
     number: "01",
-    title: "Type Safety as a Binding Contract",
+    title: "Build to Remove Real Friction",
     statement:
-      "Strict TypeScript interfaces prevent runtime defects at compile-time. We never pass untyped 'any' across component borders or network requests.",
+      "Most of my personal software started from an itch I wanted gone, whether pulling War Thunder player records in seconds with StatShark Exporter or tracking multi-currency spending offline in Xpense. Useful tools matter more to me than showcase demos.",
+    note: "Rooted in real daily use across StatShark Exporter (Python GUI) and Xpense Ledger (Flutter + SQLite).",
   },
   {
     number: "02",
-    title: "Performance as a Core UX Feature",
+    title: "Bridge Systems Thinking & Interface Craft",
     statement:
-      "Fast interfaces respect the user's attention. We optimize asset payloads, prevent extraneous re-renders, and preserve sub-second initial content painting.",
+      "Studying Information Systems at UNTAR alongside frontend work at CarbonEthics trained me to look at the whole chain: how relational schemas, API contracts, and user clarity depend on one another before a single button renders.",
+    note: "Practiced daily across CarbonEthics frontend sprints and Information Systems coursework at UNTAR.",
   },
   {
     number: "03",
-    title: "1px Border Precision & Macro-Whitespace",
+    title: "Calm Ownership & Honest Verification",
     statement:
-      "Restrained aesthetics outlast trends. We construct layouts with deliberate vertical breathing room, warm monochromatic contrast, and zero visual clutter.",
+      "I prefer verifying work directly (inspecting Wireshark captures, timing API payloads, or testing responsive breakpoints) rather than assuming it works. When something breaks, I trace the root cause and leave clear notes behind.",
+    note: "Backed by direct checks: packet captures in GNS3/Wireshark, API latency benchmarks, and responsive layout audits.",
   },
   {
     number: "04",
-    title: "Utilitarian Clarity Over Superficial Cleverness",
+    title: "Steady Rhythm Beyond the Screen",
     statement:
-      "Maintainable, readable code beats obscure one-liners. Interfaces must be intuitive and systems must be predictable to future maintainers.",
+      "Shipping reliable code while balancing university and an active internship comes from pacing myself away from the keyboard. Weekend camping, badminton, and tinkering with PC hardware keep my focus sharp when problems get dense.",
+    note: "Kept balanced through regular badminton sessions, weekend camping trips, and PC hardware builds.",
   },
 ];
 
 export const EXPERIENCES: ExperienceItem[] = [
   {
-    period: "Feb 2026 - Oct 2026",
-    role: "Frontend Engineering Intern",
+    period: "Feb 2026 - Feb 2027",
+    role: "Frontend Developer Intern",
     company: "CarbonEthics",
     location: "Jakarta / Hybrid",
     type: "Internship",
@@ -532,24 +704,24 @@ export const EXPERIENCES: ExperienceItem[] = [
     technologies: ["Next.js", "TypeScript", "Tailwind CSS", "REST API", "Figma"],
     gallery: [
       {
-        src: "/images/experience/carbonethics-team.jpg",
-        alt: "Joshua Abdiel with the CarbonEthics team at the Jakarta headquarters",
+        src: "/images/experience/carbonethics-team-1.jpg",
+        alt: "Joshua Abdiel with the CarbonEthics team in front of the Jakarta headquarters logo",
         caption: "Jakarta HQ",
       },
       {
-        src: "/images/experience/carbonethics-team.jpg",
-        alt: "CarbonEthics frontend engineering internship squad portrait",
-        caption: "FE Squad",
+        src: "/images/experience/carbonethics-team-2.jpg",
+        alt: "CarbonEthics engineering squad during an outdoor team lunch",
+        caption: "Team Lunch",
       },
       {
-        src: "/images/experience/carbonethics-team.jpg",
-        alt: "CarbonEthics office lounge team snapshot during internship",
-        caption: "Office",
+        src: "/images/experience/carbonethics-team-3.jpg",
+        alt: "CarbonEthics teammates gathered around the table together",
+        caption: "Squad Meetup",
       },
       {
-        src: "/images/experience/carbonethics-team.jpg",
-        alt: "CarbonEthics internship cohort documentation frame",
-        caption: "Cohort",
+        src: "/images/experience/carbonethics-team-4.jfif",
+        alt: "CarbonEthics full team documentation frame inside the Jakarta office",
+        caption: "Office Team",
       },
     ],
   },
@@ -559,9 +731,36 @@ export const EDUCATION_HISTORY: EducationItem[] = [
   {
     period: "2023 - Present",
     degree: "Bachelor of Science in Information Systems (Sistem Informasi)",
-    institution: "Universitas Tarumanagara (UNTAR)",
+    institution: "Tarumanagara University (UNTAR)",
     details:
       "Focusing on enterprise information architecture, software development methodologies, database systems, and full-stack web applications.",
+    gallery: [
+      {
+        src: "/images/experience/untar-1.jpg",
+        alt: "UNTAR cohort team visit inside an immersive digital forest exhibition",
+        caption: "Field Visit",
+      },
+      {
+        src: "/images/experience/untar-2.jpg",
+        alt: "UNTAR Information Systems students in maroon blazers at a museum heritage mural",
+        caption: "Heritage Study",
+      },
+      {
+        src: "/images/experience/untar-3.jpg",
+        alt: "UNTAR Faculty of Information Technology cohort group portrait on campus",
+        caption: "FTI Courtyard",
+      },
+      {
+        src: "/images/experience/untar-4.jpg",
+        alt: "UNTAR Information Systems students gathered on the main campus steps",
+        caption: "Campus Cohort",
+      },
+      {
+        src: "/images/experience/untar-5.jfif",
+        alt: "UNTAR Information Systems classmates together in the university lecture hall",
+        caption: "Lecture Hall",
+      },
+    ],
   },
   {
     period: "Primary, Junior & Senior High",
@@ -569,6 +768,33 @@ export const EDUCATION_HISTORY: EducationItem[] = [
     institution: "Santo Fransiskus Asisi",
     details:
       "Comprehensive mathematics and scientific foundation fostering analytical reasoning and systematic problem solving.",
+    gallery: [
+      {
+        src: "/images/experience/asisi-1.JPG",
+        alt: "Santo Fransiskus Asisi student cohort during the Live In and Blend In retreat",
+        caption: "Live In",
+      },
+      {
+        src: "/images/experience/asisi-2.jpg",
+        alt: "Santo Fransiskus Asisi students during a field trip market stop",
+        caption: "Field Trip",
+      },
+      {
+        src: "/images/experience/asisi-3.jpg",
+        alt: "Santo Fransiskus Asisi classmates riding the tour bus together",
+        caption: "Transit",
+      },
+      {
+        src: "/images/experience/asisi-4.jpg",
+        alt: "Santo Fransiskus Asisi student group seated together indoors",
+        caption: "Gathering",
+      },
+      {
+        src: "/images/experience/asisi-5.JPG",
+        alt: "Santo Fransiskus Asisi students standing together outdoors on community immersion",
+        caption: "Immersion",
+      },
+    ],
   },
 ];
 

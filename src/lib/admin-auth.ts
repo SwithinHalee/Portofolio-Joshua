@@ -1,5 +1,6 @@
 import { cookies } from "next/headers";
 
+export const ADMIN_DISABLED = true;
 export const ADMIN_COOKIE_NAME = "joshua_admin_session";
 const SESSION_MAX_AGE = 60 * 60 * 24 * 7; // 7 days
 
@@ -49,6 +50,9 @@ export async function verifySessionToken(token: string | undefined | null): Prom
 }
 
 export async function isAuthenticated(): Promise<boolean> {
+  if (ADMIN_DISABLED) {
+    return false;
+  }
   // If no ADMIN_PASSWORD is set in env, allow access by default (dev fallback)
   if (!process.env.ADMIN_PASSWORD) {
     return true;
@@ -59,10 +63,12 @@ export async function isAuthenticated(): Promise<boolean> {
 }
 
 export function isPasswordConfigured(): boolean {
+  if (ADMIN_DISABLED) return false;
   return Boolean(process.env.ADMIN_PASSWORD);
 }
 
 export function checkPassword(password: string): boolean {
+  if (ADMIN_DISABLED) return false;
   const configured = process.env.ADMIN_PASSWORD;
   if (!configured) return true;
   return password === configured;

@@ -28,7 +28,7 @@ export default function PrivacyPage() {
           </strong>
           , based in {PERSONAL_INFO.location}. It is a personal, non-commercial
           showcase of projects and experience (not a registered company, online
-          store, or data-driven service. There are no accounts, checkouts,
+          store, or data-driven service). There are no accounts, checkouts,
           newsletters, or contact-form databases on this site.
         </p>
         <p>
@@ -112,19 +112,28 @@ export default function PrivacyPage() {
         </p>
       </LegalSection>
 
-      <LegalSection id="third-parties" index="05" title="Third-party links">
+      <LegalSection
+        id="third-parties"
+        index="05"
+        title="Third-party links and external assets"
+      >
         <p>
-          Project cards link out to independent third parties: GitHub
-          repositories, Instagram, and the CarbonEthics website. Selecting those
-          links leaves this site and loads content governed by that
-          provider&apos;s own privacy terms. No content from those providers is
-          embedded in these pages (no iframes, feeds, or players), so they
+          Project cards, archive rows, and technical stack items link out to
+          independent third parties: GitHub repositories, Instagram, YouTube,
+          the CarbonEthics website, and official library or tool documentation.
+          Selecting those links leaves this site and loads content governed by
+          that provider&apos;s own privacy terms. No social feeds, maps, or
+          third-party players are embedded in these pages, so those destinations
           receive no data from this site until you choose to visit them.
         </p>
         <p>
-          Fonts (Hanken Grotesk, JetBrains Mono, Newsreader) are self-hosted
-          through the application bundle, so loading a page does not contact
-          external font servers.
+          Technology icons in the Technical Stack section are requested directly
+          by your browser from public static CDNs (Simple Icons at
+          cdn.simpleicons.org and jsDelivr at cdn.jsdelivr.net), which may log
+          standard technical request metadata (such as IP address and
+          user-agent) under their respective policies. Fonts (Hanken Grotesk,
+          JetBrains Mono, Newsreader) are self-hosted through the application
+          bundle, so loading a page does not contact external font servers.
         </p>
       </LegalSection>
 

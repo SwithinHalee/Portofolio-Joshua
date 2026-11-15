@@ -52,6 +52,7 @@ export function ScrollMemory() {
   const pathnameRef = useRef(pathname);
   const prevRouteRef = useRef(pathname);
   const wentBackRef = useRef(false);
+  const restoreForwardRef = useRef(false);
   const transitioningRef = useRef(false);
   const guardTimerRef = useRef(0);
   const lastSaveRef = useRef(0);
@@ -112,6 +113,7 @@ export function ScrollMemory() {
       if (url.origin !== window.location.origin) return;
       // In-page anchors never change route; nothing to memorize or guard.
       if (url.pathname === window.location.pathname && url.hash) return;
+      restoreForwardRef.current = anchor.dataset.restoreScroll === "true";
       savePosition(pathnameRef.current, window.scrollY);
       openGuard();
     };
@@ -143,9 +145,11 @@ export function ScrollMemory() {
     const isInitialLoad = prevRoute === pathname;
     const shouldRestore =
       (wentBackRef.current ||
+        restoreForwardRef.current ||
         (isInitialLoad && (navType === "back_forward" || navType === "reload"))) &&
       window.location.hash === "";
     wentBackRef.current = false;
+    restoreForwardRef.current = false;
     if (!shouldRestore) {
       // Forward intra-app navigation without a hash must snap immediately to top rather than
       // inheriting CSS `scroll-behavior: smooth` from the previous route's scroll offset.
@@ -158,6 +162,9 @@ export function ScrollMemory() {
 
     const savedRaw = readMemory()[pathname] ?? 0;
     if (savedRaw <= 0) {
+      if (prevRoute !== pathname && window.location.hash === "" && window.scrollY > 0) {
+        jumpTo(0);
+      }
       closeGuard();
       return;
     }
@@ -171,6 +178,7 @@ export function ScrollMemory() {
       cancelled = true;
     };
     window.addEventListener("wheel", onUserIntent, { passive: true });
+    window.addEventListener("touchstart", onUserIntent, { passive: true });
     window.addEventListener("touchmove", onUserIntent, { passive: true });
     window.addEventListener("keydown", onUserIntent);
     window.addEventListener("pointerdown", onUserIntent);
@@ -184,11 +192,13 @@ export function ScrollMemory() {
     };
 
     attempt();
-    const timers = [REALIGN_DELAY_MS, 600, 1200].map((ms) =>
+    const rafId = window.requestAnimationFrame(attempt);
+    const timers = [80, 200, REALIGN_DELAY_MS, 600, 1200].map((ms) =>
       window.setTimeout(attempt, ms)
     );
     const done = window.setTimeout(() => {
       window.removeEventListener("wheel", onUserIntent);
+      window.removeEventListener("touchstart", onUserIntent);
       window.removeEventListener("touchmove", onUserIntent);
       window.removeEventListener("keydown", onUserIntent);
       window.removeEventListener("pointerdown", onUserIntent);
@@ -196,9 +206,11 @@ export function ScrollMemory() {
     }, 1500);
 
     return () => {
+      window.cancelAnimationFrame(rafId);
       timers.forEach((t) => window.clearTimeout(t));
       window.clearTimeout(done);
       window.removeEventListener("wheel", onUserIntent);
+      window.removeEventListener("touchstart", onUserIntent);
       window.removeEventListener("touchmove", onUserIntent);
       window.removeEventListener("keydown", onUserIntent);
       window.removeEventListener("pointerdown", onUserIntent);

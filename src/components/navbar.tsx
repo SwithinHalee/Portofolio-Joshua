@@ -79,6 +79,11 @@ export function Navbar() {
   if (isAdmin) return null;
 
   const isArchiveActive = pathname === "/archive";
+  const isLegalPage =
+    pathname === "/privacy" ||
+    pathname === "/terms" ||
+    pathname === "/cookies" ||
+    pathname === "/refunds";
   const isContactHighlighted = isHome && contactActive;
 
   return (
@@ -86,6 +91,8 @@ export function Navbar() {
       {/* Top-Left Brand: crowns the desktop side panel column on xl+, containerless across viewports */}
       <Link
         href="/"
+        scroll={!isLegalPage}
+        data-restore-scroll={isLegalPage ? "true" : undefined}
         data-navbar-brand-link
         data-link-fill="off"
         aria-label={`${personalInfo.name} Home`}

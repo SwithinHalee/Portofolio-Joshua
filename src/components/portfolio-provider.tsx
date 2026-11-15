@@ -67,7 +67,9 @@ export function PortfolioProvider({ children }: { children: ReactNode }) {
   const [isAdmin, setIsAdmin] = useState(false);
   const [redisAvailable, setRedisAvailable] = useState(false);
   const dataRef = useRef<PortfolioData>(data);
-  dataRef.current = data;
+  useEffect(() => {
+    dataRef.current = data;
+  }, [data]);
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const isGlobal = redisAvailable && isAdmin;
@@ -93,13 +95,9 @@ export function PortfolioProvider({ children }: { children: ReactNode }) {
     setSyncStatus("loading");
     setSyncError(null);
     try {
-      const [portRes, sessRes] = await Promise.all([
-        fetch("/api/portfolio", { cache: "no-store" }),
-        fetch("/api/admin/session", { cache: "no-store" }),
-      ]);
-      const admin =
-        sessRes.ok && ((await sessRes.json()) as { authenticated?: boolean }).authenticated === true;
-      setIsAdmin(admin);
+      const portRes = await fetch("/api/portfolio", { cache: "no-store" });
+      const admin = false;
+      setIsAdmin(false);
       if (!portRes.ok) throw new Error(`Server responded ${portRes.status}`);
       const body = (await portRes.json()) as {
         data?: unknown;

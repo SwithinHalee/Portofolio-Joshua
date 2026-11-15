@@ -136,10 +136,10 @@ export function useStickyBottomPin(
         el.style.top = "";
         return;
       }
-      const h = Math.ceil(el.getBoundingClientRect().height);
+      const h = Math.floor(el.getBoundingClientRect().height);
       const header = document.querySelector<HTMLElement>("header[data-navbar-header]");
       const headerH = header ? Math.ceil(header.getBoundingClientRect().height) : 0;
-      const pinTop = Math.min(headerH, window.innerHeight - h);
+      const pinTop = Math.min(headerH, window.innerHeight - h + 2);
       el.style.top = `${pinTop}px`;
     };
     apply();
@@ -172,10 +172,20 @@ export function useStackSlide(stackId: string) {
 
   useEffect(() => {
     const mq = window.matchMedia("(min-width: 768px)");
+    let ro: ResizeObserver | null = null;
     let rafId = 0;
+
+    const detachObservers = () => {
+      ro?.disconnect();
+      ro = null;
+      window.removeEventListener("resize", compute);
+      window.removeEventListener("load", compute);
+      window.removeEventListener("portfolio:hydrated", scheduleCompute);
+    };
 
     const compute = () => {
       setWide(mq.matches);
+      if (!mq.matches) return;
       const wrap = document.getElementById(stackId);
       if (!wrap) return;
       const pinned = wrap.querySelector(":scope > section:first-child") as HTMLElement | null;
@@ -194,6 +204,7 @@ export function useStackSlide(stackId: string) {
     };
 
     const scheduleCompute = () => {
+      if (!mq.matches) return;
       if (rafId) window.cancelAnimationFrame(rafId);
       rafId = window.requestAnimationFrame(() => {
         rafId = 0;
@@ -201,37 +212,44 @@ export function useStackSlide(stackId: string) {
       });
     };
 
-    compute();
+    const attachObservers = () => {
+      if (ro) return;
+      ro = new ResizeObserver(compute);
+      ro.observe(document.body);
+      const wrap = document.getElementById(stackId);
+      if (wrap) ro.observe(wrap);
+      const pinned = wrap?.querySelector(":scope > section:first-child");
+      if (pinned) ro.observe(pinned);
+      const header = document.querySelector("header");
+      if (header) ro.observe(header);
 
-    // Observe body, stack wrapper, pinned sibling, and header so ANY height change
-    // (project layout/filter switches, accordion toggles, async images, hydration)
-    // immediately keeps [dockY, dockY + vh] exact.
-    const ro = new ResizeObserver(compute);
-    ro.observe(document.body);
-    const wrap = document.getElementById(stackId);
-    if (wrap) ro.observe(wrap);
-    const pinned = wrap?.querySelector(":scope > section:first-child");
-    if (pinned) ro.observe(pinned);
-    const header = document.querySelector("header");
-    if (header) ro.observe(header);
+      window.addEventListener("resize", compute);
+      window.addEventListener("load", compute);
+      window.addEventListener("portfolio:hydrated", scheduleCompute);
+    };
 
-    window.addEventListener("resize", compute);
-    window.addEventListener("load", compute);
-    window.addEventListener("portfolio:hydrated", scheduleCompute);
+    const syncBreakpoint = () => {
+      if (mq.matches) {
+        compute();
+        attachObservers();
+      } else {
+        setWide(false);
+        detachObservers();
+      }
+    };
+
+    syncBreakpoint();
     if (typeof mq.addEventListener === "function") {
-      mq.addEventListener("change", compute);
+      mq.addEventListener("change", syncBreakpoint);
     }
-    if (document.fonts) {
+    if (document.fonts && mq.matches) {
       document.fonts.ready.then(compute).catch(() => {});
     }
     return () => {
       if (rafId) window.cancelAnimationFrame(rafId);
-      ro.disconnect();
-      window.removeEventListener("resize", compute);
-      window.removeEventListener("load", compute);
-      window.removeEventListener("portfolio:hydrated", scheduleCompute);
+      detachObservers();
       if (typeof mq.removeEventListener === "function") {
-        mq.removeEventListener("change", compute);
+        mq.removeEventListener("change", syncBreakpoint);
       }
     };
   }, [stackId]);

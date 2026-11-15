@@ -12,6 +12,7 @@ interface CertificateItem {
   badgeSrc: string;
   badgeAlt: string;
   pdfHref: string;
+  credlyHref: string;
   focus: string[];
 }
 
@@ -29,6 +30,7 @@ const CERTIFICATES: CertificateItem[] = [
     badgeSrc: "/images/stacking-mechanics/red-hat-system-administration-i-rh124-rha-ver-8-2.png",
     badgeAlt: "Red Hat Academy course attendance badge: System Administration I",
     pdfHref: "/images/stacking-mechanics/CourseAttendance20260911-20-3k7ht9.pdf",
+    credlyHref: "https://www.credly.com/badges/313e5ff8-3902-48bd-b57a-d6e94e873045",
     focus: ["Command line essentials", "Users, groups & file permissions", "Services & process control"],
   },
   {
@@ -39,6 +41,7 @@ const CERTIFICATES: CertificateItem[] = [
     badgeSrc: "/images/stacking-mechanics/red-hat-system-administration-i-rh124-rha-ver-9-3.png",
     badgeAlt: "Red Hat Academy course attendance badge: System Administration I",
     pdfHref: "/images/stacking-mechanics/CourseAttendance20260911-20-9kuzav.pdf",
+    credlyHref: "https://www.credly.com/badges/06f192e5-c8f2-4688-9ad4-e45637add843",
     focus: ["Core administration on RHEL 9", "Storage & network basics", "System monitoring"],
   },
   {
@@ -49,6 +52,7 @@ const CERTIFICATES: CertificateItem[] = [
     badgeSrc: "/images/stacking-mechanics/red-hat-system-administration-ii-rh134-rha-ver-9-3.png",
     badgeAlt: "Red Hat Academy course attendance badge: System Administration II",
     pdfHref: "/images/stacking-mechanics/CourseAttendance20260911-20-hvb735.pdf",
+    credlyHref: "https://www.credly.com/badges/76cf6465-be66-4ed6-9181-bbc57c2fb9ef",
     focus: ["Automation & scheduling", "Advanced storage & networking", "Security hardening"],
   },
 ];
@@ -70,7 +74,7 @@ export function CertificatesSection() {
             </h2>
             <p className="text-sm sm:text-base text-[#555555] leading-relaxed font-sans">
               Red Hat Academy course-attendance record for systems administration.
-              Each entry pairs its Credly-style badge with the matching attendance
+              Each entry pairs its verified Credly badge with the matching attendance
               PDF, labelled as attendance, not professional certification.
             </p>
           </div>
@@ -118,15 +122,26 @@ export function CertificatesSection() {
                   ))}
                 </ul>
 
-                <div className="pt-4 border-t border-[#EAEAEA]">
+                <div className="pt-4 border-t border-[#EAEAEA] flex flex-wrap items-center gap-2">
                   <a
                     href={cert.pdfHref}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 rounded-[4px] bg-[#111111] px-3.5 py-2 font-sans text-xs font-semibold text-white active:scale-[0.98]"
+                    className="inline-flex items-center gap-1.5 rounded-[4px] bg-[#111111] px-3 py-2 font-sans text-xs font-semibold text-white active:scale-[0.98]"
                   >
                     <SealCheck size={13} weight="bold" />
-                    <span>View Certificate (PDF)</span>
+                    <span>View PDF</span>
+                    <ArrowUpRight size={11} weight="bold" />
+                  </a>
+
+                  <a
+                    href={cert.credlyHref}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={`Verify ${cert.title} (${cert.version}) badge on Credly`}
+                    className="inline-flex items-center gap-1.5 rounded-[4px] border border-[#EAEAEA] bg-[#FBFBFA] px-3 py-2 font-sans text-xs font-semibold text-[#111111] transition-colors hover:border-[#111111] active:scale-[0.98]"
+                  >
+                    <span>Credly Badge</span>
                     <ArrowUpRight size={11} weight="bold" />
                   </a>
                 </div>

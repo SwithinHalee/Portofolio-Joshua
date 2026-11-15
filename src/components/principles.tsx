@@ -27,11 +27,11 @@ export function Principles() {
               className="text-3xl sm:text-4xl font-serif text-[#111111] tracking-[-0.02em] mb-4"
               style={{ fontFamily: "var(--font-newsreader), Georgia, serif" }}
             >
-              Engineering Tenets & Values
+              How I Work &amp; Personal Ethic
             </h2>
             <p className="text-sm sm:text-base text-[#555555] font-sans">
-              Non-negotiable architectural tenets governing code clarity, performance budgets,
-              and interface reliability across every project.
+              The habits, curiosity, and personal standards behind how I approach problems,
+              collaborate with teams, and build software day to day.
             </p>
           </div>
         </Reveal>
@@ -89,21 +89,31 @@ export function Principles() {
                     <div className="md:col-span-6 text-sm text-[#555555] leading-relaxed">
                       {principle.statement}
 
-                      <div
-                        className={`grid transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${
-                          isExpanded ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
-                        }`}
-                      >
-                        <div className="overflow-hidden" aria-hidden={!isExpanded}>
+                      {(() => {
+                        const defaultNote = ENGINEERING_PRINCIPLES.find(
+                          (item) => item.number === principle.number
+                        )?.note;
+                        const detailNote = principle.note ?? defaultNote;
+                        if (!detailNote) return null;
+
+                        return (
                           <div
-                            id={`principle-panel-${principle.number}`}
-                            className="mt-3 pt-3 border-t border-[#EAEAEA] font-sans text-xs text-[#525252] flex items-center gap-2"
+                            className={`grid transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+                              isExpanded ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
+                            }`}
                           >
-                            <span className="h-1.5 w-1.5 rounded-full bg-[#346538]"></span>
-                            <span>Strictly enforced in code reviews & CI pipelines</span>
+                            <div className="overflow-hidden" aria-hidden={!isExpanded}>
+                              <div
+                                id={`principle-panel-${principle.number}`}
+                                className="mt-3 pt-3 border-t border-[#EAEAEA] font-sans text-xs text-[#525252] flex items-center gap-2"
+                              >
+                                <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-[#346538]"></span>
+                                <span>{detailNote}</span>
+                              </div>
+                            </div>
                           </div>
-                        </div>
-                      </div>
+                        );
+                      })()}
                     </div>
                   </div>
                   </button>

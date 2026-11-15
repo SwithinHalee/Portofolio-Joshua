@@ -107,12 +107,13 @@ export default function TermsPage() {
 
       <LegalSection id="external-links" index="05" title="External links">
         <p>
-          This site links to GitHub, Instagram, www.carbonethics.co, and referenced
-          technical sources. Those destinations are operated by third parties.
-          Their availability, accuracy, and practices are outside the control of
-          this site&apos;s operator, and linking does not imply endorsement of
-          everything they publish. Follow external links at your own discretion
-          and review their terms before interacting.
+          This site links to GitHub, Instagram, YouTube, www.carbonethics.co,
+          and referenced documentation or technical sources. Those destinations
+          are operated by third parties. Their availability, accuracy, and
+          practices are outside the control of this site&apos;s operator, and
+          linking does not imply endorsement of everything they publish. Follow
+          external links at your own discretion and review their terms before
+          interacting.
         </p>
       </LegalSection>
 

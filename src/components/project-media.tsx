@@ -19,14 +19,16 @@ export function resolveProjectImage(src: string | undefined | null): string {
 
 interface ProjectMediaProps {
   src: string | undefined | null;
+  poster?: string | undefined | null;
   alt: string;
   sizes?: string;
   priority?: boolean;
 }
 
 /** Image cover with mp4 support (autoplay, muted, loop + fullscreen without cropping). */
-export function ProjectMedia({ src, alt, sizes, priority }: ProjectMediaProps) {
+export function ProjectMedia({ src, poster, alt, sizes, priority }: ProjectMediaProps) {
   const resolved = resolveProjectImage(src);
+  const resolvedPoster = poster && poster.trim() ? resolveProjectImage(poster) : undefined;
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isFs, setIsFs] = useState(false);
 
@@ -71,6 +73,7 @@ export function ProjectMedia({ src, alt, sizes, priority }: ProjectMediaProps) {
         <video
           ref={videoRef}
           src={resolved}
+          poster={resolvedPoster}
           className="absolute inset-0 h-full w-full bg-black object-contain"
           autoPlay
           muted

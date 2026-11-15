@@ -86,6 +86,11 @@ export function WeightedScroll() {
     const reducedMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
     if (reducedMotionQuery.matches) return;
 
+    // On touch-only mobile devices, let native momentum scrolling run uninterrupted
+    // with zero scroll-time layout reads or window.scrollTo interference.
+    const touchOnlyDevice = window.matchMedia("(hover: none) and (pointer: coarse)").matches;
+    if (touchOnlyDevice) return;
+
     let rafId = 0;
     let lastTime = 0;
     let currentY = window.scrollY;

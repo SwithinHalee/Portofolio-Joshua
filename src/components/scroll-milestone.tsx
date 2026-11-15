@@ -16,11 +16,11 @@ const MILESTONES: MilestoneItem[] = [
   { id: "hero", num: "00", shortLabel: "INTRO", fullLabel: "Overview & Status" },
   { id: "about", num: "01", shortLabel: "BIO", fullLabel: "Biographic Dossier" },
   { id: "projects", num: "02", shortLabel: "WORKS", fullLabel: "Selected Works" },
-  { id: "stacking-mechanics", num: "03", shortLabel: "CERTS", fullLabel: "Certifications" },
+  { id: "stacking-mechanics", num: "03", shortLabel: "TRAINING", fullLabel: "Verified Training Record" },
   { id: "dossier", num: "04", shortLabel: "STACK", fullLabel: "Technical Stack" },
-  { id: "principles", num: "05", shortLabel: "ARCH", fullLabel: "System Architecture" },
+  { id: "principles", num: "05", shortLabel: "ETHOS", fullLabel: "How I Work & Personal Ethic" },
   { id: "workspace", num: "06", shortLabel: "STUDIO", fullLabel: "Engineering Studio" },
-  { id: "experience", num: "07", shortLabel: "CHRONO", fullLabel: "Milestones & Record" },
+  { id: "experience", num: "07", shortLabel: "CHRONO", fullLabel: "Milestones & Trajectory" },
   { id: "contact", num: "08", shortLabel: "CONNECT", fullLabel: "Direct Initiation" },
 ];
 
@@ -135,11 +135,15 @@ export function ScrollMilestone() {
     return () => window.removeEventListener("resize", updateTrackMetrics);
   }, [updateTrackMetrics]);
 
-  // Section-synchronized scroll tracking
+  // Section-synchronized scroll tracking (desktop xl+ only; hidden on mobile/tablet)
   useEffect(() => {
+    const xlQuery = window.matchMedia("(min-width: 1280px)");
     let ticking = false;
+    let ro: ResizeObserver | null = null;
+    let trackingActive = false;
 
     function handleScroll() {
+      if (!trackingActive) return;
       if (!ticking) {
         window.requestAnimationFrame(() => {
           const scrollY = window.scrollY;
@@ -236,18 +240,41 @@ export function ScrollMilestone() {
       }
     }
 
-    const ro = new ResizeObserver(handleScroll);
-    ro.observe(document.body);
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    window.addEventListener("resize", handleScroll, { passive: true });
-    window.addEventListener("portfolio:hydrated", handleScroll);
-    handleScroll();
+    function attachTracking() {
+      if (trackingActive) return;
+      trackingActive = true;
+      ro = new ResizeObserver(handleScroll);
+      ro.observe(document.body);
+      window.addEventListener("scroll", handleScroll, { passive: true });
+      window.addEventListener("resize", handleScroll, { passive: true });
+      window.addEventListener("portfolio:hydrated", handleScroll);
+      handleScroll();
+    }
 
-    return () => {
-      ro.disconnect();
+    function detachTracking() {
+      if (!trackingActive) return;
+      trackingActive = false;
+      ro?.disconnect();
+      ro = null;
       window.removeEventListener("scroll", handleScroll);
       window.removeEventListener("resize", handleScroll);
       window.removeEventListener("portfolio:hydrated", handleScroll);
+    }
+
+    function handleBreakpointChange() {
+      if (xlQuery.matches) {
+        attachTracking();
+      } else {
+        detachTracking();
+      }
+    }
+
+    handleBreakpointChange();
+    xlQuery.addEventListener("change", handleBreakpointChange);
+
+    return () => {
+      xlQuery.removeEventListener("change", handleBreakpointChange);
+      detachTracking();
     };
   }, []);
 
@@ -261,8 +288,6 @@ export function ScrollMilestone() {
       return geom ? geom.clickY : window.scrollY;
     });
   };
-
-  const percentage = Math.round(milestoneProgress * 100);
 
   return (
     <>
@@ -386,36 +411,6 @@ export function ScrollMilestone() {
           </div>
         </div>
       </nav>
-
-      {/* 2. Mobile & Tablet Minimal Floating Status */}
-      <aside
-        aria-label="Mobile reading progress"
-        aria-hidden={!isSidePanelVisible}
-        data-navbar-chrome
-        className={`fixed bottom-4 left-4 z-40 xl:hidden select-none transition-opacity duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
-          isSidePanelVisible ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
-        }`}
-      >
-        <button
-          type="button"
-          tabIndex={isSidePanelVisible ? 0 : -1}
-          onClick={() => {
-            const nextIdx = (currentIdx + 1) % MILESTONES.length;
-            scrollTo(MILESTONES[nextIdx].id);
-          }}
-          className="flex items-center gap-2 font-sans text-[11px] px-3 py-1.5 rounded-[4px] border border-[#EAEAEA] bg-white/95 text-[#111111] backdrop-blur-md shadow-[0_2px_10px_rgba(0,0,0,0.08)] active:scale-95 transition-transform"
-        >
-          <span className="w-1.5 h-1.5 rounded-[1px] bg-[#346538] inline-block" />
-          <span className="font-mono font-semibold text-[#111111]">
-            {MILESTONES[currentIdx]?.num}
-          </span>
-          <span className="font-semibold text-[#111111]">
-            {MILESTONES[currentIdx]?.shortLabel}
-          </span>
-          <span className="text-[#999999]">•</span>
-          <span className="font-mono tabular-nums text-[#525252]">{percentage}%</span>
-        </button>
-      </aside>
     </>
   );
 }

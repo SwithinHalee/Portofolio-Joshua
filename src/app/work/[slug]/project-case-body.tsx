@@ -1,11 +1,12 @@
 "use client";
 
 import { useEffect } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft, ArrowUpRight, DownloadSimple, GithubLogo, Globe } from "@phosphor-icons/react";
 import type { ProjectItem } from "@/data/portfolio";
 import { usePortfolio } from "@/components/portfolio-provider";
-import { ProjectMedia } from "@/components/project-media";
+import { isVideoSrc, ProjectMedia } from "@/components/project-media";
 
 interface Props {
   slug: string;
@@ -61,12 +62,6 @@ export function ProjectCaseBody({ slug, initialProject, initialIndex, initialPre
             >
               <ArrowLeft size={13} weight="bold" />
               <span>Return to Selected Works</span>
-            </Link>
-            <Link
-              href="/admin"
-              className="inline-flex items-center gap-2 rounded-[4px] border border-[#EAEAEA] bg-[#FBFBFA] px-4 py-2.5 font-mono text-xs text-[#111111] active:scale-[0.98]"
-            >
-              <span>Open Portfolio Studio</span>
             </Link>
           </div>
         </div>
@@ -174,27 +169,14 @@ export function ProjectCaseBody({ slug, initialProject, initialIndex, initialPre
           </div>
         </div>
 
-        <div className="mb-16 rounded-[8px] border border-[#EAEAEA] bg-[#FBFBFA] overflow-hidden">
-          <div className="flex items-center justify-between border-b border-[#EAEAEA] bg-[#FFFFFF] px-4 py-2.5">
-            <div className="flex items-center gap-1.5">
-              <span className="h-2.5 w-2.5 rounded-full bg-[#E5E5E5] inline-block"></span>
-              <span className="h-2.5 w-2.5 rounded-full bg-[#E5E5E5] inline-block"></span>
-              <span className="h-2.5 w-2.5 rounded-full bg-[#E5E5E5] inline-block"></span>
-            </div>
-            <span className="font-mono text-xs text-[#525252]">
-              {project.slug} · architectural-preview [16:9 verified]
-            </span>
-            <div className="w-8"></div>
-          </div>
-
-          <div className="relative aspect-[16/9] w-full bg-[#F5F5F3]">
-            <ProjectMedia
-              src={project.image}
-              alt={`${project.title} Interface Preview`}
-              sizes="(max-width: 1024px) 100vw, 896px"
-              priority
-            />
-          </div>
+        <div className="mb-16 relative aspect-[16/9] w-full overflow-hidden rounded-[6px] border border-[#EAEAEA] bg-[#F5F5F3]">
+          <ProjectMedia
+            src={project.image}
+            poster={project.previewImage}
+            alt={`${project.title} Interface Preview`}
+            sizes="(max-width: 1024px) 100vw, 896px"
+            priority
+          />
         </div>
 
         <div className="space-y-14">
@@ -224,6 +206,63 @@ export function ProjectCaseBody({ slug, initialProject, initialIndex, initialPre
                 ))}
               </ul>
             </div>
+
+            {project.previewImage && isVideoSrc(project.image) && (
+              <div className="mt-8">
+                <h3 className="font-sans text-xs font-semibold uppercase tracking-wider text-[#111111] mb-3">
+                  Interface Overview
+                </h3>
+                <div className="relative aspect-[16/9] w-full overflow-hidden rounded-[6px] border border-[#EAEAEA] bg-[#F5F5F3]">
+                  <Image
+                    src={project.previewImage}
+                    alt={`${project.title} static interface overview`}
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 1024px) 100vw, 896px"
+                  />
+                </div>
+              </div>
+            )}
+            {project.videoGallery && project.videoGallery.length > 0 && (
+              <div className="mt-8">
+                <h3 className="font-sans text-xs font-semibold uppercase tracking-wider text-[#111111] mb-4">
+                  Published Video Thumbnails &amp; View Performance
+                </h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {project.videoGallery.map((vid) => (
+                    <a
+                      key={vid.videoId}
+                      href={vid.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      data-link-fill="off"
+                      className="group block overflow-hidden rounded-[6px] border border-[#EAEAEA] bg-[#FFFFFF] transition-colors hover:border-[#111111]"
+                    >
+                      <div className="relative aspect-[16/9] w-full overflow-hidden bg-[#F5F5F3]">
+                        <Image
+                          src={vid.thumbnail}
+                          alt={vid.title}
+                          fill
+                          className="object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+                          sizes="(max-width: 640px) 100vw, 440px"
+                        />
+                      </div>
+                      <div className="border-t border-[#EAEAEA] p-3.5">
+                        <p className="font-sans text-sm font-medium text-[#111111] leading-snug mb-2">
+                          {vid.title}
+                        </p>
+                        <div className="flex items-center justify-between gap-2 font-mono text-[11px] text-[#525252] tabular-nums">
+                          <span>{vid.views}</span>
+                          <span>
+                            {vid.duration} · {vid.published}
+                          </span>
+                        </div>
+                      </div>
+                    </a>
+                  ))}
+                </div>
+              </div>
+            )}
           </section>
 
           <section className="border-b border-[#EAEAEA] pb-12">
@@ -251,7 +290,7 @@ export function ProjectCaseBody({ slug, initialProject, initialIndex, initialPre
             </h2>
             <div className="flex flex-wrap gap-2 font-sans text-xs font-medium">
               {project.tags.map((t) => (
-                <span key={t} className="rounded bg-[#F7F6F3] border border-[#EAEAEA] px-3 py-1.5 text-[#111111]">
+                <span key={t} className="rounded bg-[#111111] border border-[#111111] px-3 py-1.5 text-[#FFFFFF]">
                   {t}
                 </span>
               ))}

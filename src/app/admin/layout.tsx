@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 
 /** The content studio must never appear in search results. */
 export const metadata: Metadata = {
@@ -9,6 +10,6 @@ export const metadata: Metadata = {
   },
 };
 
-export default function AdminLayout({ children }: { children: React.ReactNode }) {
-  return children;
+export default function AdminLayout() {
+  notFound();
 }

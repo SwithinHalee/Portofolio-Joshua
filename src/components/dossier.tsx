@@ -141,14 +141,16 @@ function SkillMark({
     return (
       <span
         aria-hidden="true"
-        className={`inline-flex ${slotWidthClass} shrink-0 items-center ${slotJustifyClass} transition-transform duration-200 group-hover/skill:scale-105`}
+        data-skill-mark=""
+        className={`inline-flex ${slotWidthClass} shrink-0 items-center ${slotJustifyClass} transition-transform duration-200`}
       >
         {kind === "vscode" ? (
           vscodeFailed ? (
             <Code
               size={20}
               weight="duotone"
-              className="text-[#38BDF8] transition-colors duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover/skill:text-[#111111] group-focus-visible/skill:text-[#111111]"
+              data-skill-fallback=""
+              className="text-[#38BDF8] transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]"
             />
           ) : (
             <img
@@ -158,7 +160,7 @@ function SkillMark({
               height={20}
               draggable={false}
               loading="lazy"
-              className="h-5 w-5 shrink-0 transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover/skill:brightness-0 group-focus-visible/skill:brightness-0"
+              className="h-5 w-5 shrink-0 transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]"
               onError={() => setVscodeFailed(true)}
             />
           )
@@ -166,19 +168,22 @@ function SkillMark({
           <PlugsConnected
             size={20}
             weight="duotone"
-            className="text-[#34D399] transition-colors duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover/skill:text-[#111111] group-focus-visible/skill:text-[#111111]"
+            data-skill-fallback=""
+            className="text-[#34D399] transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]"
           />
         ) : kind === "network" ? (
           <ShareNetwork
             size={20}
             weight="duotone"
-            className="text-[#38BDF8] transition-colors duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover/skill:text-[#111111] group-focus-visible/skill:text-[#111111]"
+            data-skill-fallback=""
+            className="text-[#38BDF8] transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]"
           />
         ) : (
           <TerminalWindow
             size={20}
             weight="duotone"
-            className="text-[#4ADE80] transition-colors duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover/skill:text-[#111111] group-focus-visible/skill:text-[#111111]"
+            data-skill-fallback=""
+            className="text-[#4ADE80] transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]"
           />
         )}
       </span>
@@ -187,6 +192,7 @@ function SkillMark({
 
   return (
     <span
+      data-skill-mark=""
       className={`inline-flex ${slotWidthClass} shrink-0 items-center ${slotJustifyClass} gap-2`}
       aria-hidden="true"
     >
@@ -199,7 +205,7 @@ function SkillMark({
           height={20}
           draggable={false}
           loading="lazy"
-          className="h-5 w-5 shrink-0 transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover/skill:scale-105 group-hover/skill:brightness-0 group-focus-visible/skill:brightness-0"
+          className="h-5 w-5 shrink-0 transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]"
           onError={() => setFailed((prev) => ({ ...prev, [slug]: true }))}
         />
       ))}
@@ -220,7 +226,7 @@ export function Dossier() {
   useStickyBottomPin(sectionRef, categories);
 
   return (
-    <section ref={sectionRef} id="dossier" className="dark-section pt-8 md:pt-12 pb-24 md:pb-28 border-b border-[#222222] bg-[#0E0E0E] text-[#FFFFFF] md:sticky md:top-[calc(100dvh-995px)] lg:top-[calc(100dvh-943px)] z-0">
+    <section ref={sectionRef} id="dossier" className="dark-section pt-8 md:pt-12 pb-24 md:pb-28 border-b border-[#222222] md:border-b-0 md:shadow-[0_6px_0_#0E0E0E] bg-[#0E0E0E] text-[#FFFFFF] md:sticky md:top-[calc(100dvh-995px)] lg:top-[calc(100dvh-943px)] z-0">
       <div className="mx-auto max-w-5xl px-6 sm:px-8">
         {/* Section Header */}
         <Reveal>
@@ -240,7 +246,7 @@ export function Dossier() {
 
         {/* Meta ledger */}
         <Reveal delay={0.05}>
-          <dl className="mb-12 grid grid-cols-3 border-y border-[#242424] font-mono text-xs">
+          <dl className="mb-8 md:mb-12 grid grid-cols-3 border-y border-[#242424] font-mono text-xs">
             <div className="py-3 pr-4">
               <dt className="block font-sans text-[11px] font-medium uppercase tracking-wider text-[#B3B3B3]">Files</dt>
               <dd className="font-semibold text-white">{pad(categories.length)} categories</dd>
@@ -255,25 +261,6 @@ export function Dossier() {
             </div>
           </dl>
         </Reveal>
-
-        {/* Mobile file index */}
-        <div
-          role="navigation"
-          aria-label="Dossier files"
-          className="mb-8 flex gap-2 overflow-x-auto pb-1 md:hidden"
-        >
-          {categories.map((category, i) => (
-            <button
-              key={category.title}
-              type="button"
-              onClick={() => scrollToFile(i)}
-              className="inline-flex shrink-0 items-center gap-2 rounded-[4px] border border-[#2A2A2A] bg-[#141414] px-3 py-2 font-sans text-xs font-medium text-[#D4D4D4] transition-colors hover:border-[#3D3D3D] hover:text-white active:scale-[0.98]"
-            >
-              <span className="font-mono text-[#A3A3A3]">{pad(i + 1)}</span>
-              <span>{category.title}</span>
-            </button>
-          ))}
-        </div>
 
         <div className="grid grid-cols-1 gap-10 md:grid-cols-12">
           {/* Sticky filing index */}
@@ -343,7 +330,7 @@ export function Dossier() {
                         {category.skills.map((skill) => {
                           const docsUrl = resolveSkillUrl(skill);
                           const rowClass =
-                            "group/skill grid grid-cols-[auto_1fr_auto] items-center gap-x-3.5 px-2.5 -mx-2.5 py-3 rounded-[6px]";
+                            "grid grid-cols-[auto_1fr_auto] items-center gap-x-3.5 px-2.5 -mx-2.5 py-3 rounded-[6px]";
                           const rowBody = (
                             <>
                               <SkillMark
@@ -353,16 +340,25 @@ export function Dossier() {
                                 wideSlot={hasWideMark}
                               />
                               <span className="min-w-0">
-                                <span className="block truncate font-sans text-[13px] font-medium text-white transition-colors duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover/skill:text-[#111111] group-focus-visible/skill:text-[#111111]">
+                                <span
+                                  data-skill-title=""
+                                  className="block truncate font-sans text-[13px] font-medium text-white transition-colors duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]"
+                                >
                                   {skill.name}
                                 </span>
-                                <span className="mt-0.5 block font-sans text-xs sm:text-[13px] leading-relaxed text-[#B3B3B3] transition-colors duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover/skill:text-[#4A4A4A] group-focus-visible/skill:text-[#4A4A4A]">
+                                <span
+                                  data-skill-detail=""
+                                  className="mt-0.5 block font-sans text-xs sm:text-[13px] leading-relaxed text-[#B3B3B3] transition-colors duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]"
+                                >
                                   {skill.detail}
                                 </span>
                               </span>
                               <span className="inline-flex shrink-0 items-center gap-2">
                                 {skill.kbd && (
-                                  <kbd className="rounded border border-[#2A2A2A] bg-[#202020] px-2 py-0.5 font-mono text-[11px] text-[#E5E5E5] shadow-none transition-colors duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover/skill:border-[#111111]">
+                                  <kbd
+                                    data-skill-kbd=""
+                                    className="rounded border border-[#EAEAEA] bg-white px-2 py-0.5 font-mono text-[11px] font-medium text-[#111111] shadow-none transition-colors duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]"
+                                  >
                                     {skill.kbd}
                                   </kbd>
                                 )}
@@ -371,7 +367,8 @@ export function Dossier() {
                                     size={13}
                                     weight="bold"
                                     aria-hidden="true"
-                                    className="text-[#787774] opacity-55 transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover/skill:opacity-100 group-hover/skill:text-[#111111] group-focus-visible/skill:opacity-100 group-focus-visible/skill:text-[#111111] group-hover/skill:translate-x-0.5 group-hover/skill:-translate-y-0.5"
+                                    data-skill-arrow=""
+                                    className="text-[#787774] opacity-55 transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]"
                                   />
                                 )}
                               </span>
@@ -388,9 +385,10 @@ export function Dossier() {
                                   href={docsUrl}
                                   target="_blank"
                                   rel="noopener noreferrer"
+                                  data-dossier-skill=""
                                   data-cursor-label="Open docs"
-                                  aria-label={`${skill.name} — open documentation or homepage in a new tab`}
-                                  className={`${rowClass} cursor-pointer`}
+                                  aria-label={`${skill.name}: open documentation or homepage in a new tab`}
+                                  className={`${rowClass} group/skill cursor-pointer`}
                                 >
                                   {rowBody}
                                 </a>
