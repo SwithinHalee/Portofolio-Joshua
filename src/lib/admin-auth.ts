@@ -20,17 +20,22 @@ async function hmacSha256(secret: string, data: string): Promise<string> {
 }
 
 function getSecret(): string {
-  return process.env.ADMIN_SESSION_SECRET || process.env.ADMIN_PASSWORD || "dev-joshua-portfolio-secret-key-32chars";
+  return process.env.ADMIN_SESSION_SECRET || process.env.ADMIN_PASSWORD || "";
 }
 
 export async function createSessionToken(): Promise<string> {
+  const secret = getSecret();
+  if (!secret) {
+    throw new Error("Admin session secret is not configured.");
+  }
   const payload = `admin:${Date.now()}`;
-  const sig = await hmacSha256(getSecret(), payload);
+  const sig = await hmacSha256(secret, payload);
   return `${Buffer.from(payload).toString("base64url")}.${sig}`;
 }
 
 export async function verifySessionToken(token: string | undefined | null): Promise<boolean> {
-  if (!token) return false;
+  const secret = getSecret();
+  if (!token || !secret) return false;
   const parts = token.split(".");
   if (parts.length !== 2) return false;
   const [b64Payload, sig] = parts;
@@ -42,7 +47,7 @@ export async function verifySessionToken(token: string | undefined | null): Prom
     if (isNaN(ts)) return false;
     // Expire after 7 days
     if (Date.now() - ts > SESSION_MAX_AGE * 1000) return false;
-    const expectedSig = await hmacSha256(getSecret(), payload);
+    const expectedSig = await hmacSha256(secret, payload);
     return sig === expectedSig;
   } catch {
     return false;
@@ -53,9 +58,8 @@ export async function isAuthenticated(): Promise<boolean> {
   if (ADMIN_DISABLED) {
     return false;
   }
-  // If no ADMIN_PASSWORD is set in env, allow access by default (dev fallback)
   if (!process.env.ADMIN_PASSWORD) {
-    return true;
+    return false;
   }
   const cookieStore = await cookies();
   const token = cookieStore.get(ADMIN_COOKIE_NAME)?.value;
@@ -70,6 +74,6 @@ export function isPasswordConfigured(): boolean {
 export function checkPassword(password: string): boolean {
   if (ADMIN_DISABLED) return false;
   const configured = process.env.ADMIN_PASSWORD;
-  if (!configured) return true;
+  if (!configured) return false;
   return password === configured;
 }

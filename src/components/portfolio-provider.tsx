@@ -101,15 +101,15 @@ export function PortfolioProvider({ children }: { children: ReactNode }) {
       if (!portRes.ok) throw new Error(`Server responded ${portRes.status}`);
       const body = (await portRes.json()) as {
         data?: unknown;
+        persisted?: boolean;
         exists?: boolean;
-        redisConfigured?: boolean;
       };
-      const available = body.redisConfigured === true;
+      const available = body.persisted === true || body.exists === true;
       setRedisAvailable(available);
       const clean = body.data !== undefined ? sanitizePortfolio(body.data) : null;
       if (!clean) throw new Error("Invalid portfolio data from server.");
 
-      if (available && body.exists === true) {
+      if (available) {
         // Global record exists: it is the source of truth for every device.
         setDataState(clean);
         hydrateState(clean);

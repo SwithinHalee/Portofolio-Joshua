@@ -1,67 +1,167 @@
 import { NextResponse, type NextRequest } from "next/server";
+import { ADMIN_DISABLED } from "@/lib/admin-auth";
 
-const COOKIE_NAME = "joshua_admin_session";
+const ALWAYS_PUBLIC_PATHS = new Set([
+  "/robots.txt",
+  "/sitemap.xml",
+  "/favicon.ico",
+  "/icon.png",
+  "/icon.svg",
+  "/apple-icon.png",
+  "/opengraph-image",
+]);
 
-async function verifySignature(secret: string, payload: string, sig: string): Promise<boolean> {
-  try {
-    const enc = new TextEncoder();
-    const key = await crypto.subtle.importKey(
-      "raw",
-      enc.encode(secret),
-      { name: "HMAC", hash: "SHA-256" },
-      false,
-      ["verify"]
-    );
-    const sigBytes = new Uint8Array(sig.match(/.{2}/g)!.map((b) => parseInt(b, 16)));
-    return await crypto.subtle.verify("HMAC", key, sigBytes.buffer as ArrayBuffer, enc.encode(payload));
-  } catch {
-    return false;
-  }
+const EXPLOIT_PROBE_PREFIXES = [
+  "/.env",
+  "/.git",
+  "/wp-admin",
+  "/wp-login",
+  "/wp-content",
+  "/wp-includes",
+  "/xmlrpc.php",
+  "/phpmyadmin",
+  "/cgi-bin",
+  "/vendor/phpunit",
+  "/actuator",
+];
+
+const ALLOWED_BOT_PATTERNS = [
+  "google",
+  "gstatic",
+  "bingbot",
+  "bingpreview",
+  "msnbot",
+  "duckduckbot",
+  "applebot",
+  "slurp",
+  "linkedinbot",
+  "twitterbot",
+  "facebookexternalhit",
+  "facebot",
+  "whatsapp",
+  "telegrambot",
+  "discordbot",
+  "slackbot",
+  "vercel",
+  "lighthouse",
+  "pagespeed",
+];
+
+const BLOCKED_SCRAPER_PATTERNS = [
+  "gptbot",
+  "chatgpt-user",
+  "oai-searchbot",
+  "ccbot",
+  "claudebot",
+  "claude-web",
+  "anthropic-ai",
+  "bytespider",
+  "perplexitybot",
+  "diffbot",
+  "imagesiftbot",
+  "omgili",
+  "cohere-ai",
+  "ai2bot",
+  "youbot",
+  "meta-externalagent",
+  "meta-externalfetcher",
+  "amazonbot",
+  "petalbot",
+  "ahrefsbot",
+  "semrushbot",
+  "dotbot",
+  "mj12bot",
+  "blexbot",
+  "dataforseobot",
+  "megaindex",
+  "turnitinbot",
+  "scrapy",
+  "python-requests",
+  "python-urllib",
+  "aiohttp",
+  "httpx",
+  "pycurl",
+  "go-http-client",
+  "libwww-perl",
+  "mechanize",
+  "wget/",
+  "httrack",
+  "webcopier",
+  "nikto",
+  "sqlmap",
+  "nmap",
+  "masscan",
+  "zgrab",
+  "nuclei",
+  "dirbuster",
+  "gobuster",
+  "feroxbuster",
+  "wfuzz",
+  "acunetix",
+  "nessus",
+  "openvas",
+  "colly",
+  "headlesschrome",
+  "phantomjs",
+];
+
+function notFoundResponse(): NextResponse {
+  return new NextResponse("Not Found", {
+    status: 404,
+    headers: {
+      "Content-Type": "text/plain; charset=utf-8",
+      "X-Robots-Tag": "noindex, nofollow",
+      "Cache-Control": "no-store",
+    },
+  });
 }
 
-function decodePayload(b64: string): string | null {
-  try {
-    let normalized = b64.replace(/-/g, "+").replace(/_/g, "/");
-    const remainder = normalized.length % 4;
-    if (remainder === 2) normalized += "==";
-    else if (remainder === 3) normalized += "=";
-    else if (remainder !== 0) return null;
-    return atob(normalized);
-  } catch {
-    return null;
-  }
-}
-
-async function hasValidAdminSession(req: NextRequest): Promise<boolean> {
-  const adminPassword = process.env.ADMIN_PASSWORD;
-  if (!adminPassword) return true;
-  const token = req.cookies.get(COOKIE_NAME)?.value;
-  if (!token) return false;
-  const parts = token.split(".");
-  if (parts.length !== 2) return false;
-  const payload = decodePayload(parts[0]);
-  if (!payload || !payload.startsWith("admin:")) return false;
-  const [, tsStr] = payload.split(":");
-  const ts = parseInt(tsStr, 10);
-  if (isNaN(ts) || Date.now() - ts > 7 * 24 * 60 * 60 * 1000) return false;
-  const secret = process.env.ADMIN_SESSION_SECRET || adminPassword;
-  return verifySignature(secret, payload, parts[1]);
-}
-
-export async function middleware(req: NextRequest) {
+export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
-  if (pathname === "/admin/login") return NextResponse.next();
-  if (pathname.startsWith("/admin")) {
-    const ok = await hasValidAdminSession(req);
-    if (!ok) {
-      const loginUrl = req.nextUrl.clone();
-      loginUrl.pathname = "/admin/login";
-      return NextResponse.redirect(loginUrl);
+  const lowerPath = pathname.toLowerCase();
+
+  if (ADMIN_DISABLED && (lowerPath === "/admin" || lowerPath.startsWith("/admin/"))) {
+    return notFoundResponse();
+  }
+
+  if (EXPLOIT_PROBE_PREFIXES.some((prefix) => lowerPath.startsWith(prefix))) {
+    return notFoundResponse();
+  }
+
+  if (ALWAYS_PUBLIC_PATHS.has(lowerPath)) {
+    return NextResponse.next();
+  }
+
+  const ua = (req.headers.get("user-agent") ?? "").toLowerCase();
+
+  if (!ua.trim()) {
+    return new NextResponse("Forbidden: Automated requests without User-Agent are not permitted.", {
+      status: 403,
+      headers: {
+        "Content-Type": "text/plain; charset=utf-8",
+        "Cache-Control": "no-store",
+      },
+    });
+  }
+
+  const isAllowedBot = ALLOWED_BOT_PATTERNS.some((pattern) => ua.includes(pattern));
+  if (!isAllowedBot) {
+    const isBlockedScraper = BLOCKED_SCRAPER_PATTERNS.some((pattern) => ua.includes(pattern));
+    if (isBlockedScraper) {
+      return new NextResponse("Forbidden: Automated scraping is not permitted.", {
+        status: 403,
+        headers: {
+          "Content-Type": "text/plain; charset=utf-8",
+          "X-Robots-Tag": "noindex, nofollow",
+          "Cache-Control": "no-store",
+        },
+      });
     }
   }
+
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ["/admin/:path*"],
+  matcher: ["/((?!_next/static|_next/image).*)"],
 };
