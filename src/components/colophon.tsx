@@ -172,7 +172,7 @@ export function Colophon() {
 
         <p className="mt-4 text-center font-sans text-xs leading-relaxed text-[#A3A3A3]">
           Personal portfolio of {personalInfo.name}, {personalInfo.location}.
-          No tracking cookies. No analytics. Contact: {email}
+          No tracking cookies. Cookie-less aggregate analytics. Contact: {email}
         </p>
 
         {/* Copyright & Meta */}

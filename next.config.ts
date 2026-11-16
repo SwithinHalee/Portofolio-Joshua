@@ -4,12 +4,12 @@ const isDev = process.env.NODE_ENV !== "production";
 
 const cspHeader = [
   "default-src 'self'",
-  `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""}`,
+  `script-src 'self' 'unsafe-inline' https://va.vercel-scripts.com${isDev ? " 'unsafe-eval'" : ""}`,
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: blob: https://cdn.simpleicons.org https://cdn.jsdelivr.net https://*.public.blob.vercel-storage.com",
   "media-src 'self' blob: https://*.public.blob.vercel-storage.com",
   "font-src 'self' data:",
-  "connect-src 'self'",
+  "connect-src 'self' https://va.vercel-scripts.com",
   "object-src 'none'",
   "base-uri 'self'",
   "form-action 'self'",

@@ -75,9 +75,11 @@ export default function PrivacyPage() {
           </li>
         </ul>
         <p>
-          The site does not run analytics, advertising trackers, or behavioral
-          profiling. There is no analytics dashboard recording your visits on
-          this domain.
+          This site uses Vercel Web Analytics to measure aggregate, anonymous
+          traffic trends (such as page views, referrer domain, country, and
+          device category). Vercel Web Analytics sets no cookies, does not track
+          visitors across third-party websites, and does not build behavioral or
+          advertising profiles.
         </p>
       </LegalSection>
 
@@ -187,11 +189,11 @@ export default function PrivacyPage() {
 
       <LegalSection id="changes" index="08" title="Changes to this policy">
         <p>
-          If this site ever adds analytics, a contact form backend, comments, or
-          any other data processing, this policy will be updated first, the
-          “Last updated” date revised, and (where required) a consent
-          mechanism added before the new processing begins. Material changes
-          will be noted here rather than hidden.
+          If this site ever adds cookie-based tracking, a contact form backend,
+          comments, or any other personal data processing, this policy will be
+          updated first, the “Last updated” date revised, and (where required) a
+          consent mechanism added before the new processing begins. Material
+          changes will be noted here rather than hidden.
         </p>
       </LegalSection>
     </LegalLayout>

@@ -11,7 +11,7 @@ interface LegalLayoutProps {
   children: React.ReactNode;
 }
 
-export const LEGAL_LAST_UPDATED = "November 15, 2026";
+export const LEGAL_LAST_UPDATED = "November 16, 2026";
 
 export function LegalLayout({
   eyebrow,

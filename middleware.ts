@@ -28,23 +28,37 @@ const EXPLOIT_PROBE_PREFIXES = [
 const ALLOWED_BOT_PATTERNS = [
   "google",
   "gstatic",
+  "vercel",
+  "headlesschrome",
+  "chrome-lighthouse",
+  "lighthouse",
+  "pagespeed",
+  "gtmetrix",
+  "pingdom",
+  "uptimerobot",
   "bingbot",
   "bingpreview",
   "msnbot",
+  "adidxbot",
   "duckduckbot",
   "applebot",
   "slurp",
+  "yahoo",
+  "yandex",
+  "baiduspider",
   "linkedinbot",
   "twitterbot",
   "facebookexternalhit",
   "facebot",
+  "meta-externalads",
   "whatsapp",
   "telegrambot",
   "discordbot",
   "slackbot",
-  "vercel",
-  "lighthouse",
-  "pagespeed",
+  "pinterest",
+  "redditbot",
+  "embedly",
+  "w3c_validator",
 ];
 
 const BLOCKED_SCRAPER_PATTERNS = [
@@ -60,6 +74,7 @@ const BLOCKED_SCRAPER_PATTERNS = [
   "diffbot",
   "imagesiftbot",
   "omgili",
+  "omgilibot",
   "cohere-ai",
   "ai2bot",
   "youbot",
@@ -76,15 +91,6 @@ const BLOCKED_SCRAPER_PATTERNS = [
   "megaindex",
   "turnitinbot",
   "scrapy",
-  "python-requests",
-  "python-urllib",
-  "aiohttp",
-  "httpx",
-  "pycurl",
-  "go-http-client",
-  "libwww-perl",
-  "mechanize",
-  "wget/",
   "httrack",
   "webcopier",
   "nikto",
@@ -100,9 +106,6 @@ const BLOCKED_SCRAPER_PATTERNS = [
   "acunetix",
   "nessus",
   "openvas",
-  "colly",
-  "headlesschrome",
-  "phantomjs",
 ];
 
 function notFoundResponse(): NextResponse {
@@ -128,7 +131,7 @@ export function middleware(req: NextRequest) {
     return notFoundResponse();
   }
 
-  if (ALWAYS_PUBLIC_PATHS.has(lowerPath)) {
+  if (lowerPath.startsWith("/_vercel") || ALWAYS_PUBLIC_PATHS.has(lowerPath)) {
     return NextResponse.next();
   }
 
@@ -163,5 +166,5 @@ export function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/((?!_next/static|_next/image).*)"],
+  matcher: ["/((?!_next/static|_next/image|_vercel).*)"],
 };

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Analytics } from "@vercel/analytics/next";
 import { Hanken_Grotesk, JetBrains_Mono, Newsreader } from "next/font/google";
 import { CustomCursor } from "@/components/custom-cursor";
 import { ScrollMemory } from "@/components/scroll-memory";
@@ -190,6 +191,7 @@ export default function RootLayout({
         <WeightedScroll />
         <ScrollMemory />
         <CustomCursor />
+        <Analytics />
       </body>
     </html>
   );

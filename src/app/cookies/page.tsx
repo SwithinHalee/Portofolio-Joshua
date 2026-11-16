@@ -32,7 +32,9 @@ export default function CookiesPage() {
           the page you asked for) does not require prior consent.
         </p>
         <p>
-          If analytics, embedded players, chat widgets, or similar features are
+          Aggregate traffic measurement on this site uses cookie-less Vercel Web
+          Analytics, which stores no cookies in your browser. If cookie-based
+          analytics, embedded players, chat widgets, or similar features are
           ever added, this policy will be updated first and a consent mechanism
           introduced before those tools load.
         </p>
@@ -51,9 +53,10 @@ export default function CookiesPage() {
             <strong className="font-medium text-[#111111]">
               No third-party cookies.
             </strong>{" "}
-            There are no embedded YouTube players, maps, social feeds,
-            advertising scripts, or analytics beacons on these pages, so no
-            third party can set cookies through this site.
+            There are no embedded YouTube players, maps, social feeds, or
+            advertising scripts on these pages, and Vercel Web Analytics
+            operates without cookies, so no third party sets cookies through
+            this site.
           </li>
           <li>
             <strong className="font-medium text-[#111111]">
@@ -103,10 +106,10 @@ export default function CookiesPage() {
 
       <LegalSection id="changes" index="05" title="Changes to this policy">
         <p>
-          Any future introduction of analytics or embedded third-party content
-          will be disclosed here before it goes live, together with the legal
-          basis, retention, and an opt-in consent control. The “Last updated”
-          date records the current version.
+          Any future introduction of cookie-based analytics or embedded
+          third-party content will be disclosed here before it goes live,
+          together with the legal basis, retention, and an opt-in consent
+          control. The “Last updated” date records the current version.
         </p>
       </LegalSection>
     </LegalLayout>
