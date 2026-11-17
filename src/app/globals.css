@@ -118,23 +118,6 @@ body,
   html {
     scroll-behavior: auto;
   }
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-  }
-  [data-splash-surface],
-  [data-splash-monogram] {
-    display: none !important;
-  }
-  [data-navbar-brand],
-  [data-navbar-chrome] {
-    opacity: 1 !important;
-    transform: none !important;
-    pointer-events: auto !important;
-  }
 }
 
 /* Precision instrument cursor: native pointer is hidden only when the

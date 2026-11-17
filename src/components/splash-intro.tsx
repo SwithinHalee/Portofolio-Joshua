@@ -223,11 +223,6 @@ export function SplashProvider({ children }: { children: ReactNode }) {
 
     expandStartedRef.current = false;
 
-    if (prefersReducedMotionNow()) {
-      const immediateDone = window.setTimeout(() => setStage("done"), 0);
-      return () => window.clearTimeout(immediateDone);
-    }
-
     // Timeline (~2.14s transition after 400ms hold):
     // 400ms..~1420ms (compress): JA glides smoothly on solid #FFFFFF until 100% settled at target.
     // onAnimationComplete (expand): Monogram unfolds at exact native brandFontPx with kerning-matched widths.

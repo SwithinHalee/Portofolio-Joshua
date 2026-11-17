@@ -155,7 +155,7 @@ function structuredData(): Record<string, unknown> {
   };
 }
 
-const SPLASH_BOOT_SCRIPT = `(function(){try{if(window.location.pathname.indexOf("/admin")===0)return;if(window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches)return;document.documentElement.classList.add("splash-pending");window.setTimeout(function(){document.documentElement.classList.remove("splash-pending");},2500);}catch(e){}})();`;
+const SPLASH_BOOT_SCRIPT = `(function(){try{if(window.location.pathname.indexOf("/admin")===0)return;document.documentElement.classList.add("splash-pending");window.setTimeout(function(){document.documentElement.classList.remove("splash-pending");},2500);}catch(e){}})();`;
 
 export default function RootLayout({
   children,

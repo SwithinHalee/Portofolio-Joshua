@@ -57,9 +57,17 @@ export function Hero() {
     if (!ctx) return;
 
     const matrix = buildMatrix();
-    const reducedMotion =
-      typeof window.matchMedia === "function" &&
-      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    const motionQuery =
+      typeof window.matchMedia === "function"
+        ? window.matchMedia("(prefers-reduced-motion: reduce)")
+        : null;
+    let reducedMotion = motionQuery?.matches ?? false;
+
+    const onMotionChange = (e: MediaQueryListEvent) => {
+      reducedMotion = e.matches;
+    };
+    motionQuery?.addEventListener?.("change", onMotionChange);
 
     let width = 0;
     let height = 0;
@@ -87,10 +95,14 @@ export function Hero() {
     };
 
     const drawFrame = (now: number) => {
-      const elapsed = reducedMotion ? 0.6 : (now - startTime) * 0.001;
+      // Animate smoothly across all platforms and operating systems.
+      // If reduced motion is requested, run at a calm, serene tempo (0.4x)
+      // rather than freezing or halting the canvas.
+      const speedMultiplier = reducedMotion ? 0.4 : 1;
+      const elapsed = (now - startTime) * 0.001 * speedMultiplier;
       const isHovering = pointerRef.current.active;
 
-      const targetInfluence = isHovering && !reducedMotion ? 1 : 0;
+      const targetInfluence = isHovering ? (reducedMotion ? 0.45 : 1) : 0;
       smoothInfluence += (targetInfluence - smoothInfluence) * 0.14;
       smoothX += (pointerRef.current.x - smoothX) * 0.25;
       smoothY += (pointerRef.current.y - smoothY) * 0.25;
@@ -149,7 +161,7 @@ export function Hero() {
             if (distSq < rippleRadiusSq) {
               const falloff = 1 - distSq / rippleRadiusSq;
               const smoothFalloff = falloff * falloff;
-              if (!reducedMotion && isHovering) {
+              if (isHovering) {
                 cell.char = GLYPH_POOL[Math.floor(Math.random() * GLYPH_POOL.length)];
               }
               y += Math.sin(elapsed * 8.5 + c * 0.45) * 15 * smoothFalloff * smoothInfluence;
@@ -162,16 +174,14 @@ export function Hero() {
         }
       }
 
-      if (!reducedMotion && isVisible) {
+      if (isVisible) {
         rafId = window.requestAnimationFrame(drawFrame);
       }
     };
 
     const startLoop = () => {
       if (rafId !== null) return;
-      if (reducedMotion) {
-        drawFrame(startTime);
-      } else if (isVisible) {
+      if (isVisible) {
         rafId = window.requestAnimationFrame(drawFrame);
       }
     };
@@ -187,8 +197,8 @@ export function Hero() {
 
     const resizeObserver = new ResizeObserver(() => {
       updateSize();
-      if (reducedMotion) {
-        drawFrame(startTime);
+      if (isVisible && rafId === null) {
+        drawFrame(performance.now());
       }
     });
     resizeObserver.observe(stage);
@@ -202,7 +212,7 @@ export function Hero() {
           stopLoop();
         }
       },
-      { threshold: 0.05 }
+      { threshold: 0 }
     );
     visibilityObserver.observe(section);
 
@@ -210,14 +220,15 @@ export function Hero() {
 
     document.fonts?.ready
       .then(() => {
-        if (reducedMotion && isVisible) {
-          drawFrame(startTime);
+        if (isVisible && rafId === null) {
+          drawFrame(performance.now());
         }
       })
       .catch(() => {});
 
     return () => {
       stopLoop();
+      motionQuery?.removeEventListener?.("change", onMotionChange);
       resizeObserver.disconnect();
       visibilityObserver.disconnect();
     };
@@ -243,10 +254,14 @@ export function Hero() {
     <section
       id="hero"
       ref={sectionRef}
+      onPointerDown={handlePointerMove}
       onPointerEnter={handlePointerMove}
       onPointerMove={handlePointerMove}
+      onPointerUp={handlePointerLeave}
+      onPointerCancel={handlePointerLeave}
       onPointerLeave={handlePointerLeave}
       className="relative flex min-h-[100svh] sm:min-h-[100dvh] flex-col justify-center overflow-hidden border-b border-[#EAEAEA] bg-[#FFFFFF] pt-16 pb-6 sm:pt-20 sm:pb-8 xl:pt-[76px]"
+      style={{ touchAction: "pan-y" }}
     >
       {/* Central Interactive Glyph Matrix + Monumental Roman/Italic Serif Display */}
       <div
