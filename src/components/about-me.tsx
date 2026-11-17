@@ -73,6 +73,14 @@ export function AboutMe() {
             <dl className="mt-6 shrink-0 divide-y divide-[#262626] border-y border-[#262626] font-sans text-xs">
               <div className="flex items-baseline justify-between gap-4 py-3">
                 <dt className="text-xs font-medium uppercase tracking-wider text-[#A3A3A3]">
+                  Identity
+                </dt>
+                <dd className="text-right font-medium text-[#FAFAFA]">
+                  {personalInfo.name}
+                </dd>
+              </div>
+              <div className="flex items-baseline justify-between gap-4 py-3">
+                <dt className="text-xs font-medium uppercase tracking-wider text-[#A3A3A3]">
                   Role
                 </dt>
                 <dd className="text-right font-medium text-[#FAFAFA]">
@@ -114,8 +122,8 @@ export function AboutMe() {
 
               <div className="space-y-4 font-sans text-sm leading-relaxed text-[#C8C8C8] sm:text-base max-w-[60ch]">
                 <p>
-                  I am an Information Systems undergraduate at Tarumanagara University and
-                  currently work as a Frontend Developer Intern at{" "}
+                  I am {personalInfo.name}, an Information Systems undergraduate at Tarumanagara
+                  University (UNTAR) and currently work as a Frontend Developer Intern at{" "}
                   <span className="font-medium text-[#FFFFFF]">CarbonEthics</span>, building
                   responsive climate-tech workflows, emission calculators, and modular UI token
                   systems.

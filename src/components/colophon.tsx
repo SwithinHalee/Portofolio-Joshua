@@ -9,8 +9,10 @@ import {
   EnvelopeSimple,
   GithubLogo,
   InstagramLogo,
+  YoutubeLogo,
 } from "@phosphor-icons/react";
 import { COLOPHON_SPECS, PERSONAL_INFO } from "@/data/portfolio";
+import { SITE_YOUTUBE } from "@/lib/site";
 import { cleanEmail } from "@/lib/portfolio-store";
 import { usePortfolio } from "@/components/portfolio-provider";
 import { Reveal } from "@/components/motion-wrapper";
@@ -120,7 +122,7 @@ export function Colophon() {
                 <a
                   href={personalInfo.github}
                   target="_blank"
-                  rel="noopener noreferrer"
+                  rel="me noopener noreferrer"
                   className="link-hug group/ext gap-1.5 rounded-[2px] border-0 bg-transparent font-sans text-xs font-medium text-[#525252] shadow-none active:scale-[0.98]"
                 >
                   <GithubLogo size={15} weight="regular" />
@@ -135,11 +137,26 @@ export function Colophon() {
                 <a
                   href={personalInfo.instagram}
                   target="_blank"
-                  rel="noopener noreferrer"
+                  rel="me noopener noreferrer"
                   className="link-hug group/ext gap-1.5 rounded-[2px] border-0 bg-transparent font-sans text-xs font-medium text-[#525252] shadow-none active:scale-[0.98]"
                 >
                   <InstagramLogo size={15} weight="regular" />
                   <span>Instagram</span>
+                  <ArrowUpRight
+                    size={11}
+                    weight="bold"
+                    className="transition-transform duration-200 group-hover/ext:translate-x-0.5 group-hover/ext:-translate-y-0.5"
+                  />
+                </a>
+
+                <a
+                  href={SITE_YOUTUBE}
+                  target="_blank"
+                  rel="me noopener noreferrer"
+                  className="link-hug group/ext gap-1.5 rounded-[2px] border-0 bg-transparent font-sans text-xs font-medium text-[#525252] shadow-none active:scale-[0.98]"
+                >
+                  <YoutubeLogo size={15} weight="regular" />
+                  <span>YouTube</span>
                   <ArrowUpRight
                     size={11}
                     weight="bold"

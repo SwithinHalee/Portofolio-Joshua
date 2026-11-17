@@ -48,7 +48,13 @@ export const metadata: Metadata = {
   description: SITE_DESCRIPTION,
   keywords: [
     "Joshua Abdiel",
+    "JoshuaAbdiel",
     "Joshua Abdiel portfolio",
+    "Joshua Abdiel UNTAR",
+    "Joshua Abdiel Universitas Tarumanagara",
+    "Joshua Abdiel Sistem Informasi",
+    "Joshua Abdiel CarbonEthics",
+    "joshuaabdiel.com",
     "Frontend Engineer Indonesia",
     "Frontend Developer Tangerang",
     "Frontend Developer Jakarta",
@@ -121,11 +127,26 @@ function structuredData(): Record<string, unknown> {
         "@type": "Person",
         "@id": `${SITE_URL}/#person`,
         name: SITE_NAME,
-        alternateName: "SwithinHalee",
+        alternateName: ["JoshuaAbdiel", "joshuaabdiel", "Joshua Abdiel UNTAR", "SwithinHalee", "Josh"],
         url: SITE_URL,
+        mainEntityOfPage: { "@id": `${SITE_URL}/#profilepage` },
         image: `${SITE_URL}/images/about/joshua-bw-portrait.png`,
         jobTitle: "Frontend Engineer",
         description: SITE_DESCRIPTION,
+        disambiguatingDescription:
+          "Indonesian Frontend Engineer and Information Systems undergraduate at Tarumanagara University (UNTAR, Class of 2027), building climate-tech interfaces at CarbonEthics and creator of StatShark Exporter, Xpense Ledger, and @SwithinHalee.",
+        nationality: {
+          "@type": "Country",
+          name: "Indonesia",
+        },
+        hasOccupation: {
+          "@type": "Occupation",
+          name: "Frontend Engineer",
+          occupationLocation: {
+            "@type": "Country",
+            name: "Indonesia",
+          },
+        },
         sameAs: [SITE_GITHUB, SITE_INSTAGRAM, SITE_YOUTUBE],
         address: {
           "@type": "PostalAddress",
@@ -136,6 +157,7 @@ function structuredData(): Record<string, unknown> {
         alumniOf: {
           "@type": "CollegeOrUniversity",
           name: "Tarumanagara University",
+          alternateName: ["UNTAR", "Universitas Tarumanagara"],
           sameAs: "https://untar.ac.id/",
         },
         worksFor: {
@@ -157,6 +179,7 @@ function structuredData(): Record<string, unknown> {
         "@id": `${SITE_URL}/#website`,
         url: SITE_URL,
         name: `${SITE_NAME} · Engineering Portfolio`,
+        alternateName: ["Joshua Abdiel", "JoshuaAbdiel", "Joshua Abdiel UNTAR", "joshuaabdiel.com"],
         description: SITE_DESCRIPTION,
         inLanguage: "en",
         author: { "@id": `${SITE_URL}/#person` },

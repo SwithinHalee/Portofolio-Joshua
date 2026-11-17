@@ -287,8 +287,9 @@ export function Hero() {
             <span className="font-normal italic tracking-[-0.025em]">Systems</span>
           </h1>
           <p className="sr-only">
-            {personalInfo.name}, {personalInfo.role}. {personalInfo.headline}{" "}
-            {personalInfo.bio}
+            {personalInfo.name} (JoshuaAbdiel), {personalInfo.role} at{" "}
+            {personalInfo.institution}. {personalInfo.heroNote}.{" "}
+            {personalInfo.headline} {personalInfo.bio}
           </p>
         </div>
       </div>

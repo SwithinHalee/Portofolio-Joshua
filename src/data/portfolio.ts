@@ -737,12 +737,12 @@ export const EDUCATION_HISTORY: EducationItem[] = [
     gallery: [
       {
         src: "/images/experience/untar-1.jpg",
-        alt: "UNTAR cohort team visit inside an immersive digital forest exhibition",
+        alt: "Joshua Abdiel with the UNTAR cohort team during an immersive digital forest exhibition visit",
         caption: "Field Visit",
       },
       {
         src: "/images/experience/untar-2.jpg",
-        alt: "UNTAR Information Systems students in maroon blazers at a museum heritage mural",
+        alt: "Joshua Abdiel and UNTAR Information Systems students in maroon blazers at a museum heritage mural",
         caption: "Heritage Study",
       },
       {
