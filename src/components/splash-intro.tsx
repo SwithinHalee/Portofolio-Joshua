@@ -85,11 +85,6 @@ function splitMonogramParts(fullName: string): {
   };
 }
 
-function prefersReducedMotionNow(): boolean {
-  if (typeof window === "undefined" || typeof window.matchMedia !== "function") return false;
-  return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-}
-
 export function SplashProvider({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const { data } = usePortfolio();

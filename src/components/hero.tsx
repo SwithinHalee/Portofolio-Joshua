@@ -282,6 +282,7 @@ export function Hero() {
               textShadow: "0 0 28px rgba(255, 255, 255, 0.72)",
             }}
           >
+            <span className="sr-only">Joshua Abdiel: </span>
             <span className="font-semibold not-italic">Type</span>{" "}
             <span className="font-normal italic tracking-[-0.025em]">Systems</span>
           </h1>

@@ -5,11 +5,13 @@ import {
   LEGAL_LAST_UPDATED,
 } from "@/components/legal-layout";
 import { PERSONAL_INFO } from "@/data/portfolio";
+import { SITE_URL } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "Refund Policy | Joshua Abdiel",
+  title: "Refund Policy",
   description:
     "Refund policy for Joshua Abdiel's portfolio: no goods or services are sold through this site, so no payments or refunds apply.",
+  alternates: { canonical: `${SITE_URL}/refunds` },
 };
 
 export default function RefundsPage() {

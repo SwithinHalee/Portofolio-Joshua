@@ -4,11 +4,13 @@ import {
   LegalSection,
   LEGAL_LAST_UPDATED,
 } from "@/components/legal-layout";
+import { SITE_URL } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "Cookie Policy | Joshua Abdiel",
+  title: "Cookie Policy",
   description:
     "Cookie policy for Joshua Abdiel's portfolio: no advertising or analytics cookies, no consent banner needed, and how to manage cookies in your browser.",
+  alternates: { canonical: `${SITE_URL}/cookies` },
 };
 
 export default function CookiesPage() {

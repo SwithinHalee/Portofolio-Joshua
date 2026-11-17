@@ -16,6 +16,7 @@ import {
   SITE_NAME,
   SITE_TAGLINE,
   SITE_URL,
+  SITE_YOUTUBE,
 } from "@/lib/site";
 import "./globals.css";
 
@@ -67,8 +68,8 @@ export const metadata: Metadata = {
   category: "portfolio",
   icons: {
     icon: [
-      { url: "/favicon.ico", sizes: "48x48", type: "image/x-icon" },
       { url: "/icon.png", sizes: "192x192", type: "image/png" },
+      { url: "/favicon.ico", sizes: "16x16 32x32 48x48" },
       { url: "/icon.svg", sizes: "any", type: "image/svg+xml" },
     ],
     shortcut: "/favicon.ico",
@@ -120,13 +121,22 @@ function structuredData(): Record<string, unknown> {
         "@type": "Person",
         "@id": `${SITE_URL}/#person`,
         name: SITE_NAME,
+        alternateName: "SwithinHalee",
         url: SITE_URL,
+        image: `${SITE_URL}/images/about/joshua-bw-portrait.png`,
         jobTitle: "Frontend Engineer",
         description: SITE_DESCRIPTION,
-        sameAs: [SITE_GITHUB, SITE_INSTAGRAM],
+        sameAs: [SITE_GITHUB, SITE_INSTAGRAM, SITE_YOUTUBE],
+        address: {
+          "@type": "PostalAddress",
+          addressLocality: "Tangerang",
+          addressRegion: "Banten",
+          addressCountry: "ID",
+        },
         alumniOf: {
           "@type": "CollegeOrUniversity",
           name: "Tarumanagara University",
+          sameAs: "https://untar.ac.id/",
         },
         worksFor: {
           "@type": "Organization",
@@ -150,6 +160,7 @@ function structuredData(): Record<string, unknown> {
         description: SITE_DESCRIPTION,
         inLanguage: "en",
         author: { "@id": `${SITE_URL}/#person` },
+        publisher: { "@id": `${SITE_URL}/#person` },
       },
     ],
   };

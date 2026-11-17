@@ -9,15 +9,33 @@ import { Workspace } from "@/components/workspace";
 import { Experience } from "@/components/experience";
 import { Colophon } from "@/components/colophon";
 import { ScrollMilestone } from "@/components/scroll-milestone";
-import { SITE_URL } from "@/lib/site";
+import { SITE_DESCRIPTION, SITE_NAME, SITE_TAGLINE, SITE_URL } from "@/lib/site";
 
 export const metadata: Metadata = {
+  title: `${SITE_NAME} | ${SITE_TAGLINE}`,
+  description: SITE_DESCRIPTION,
   alternates: { canonical: SITE_URL },
 };
+
+function profilePageSchema(): Record<string, unknown> {
+  return {
+    "@context": "https://schema.org",
+    "@type": "ProfilePage",
+    "@id": `${SITE_URL}/#profilepage`,
+    url: SITE_URL,
+    name: `${SITE_NAME} | ${SITE_TAGLINE}`,
+    description: SITE_DESCRIPTION,
+    mainEntity: { "@id": `${SITE_URL}/#person` },
+  };
+}
 
 export default function Home() {
   return (
     <div className="flex min-h-screen flex-col text-[#111111]">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(profilePageSchema()) }}
+      />
       <ScrollMilestone />
       <main id="main-content" className="flex-1">
         <Hero />

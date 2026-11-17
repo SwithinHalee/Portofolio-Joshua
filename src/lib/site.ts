@@ -7,7 +7,7 @@
  * from it; Google ignores them when they point at the wrong host.
  */
 export const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") || "https://portofolio-joshua.vercel.app";
+  process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") || "https://www.joshuaabdiel.com";
 
 export const SITE_NAME = "Joshua Abdiel";
 export const SITE_TAGLINE = "Frontend Engineer & Information Systems";
@@ -15,7 +15,8 @@ export const SITE_DESCRIPTION =
   "Personal engineering portfolio and technical dossier of Joshua Abdiel, frontend engineer and Information Systems student at Tarumanagara University, currently building climate-tech interfaces at CarbonEthics.";
 export const SITE_LOCALE = "en_US";
 export const SITE_GITHUB = "https://github.com/SwithinHalee";
-export const SITE_INSTAGRAM = "https://www.instagram.com/abd.joshua?dlrf=MmlsaGp4NmJydHlp";
+export const SITE_INSTAGRAM = "https://www.instagram.com/abd.joshua";
+export const SITE_YOUTUBE = "https://www.youtube.com/@SwithinHalee";
 
 /** Paste the Google Search Console HTML-tag code here (or via env) after verifying ownership. */
 export const GOOGLE_VERIFICATION =

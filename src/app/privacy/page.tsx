@@ -5,11 +5,13 @@ import {
   LEGAL_LAST_UPDATED,
 } from "@/components/legal-layout";
 import { PERSONAL_INFO } from "@/data/portfolio";
+import { SITE_URL } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "Privacy Policy | Joshua Abdiel",
+  title: "Privacy Policy",
   description:
     "Privacy policy for Joshua Abdiel's personal portfolio: what data is (and is not) collected, your rights under Indonesia's PDP Law, and contact details.",
+  alternates: { canonical: `${SITE_URL}/privacy` },
 };
 
 export default function PrivacyPage() {

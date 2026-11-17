@@ -19,7 +19,7 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const project = PROJECTS.find((p) => p.slug === slug);
-  if (!project) return { title: "Project Case Study | Joshua Abdiel" };
+  if (!project) return { title: "Project Case Study" };
 
   const url = `${SITE_URL}/work/${project.slug}`;
   const isVideo = /\.mp4($|\?)/i.test(project.image.trim());
@@ -31,7 +31,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       : undefined;
 
   return {
-    title: `${project.title} · Case Study | Joshua Abdiel`,
+    title: `${project.title} · Case Study`,
     description: project.summary,
     keywords: [...project.tags, project.title, "case study", "Joshua Abdiel"],
     alternates: { canonical: url },
@@ -62,8 +62,53 @@ export default async function ProjectCaseStudyPage({ params }: Props) {
       ? PROJECTS[(projectIndex - 1 + PROJECTS.length) % PROJECTS.length]
       : undefined;
 
+  const caseStudySchema = project
+    ? {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "BreadcrumbList",
+            itemListElement: [
+              {
+                "@type": "ListItem",
+                position: 1,
+                name: "Joshua Abdiel",
+                item: SITE_URL,
+              },
+              {
+                "@type": "ListItem",
+                position: 2,
+                name: "Archive",
+                item: `${SITE_URL}/archive`,
+              },
+              {
+                "@type": "ListItem",
+                position: 3,
+                name: project.title,
+                item: `${SITE_URL}/work/${project.slug}`,
+              },
+            ],
+          },
+          {
+            "@type": "CreativeWork",
+            name: project.title,
+            description: project.summary,
+            url: `${SITE_URL}/work/${project.slug}`,
+            keywords: project.tags.join(", "),
+            author: { "@id": `${SITE_URL}/#person` },
+          },
+        ],
+      }
+    : null;
+
   return (
     <div className="flex min-h-screen flex-col bg-[#FFFFFF] text-[#111111]">
+      {caseStudySchema && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(caseStudySchema) }}
+        />
+      )}
       <ProjectCaseBody
         slug={slug}
         initialProject={project}

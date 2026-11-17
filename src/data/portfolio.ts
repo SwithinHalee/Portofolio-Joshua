@@ -143,7 +143,7 @@ export const PERSONAL_INFO = {
   ],
   email: "joshuaabdiel365@gmail.com",
   github: "https://github.com/SwithinHalee",
-  instagram: "https://www.instagram.com/abd.joshua?dlrf=MmlsaGp4NmJydHlp",
+  instagram: "https://www.instagram.com/abd.joshua",
 };
 
 export const PROJECTS: ProjectItem[] = [

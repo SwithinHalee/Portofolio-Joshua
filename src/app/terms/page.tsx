@@ -5,11 +5,13 @@ import {
   LEGAL_LAST_UPDATED,
 } from "@/components/legal-layout";
 import { PERSONAL_INFO } from "@/data/portfolio";
+import { SITE_URL } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "Terms and Conditions | Joshua Abdiel",
+  title: "Terms and Conditions",
   description:
     "Terms of use for Joshua Abdiel's personal portfolio: permitted use, intellectual property, external links, and liability limits.",
+  alternates: { canonical: `${SITE_URL}/terms` },
 };
 
 export default function TermsPage() {
